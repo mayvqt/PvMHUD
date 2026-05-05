@@ -83,7 +83,7 @@ public class PvMHUDOverlay extends Overlay {
 
         switch (style) {
             case GAME_ICONS:
-                return textIconRenderer.render(graphics, metrics, frame, true);
+            return textIconRenderer.render(graphics, metrics, frame, true);
             case BARS:
                 return barRenderer.render(graphics, metrics, frame);
             case CHIPS:
