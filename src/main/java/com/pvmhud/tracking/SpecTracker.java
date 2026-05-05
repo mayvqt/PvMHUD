@@ -1,8 +1,6 @@
 package com.pvmhud.tracking;
 
 import net.runelite.api.Client;
-import net.runelite.api.events.VarbitChanged;
-import net.runelite.client.eventbus.Subscribe;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -14,29 +12,17 @@ public class SpecTracker implements ResettableTracker {
     @Inject
     private Client client;
 
-    private int specPercent = -1;
-
-    @Subscribe
-    public void onVarbitChanged(VarbitChanged event) {
-        if (event.getVarbitId() == GameStateIds.SPECIAL_ATTACK_PERCENT) {
-            specPercent = normalizeSpec(event.getValue());
-        }
-    }
-
     public int getSpecPercent() {
-        if (specPercent < 0) {
-            specPercent = normalizeSpec(client.getVarpValue(GameStateIds.SPECIAL_ATTACK_PERCENT));
-        }
-        return specPercent;
+        int rawSpec = client.getVarpValue(GameStateIds.SPECIAL_ATTACK_PERCENT);
+        return normalizeSpec(rawSpec);
     }
 
     @Override
     public void reset() {
-        specPercent = -1;
+        // Spec is read directly from the client varp, so there is no cached state to reset.
     }
 
     private static int normalizeSpec(int rawValue) {
-        int percent = rawValue / SPEC_DIVISOR;
-        return Math.max(0, Math.min(100, percent));
+        return Math.max(0, Math.min(100, rawValue / SPEC_DIVISOR));
     }
 }
