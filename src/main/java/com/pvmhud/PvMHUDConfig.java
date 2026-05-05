@@ -46,7 +46,7 @@ public interface PvMHUDConfig extends Config {
     String activeSpellColorSection = "activeSpellColors";
 
     @ConfigItem(keyName = "hudStyle", name = "Style", description = "Choose the HUD display style.", position = 0, section = generalSection)
-    default HudStyle hudStyle() { return HudStyle.TEXT; }
+    default HudStyle hudStyle() { return HudStyle.CHIPS; }
 
     @ConfigItem(keyName = "showThrall", name = "Thrall", description = "Show the Resurrect Thrall indicator.", position = 1, section = generalSection)
     default boolean showThrall() { return true; }
@@ -93,12 +93,12 @@ public interface PvMHUDConfig extends Config {
     @ConfigItem(keyName = "spellExpiringSoonSeconds", name = "Expiry warning",
             description = "Seconds before a spell expires to use the expiring color.",
             position = 3, section = timingSection)
-    default int spellExpiringSoonSeconds() { return 8; }
+    default int spellExpiringSoonSeconds() { return 5; }
 
     @Range(min = 0, max = 99)
     @ConfigItem(keyName = "hpLowThreshold", name = "Low HP",
             description = "Use the low HP color at or below this Hitpoints value.", position = 0, section = thresholdSection)
-    default int hpLowThreshold() { return 30; }
+    default int hpLowThreshold() { return 45; }
 
     @Range(min = 0, max = 99)
     @ConfigItem(keyName = "prayerLowThreshold", name = "Low Prayer",
@@ -144,7 +144,7 @@ public interface PvMHUDConfig extends Config {
     @ConfigItem(keyName = "overheadAlertCycles", name = "Duration",
             description = "Client frames to keep the above-head alert visible.",
             position = 6, section = alertSection)
-    default int overheadAlertCycles() { return 100; }
+    default int overheadAlertCycles() { return 200; }
 
     @ConfigItem(keyName = "hpNormalColor", name = "HP normal", description = "Color for normal Hitpoints.", position = 0, section = statColorSection)
     default Color hpNormalColor() { return new Color(222, 48, 48); }
@@ -185,7 +185,7 @@ public interface PvMHUDConfig extends Config {
     default Color deathChargeCooldownColor() { return new Color(112, 42, 46); }
 
     @ConfigItem(keyName = "flashReadySpells", name = "Flash ready spells", description = "Flash spells briefly when they become ready.", position = 4, section = spellStateColorSection)
-    default boolean flashReadySpells() { return false; }
+    default boolean flashReadySpells() { return true; }
 
     @ConfigItem(keyName = "readySpellFlashColor", name = "Ready flash", description = "Flash color for newly ready spells.", position = 5, section = spellStateColorSection)
     default Color readySpellFlashColor() { return new Color(255, 230, 88); }
@@ -226,7 +226,7 @@ public interface PvMHUDConfig extends Config {
     default boolean boldFont() { return true; }
 
     @ConfigItem(keyName = "verticalLayout", name = "Vertical layout", description = "Use the vertical version of the selected HUD style.", position = 3, section = textIconSection)
-    default boolean verticalLayout() { return false; }
+    default boolean verticalLayout() { return true; }
 
     @Range(min = 10, max = 32)
     @ConfigItem(keyName = "spellIconSize", name = "Spell icon size", description = "Size of spell and cooldown icons in pixels.", position = 4, section = textIconSection)
@@ -234,15 +234,15 @@ public interface PvMHUDConfig extends Config {
 
     @Range(min = 10, max = 32)
     @ConfigItem(keyName = "statIconSize", name = "Stat icon size", description = "Size of Hitpoints, Prayer, and special attack icons in pixels.", position = 5, section = textIconSection)
-    default int statIconSize() { return 12; }
+    default int statIconSize() { return 14; }
 
     @Range(min = 0, max = 24)
     @ConfigItem(keyName = "groupGap", name = "Group gap", description = "Spacing between HUD indicators.", position = 6, section = textIconSection)
-    default int groupGap() { return 10; }
+    default int groupGap() { return 7; }
 
     @Range(min = 0, max = 12)
     @ConfigItem(keyName = "rowGap", name = "Row gap", description = "Spacing between HUD rows.", position = 7, section = textIconSection)
-    default int rowGap() { return 2; }
+    default int rowGap() { return 0; }
 
     @Range(min = 0, max = 8)
     @ConfigItem(keyName = "iconTextGap", name = "Icon text gap", description = "Spacing between icons and text.", position = 8, section = textIconSection)
@@ -255,7 +255,7 @@ public interface PvMHUDConfig extends Config {
     default Color shadowColor() { return new Color(8, 10, 14, 190); }
 
     @ConfigItem(keyName = "textOutline", name = "Text outline", description = "Draw an outline around HUD text.", position = 11, section = textIconSection)
-    default boolean textOutline() { return false; }
+    default boolean textOutline() { return true; }
 
     @ConfigItem(keyName = "outlineColor", name = "Outline color", description = "Color for text outlines.", position = 12, section = textIconSection)
     default Color outlineColor() { return new Color(8, 12, 18); }
@@ -274,7 +274,7 @@ public interface PvMHUDConfig extends Config {
 
     @Range(min = 4, max = 24)
     @ConfigItem(keyName = "verticalBarWidth", name = "Vertical width", description = "Vertical stat meter width.", position = 2, section = barStyleSection)
-    default int verticalBarWidth() { return 8; }
+    default int verticalBarWidth() { return 20; }
 
     @Range(min = 30, max = 140)
     @ConfigItem(keyName = "verticalBarHeight", name = "Vertical height", description = "Vertical stat meter height.", position = 3, section = barStyleSection)
@@ -282,7 +282,7 @@ public interface PvMHUDConfig extends Config {
 
     @Range(min = 0, max = 12)
     @ConfigItem(keyName = "barGap", name = "Gap", description = "Spacing between bar-style HUD elements.", position = 4, section = barStyleSection)
-    default int barGap() { return 2; }
+    default int barGap() { return 1; }
 
     @Range(min = 14, max = 40)
     @ConfigItem(keyName = "barSpellTileSize", name = "Spell tile size", description = "Spell tile size for Bars and Orbs styles.", position = 5, section = barStyleSection)

@@ -74,19 +74,32 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         }
 
         int size = iconSize(segment);
-        int iconX = segment.kind == SegmentKind.SPELL || segment.kind == SegmentKind.HEART
-                ? x + (width - size) / 2
-                : x + 7;
         int iconY = y + (height - size) / 2;
+
+        String label = segment.label();
+        boolean hasLabel = !label.isEmpty();
+        boolean iconOnly = segment.kind == SegmentKind.SPELL || segment.kind == SegmentKind.HEART || !hasLabel;
+
+        int iconX;
+        int textX = 0;
+
+        if (iconOnly) {
+            iconX = x + (width - size) / 2;
+        } else {
+            int labelWidth = metrics.stringWidth(label);
+            int contentWidth = size + iconTextGap() + labelWidth;
+
+            iconX = x + Math.max(0, (width - contentWidth) / 2);
+            textX = iconX + size + iconTextGap();
+        }
 
         BufferedImage icon = icons.load(segment.icon, size);
         if (icon != null) {
             graphics.drawImage(icon, iconX, iconY, null);
         }
 
-        String label = segment.label();
-        if (!label.isEmpty()) {
-            text.drawText(graphics, label, iconX + size + iconTextGap(), y + text.baseline(metrics, height), segment.color);
+        if (!iconOnly) {
+            text.drawText(graphics, label, textX, y + text.baseline(metrics, height), segment.color);
         }
     }
 
