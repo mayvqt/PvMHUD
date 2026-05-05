@@ -133,35 +133,46 @@ public class PvMHUDPlugin extends Plugin {
             return;
         }
 
-        // Do not reset on LOADING. Region loads and instances should not wipe spell timers.
         if (state == GameState.HOPPING || state == GameState.LOGIN_SCREEN) {
             resetSessionState();
         }
     }
 
-    @Subscribe
-    public void onStatChanged(StatChanged event) {
-        if (!baselineReady) {
-            return;
-        }
-
-        if (event.getSkill() == Skill.HITPOINTS) {
-            int currentHp = event.getBoostedLevel();
-            if (config.overheadHpAlertEnabled()
-                    && crossedDown(previousHitpoints, currentHp, config.hpLowThreshold())) {
-                showLocalOverheadMessage(config.lowHpOverheadMessage(), config.hpLowColor());
-            }
-            previousHitpoints = currentHp;
-        } else if (event.getSkill() == Skill.PRAYER) {
-            int currentPrayer = event.getBoostedLevel();
-            if (config.overheadPrayerAlertEnabled()
-                    && crossedDown(previousPrayer, currentPrayer, config.prayerLowThreshold())) {
-                showLocalOverheadMessage(config.lowPrayerOverheadMessage(), config.prayerLowColor());
-            }
-            previousPrayer = currentPrayer;
-        }
+@Subscribe
+public void onStatChanged(StatChanged event) {
+    if (!baselineReady) {
+        return;
     }
 
+    String message = null;
+    Color color = null;
+
+    if (event.getSkill() == Skill.HITPOINTS) {
+        int currentHp = event.getBoostedLevel();
+
+        if (config.overheadHpAlertEnabled()
+                && crossedDown(previousHitpoints, currentHp, config.hpLowThreshold())) {
+            message = config.lowHpOverheadMessage();
+            color = config.hpLowColor();
+        }
+
+        previousHitpoints = currentHp;
+    } else if (event.getSkill() == Skill.PRAYER) {
+        int currentPrayer = event.getBoostedLevel();
+
+        if (config.overheadPrayerAlertEnabled()
+                && crossedDown(previousPrayer, currentPrayer, config.prayerLowThreshold())) {
+            message = config.lowPrayerOverheadMessage();
+            color = config.prayerLowColor();
+        }
+
+        previousPrayer = currentPrayer;
+    }
+
+    if (message != null) {
+        showLocalOverheadMessage(message, color);
+    }
+}
     @Subscribe
     public void onGameTick(GameTick event) {
         if (!baselineReady) {
@@ -226,25 +237,23 @@ public class PvMHUDPlugin extends Plugin {
     }
 
 
-    private void showLocalOverheadMessage(String message, Color color) {
-        String trimmed = message == null ? "" : message.trim();
-        if (trimmed.isEmpty()) {
-            return;
-        }
-
-        Player localPlayer = client.getLocalPlayer();
-        if (localPlayer == null) {
-            return;
-        }
-
-        localPlayer.setOverheadText("<col=" + toHexColor(color) + ">" + trimmed + "</col>");
-        localPlayer.setOverheadCycle(config.overheadAlertCycles());
+private void showLocalOverheadMessage(String message, Color color) {
+    String trimmed = message == null ? "" : message.trim();
+    if (trimmed.isEmpty()) {
+        return;
     }
 
-    private static String toHexColor(Color color) {
-        Color safeColor = color == null ? Color.WHITE : color;
-        return String.format("%02x%02x%02x", safeColor.getRed(), safeColor.getGreen(), safeColor.getBlue());
+    Player localPlayer = client.getLocalPlayer();
+    if (localPlayer == null) {
+        return;
     }
+
+    localPlayer.setOverheadText("<col=" + toHexColor(color) + ">" + trimmed);
+    localPlayer.setOverheadCycle(config.overheadAlertCycles());
+}
+    private String toHexColor(Color color) {
+    return String.format("%06x", color.getRGB() & 0xFFFFFF);
+}
 
     private static boolean crossedDown(int previousValue, int currentValue, int threshold) {
         return previousValue > threshold && currentValue <= threshold;
