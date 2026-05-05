@@ -2,7 +2,7 @@
 
 Compact, draggable overlay for the combat information you check constantly: Hitpoints, Prayer, special attack, spell states, and cooldowns.
 
-### Chips layout that pairs well with Compact Orbs, with readable stats and spells that only appear when active.
+Chips layout that pairs well with Compact Orbs, with readable stats and spells that only appear when active.
 ![PvM HUD Chips style](images/chips.png)
 
 ---
