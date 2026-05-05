@@ -8,14 +8,14 @@ public enum HudStyle {
     ORBS("Orbs"),
     STACK("Stack");
 
-    private final String name;
+    private final String displayName;
 
-    HudStyle(String name) {
-        this.name = name;
+    HudStyle(String displayName) {
+        this.displayName = displayName;
     }
 
     @Override
     public String toString() {
-        return name;
+        return displayName;
     }
 }

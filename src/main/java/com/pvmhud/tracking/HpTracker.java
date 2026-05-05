@@ -2,29 +2,35 @@ package com.pvmhud.tracking;
 
 import net.runelite.api.Client;
 import net.runelite.api.Skill;
+import net.runelite.api.events.StatChanged;
+import net.runelite.client.eventbus.Subscribe;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class HpTracker {
+public class HpTracker implements ResettableTracker {
     @Inject
     private Client client;
 
-    private int cachedHp;
-    private long lastSyncMs;
+    private int currentHitpoints = -1;
 
-    public int getCurrentHp() {
-        syncIfNeeded();
-        return cachedHp;
+    @Subscribe
+    public void onStatChanged(StatChanged event) {
+        if (event.getSkill() == Skill.HITPOINTS) {
+            currentHitpoints = event.getBoostedLevel();
+        }
     }
 
-    private void syncIfNeeded() {
-        long now = System.currentTimeMillis();
-
-        if (now - lastSyncMs >= TimeConstants.CACHE_SYNC_INTERVAL_MS) {
-            lastSyncMs = now;
-            cachedHp = client.getBoostedSkillLevel(Skill.HITPOINTS);
+    public int getCurrentHp() {
+        if (currentHitpoints < 0) {
+            currentHitpoints = client.getBoostedSkillLevel(Skill.HITPOINTS);
         }
+        return currentHitpoints;
+    }
+
+    @Override
+    public void reset() {
+        currentHitpoints = -1;
     }
 }

@@ -12,10 +12,14 @@ public final class TimeConstants {
     }
 
     public static long secondsToNanos(double seconds) {
-        return (long) (seconds * NS_PER_SECOND);
+        return Math.max(0L, (long) (seconds * NS_PER_SECOND));
     }
 
     public static long secondsToNanos(int seconds) {
         return secondsToNanos((double) seconds);
+    }
+
+    public static long ticksToNanos(int ticks) {
+        return Math.max(0L, ticks) * GAME_TICK_MILLIS * NS_PER_MS;
     }
 }

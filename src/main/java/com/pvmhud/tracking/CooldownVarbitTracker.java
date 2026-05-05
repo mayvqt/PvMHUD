@@ -1,7 +1,7 @@
 package com.pvmhud.tracking;
 
-abstract class CooldownVarbitTracker extends CachedVarbitTracker implements ResettableTracker {
-    private int cachedCooldown;
+public abstract class CooldownVarbitTracker extends CachedVarbitTracker implements SpellStateTracker {
+    private int cooldownTicks;
 
     @Override
     public boolean isActive() {
@@ -11,24 +11,29 @@ abstract class CooldownVarbitTracker extends CachedVarbitTracker implements Rese
     @Override
     public boolean isOnCooldown() {
         syncIfNeeded();
-        return cachedCooldown > 0;
+        return cooldownTicks > 0;
     }
 
     @Override
     public boolean isReady() {
         syncIfNeeded();
-        return cachedCooldown == 0;
+        return cooldownTicks <= 0;
     }
 
     @Override
-    protected void performSync() {
-        cachedCooldown = client.getVarbitValue(cooldownVarbitId());
+    protected void sync() {
+        cooldownTicks = client.getVarbitValue(cooldownVarbitId());
     }
 
     @Override
     public void reset() {
-        cachedCooldown = 0;
+        cooldownTicks = 0;
         invalidateCache();
+    }
+
+    protected final int getCooldownTicks() {
+        syncIfNeeded();
+        return cooldownTicks;
     }
 
     protected abstract int cooldownVarbitId();

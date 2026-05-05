@@ -4,23 +4,28 @@ import net.runelite.api.Client;
 
 import javax.inject.Inject;
 
-public abstract class CachedVarbitTracker implements SpellStateTracker {
+public abstract class CachedVarbitTracker implements ResettableTracker {
     @Inject
     protected Client client;
 
-    protected long lastSyncMs;
+    private long lastSyncMillis;
 
-    protected void syncIfNeeded() {
+    protected final void syncIfNeeded() {
         long now = System.currentTimeMillis();
-        if (now - lastSyncMs >= TimeConstants.CACHE_SYNC_INTERVAL_MS) {
-            lastSyncMs = now;
-            performSync();
+        if (now - lastSyncMillis >= TimeConstants.CACHE_SYNC_INTERVAL_MS) {
+            lastSyncMillis = now;
+            sync();
         }
     }
 
-    protected void invalidateCache() {
-        lastSyncMs = 0L;
+    protected final void forceSync() {
+        lastSyncMillis = System.currentTimeMillis();
+        sync();
     }
 
-    protected abstract void performSync();
+    protected final void invalidateCache() {
+        lastSyncMillis = 0L;
+    }
+
+    protected abstract void sync();
 }

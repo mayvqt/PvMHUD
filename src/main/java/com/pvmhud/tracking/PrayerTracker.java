@@ -2,29 +2,35 @@ package com.pvmhud.tracking;
 
 import net.runelite.api.Client;
 import net.runelite.api.Skill;
+import net.runelite.api.events.StatChanged;
+import net.runelite.client.eventbus.Subscribe;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class PrayerTracker {
+public class PrayerTracker implements ResettableTracker {
     @Inject
     private Client client;
 
-    private int cachedPrayer;
-    private long lastSyncMs;
+    private int currentPrayer = -1;
 
-    public int getCurrentPrayer() {
-        syncIfNeeded();
-        return cachedPrayer;
+    @Subscribe
+    public void onStatChanged(StatChanged event) {
+        if (event.getSkill() == Skill.PRAYER) {
+            currentPrayer = event.getBoostedLevel();
+        }
     }
 
-    private void syncIfNeeded() {
-        long now = System.currentTimeMillis();
-
-        if (now - lastSyncMs >= TimeConstants.CACHE_SYNC_INTERVAL_MS) {
-            lastSyncMs = now;
-            cachedPrayer = client.getBoostedSkillLevel(Skill.PRAYER);
+    public int getCurrentPrayer() {
+        if (currentPrayer < 0) {
+            currentPrayer = client.getBoostedSkillLevel(Skill.PRAYER);
         }
+        return currentPrayer;
+    }
+
+    @Override
+    public void reset() {
+        currentPrayer = -1;
     }
 }

@@ -1,17 +1,26 @@
 package com.pvmhud.tracking;
 
 import net.runelite.api.ChatMessageType;
+import net.runelite.api.EquipmentInventorySlot;
+import net.runelite.api.Item;
+import net.runelite.api.ItemContainer;
+import net.runelite.api.Skill;
 import net.runelite.api.events.ChatMessage;
+import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.ItemID;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.util.Text;
 
 import javax.inject.Singleton;
-import java.util.Locale;
 
 @Singleton
-public class MarkOfDarknessTracker implements SpellStateTracker, ResettableTracker {
-    private boolean active;
-    private boolean expiringSoon;
+public class MarkOfDarknessTracker extends BaseTimedSpellTracker {
+    private static final String MARK_PLACED_MESSAGE =
+            "you have placed a mark of darkness upon yourself.";
+    private static final String MARK_FADED_MESSAGE =
+            "your mark of darkness has faded away.";
+    private static final String MARK_EXPIRING_MESSAGE =
+            "your mark of darkness is about to run out.";
 
     @Subscribe
     public void onChatMessage(ChatMessage event) {
@@ -19,37 +28,39 @@ public class MarkOfDarknessTracker implements SpellStateTracker, ResettableTrack
             return;
         }
 
-        String msg = Text.removeTags(event.getMessage()).toLowerCase(Locale.ENGLISH);
+        String message = Text.standardize(event.getMessage());
 
-        if (msg.contains("mark of darkness upon yourself")) {
-            active = true;
-            expiringSoon = false;
-        } else if (msg.contains("mark of darkness is about to run out")) {
-            expiringSoon = true;
-        } else if (msg.contains("mark of darkness has faded")) {
-            active = false;
-            expiringSoon = false;
+        if (MARK_PLACED_MESSAGE.equals(message)) {
+            markActive(TimeConstants.ticksToNanos(getDurationTicks()));
+        } else if (MARK_EXPIRING_MESSAGE.equals(message)) {
+            setExpiringSoon(true);
+        } else if (MARK_FADED_MESSAGE.equals(message)) {
+            clearActive();
         }
     }
 
     @Override
-    public boolean isActive() {
-        return active;
+    protected void sync() {
+        setCooldownActive(false);
     }
 
-    @Override
-    public boolean isOnCooldown() {
-        return false;
+    private int getDurationTicks() {
+        int ticks = client.getRealSkillLevel(Skill.MAGIC) * 3;
+
+        if (isPurgingStaffEquipped()) {
+            ticks *= 5;
+        }
+
+        return ticks;
     }
 
-    @Override
-    public boolean isExpiringSoon(int windowSeconds) {
-        return active && expiringSoon;
-    }
+    private boolean isPurgingStaffEquipped() {
+        ItemContainer equipment = client.getItemContainer(InventoryID.WORN);
+        if (equipment == null) {
+            return false;
+        }
 
-    @Override
-    public void reset() {
-        active = false;
-        expiringSoon = false;
+        Item weapon = equipment.getItem(EquipmentInventorySlot.WEAPON.getSlotIdx());
+        return weapon != null && weapon.getId() == ItemID.PURGING_STAFF;
     }
 }
