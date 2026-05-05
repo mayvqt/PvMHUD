@@ -4,6 +4,9 @@ Compact overlay for the combat information you check constantly: HP, Prayer, spe
 
 PvM HUD is designed to stay small, readable, and draggable so it can sit near your focus point without covering anything.
 
+### Chips layout that pairs well with Compact Orbs, with readable stats and spells that only appear when active.
+![PvM HUD Chips style](images/chips.png)
+
 ## Features
 
 - Tracks boosted Hitpoints, Prayer, special attack, poison, and venom.
