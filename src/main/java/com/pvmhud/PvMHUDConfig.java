@@ -1,5 +1,7 @@
 package com.pvmhud;
 
+import com.pvmhud.overlay.HudFont;
+import com.pvmhud.overlay.HudStyle;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;

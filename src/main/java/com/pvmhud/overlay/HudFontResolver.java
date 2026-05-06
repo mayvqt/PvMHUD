@@ -1,6 +1,6 @@
 package com.pvmhud.overlay;
 
-import com.pvmhud.HudFont;
+import com.pvmhud.overlay.HudFont;
 import com.pvmhud.PvMHUDConfig;
 import net.runelite.client.ui.FontManager;
 

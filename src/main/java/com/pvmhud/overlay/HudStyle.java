@@ -1,4 +1,4 @@
-package com.pvmhud;
+package com.pvmhud.overlay;
 
 public enum HudStyle {
     TEXT("Text"),
