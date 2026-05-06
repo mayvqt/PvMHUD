@@ -18,8 +18,8 @@ import net.runelite.api.GameState;
 import net.runelite.api.Player;
 import net.runelite.api.Skill;
 import net.runelite.api.events.GameStateChanged;
-import net.runelite.api.events.GameTick;
 import net.runelite.api.events.StatChanged;
+import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
@@ -38,6 +38,8 @@ import java.util.List;
         tags = {"pvm", "combat", "overlay", "hud", "thrall", "spell"}
 )
 public class PvMHUDPlugin extends Plugin {
+    private static final int MAX_SPEC_RESTORE_STEP = 10;
+
     @Inject
     private Client client;
 
@@ -92,6 +94,7 @@ public class PvMHUDPlugin extends Plugin {
     private int previousHitpoints = -1;
     private int previousPrayer = -1;
     private int previousSpec = -1;
+    private boolean previousSpecReady;
     private boolean baselineReady;
 
     @Provides
@@ -138,53 +141,65 @@ public class PvMHUDPlugin extends Plugin {
         }
     }
 
-@Subscribe
-public void onStatChanged(StatChanged event) {
-    if (!baselineReady) {
-        return;
-    }
-
-    String message = null;
-    Color color = null;
-
-    if (event.getSkill() == Skill.HITPOINTS) {
-        int currentHp = event.getBoostedLevel();
-
-        if (config.overheadHpAlertEnabled()
-                && crossedDown(previousHitpoints, currentHp, config.hpLowThreshold())) {
-            message = config.lowHpOverheadMessage();
-            color = config.hpLowColor();
-        }
-
-        previousHitpoints = currentHp;
-    } else if (event.getSkill() == Skill.PRAYER) {
-        int currentPrayer = event.getBoostedLevel();
-
-        if (config.overheadPrayerAlertEnabled()
-                && crossedDown(previousPrayer, currentPrayer, config.prayerLowThreshold())) {
-            message = config.lowPrayerOverheadMessage();
-            color = config.prayerLowColor();
-        }
-
-        previousPrayer = currentPrayer;
-    }
-
-    if (message != null) {
-        showLocalOverheadMessage(message, color);
-    }
-}
     @Subscribe
-    public void onGameTick(GameTick event) {
+    public void onStatChanged(StatChanged event) {
+        if (!baselineReady) {
+            return;
+        }
+
+        String message = null;
+        Color color = null;
+
+        if (event.getSkill() == Skill.HITPOINTS) {
+            int currentHp = event.getBoostedLevel();
+
+            if (config.overheadHpAlertEnabled()
+                    && crossedDown(previousHitpoints, currentHp, config.hpLowThreshold())) {
+                message = config.lowHpOverheadMessage();
+                color = config.hpLowColor();
+            }
+
+            previousHitpoints = currentHp;
+        } else if (event.getSkill() == Skill.PRAYER) {
+            int currentPrayer = event.getBoostedLevel();
+
+            if (config.overheadPrayerAlertEnabled()
+                    && crossedDown(previousPrayer, currentPrayer, config.prayerLowThreshold())) {
+                message = config.lowPrayerOverheadMessage();
+                color = config.prayerLowColor();
+            }
+
+            previousPrayer = currentPrayer;
+        }
+
+        if (message != null) {
+            showLocalOverheadMessage(message, color);
+        }
+    }
+
+    @Subscribe
+    public void onVarbitChanged(VarbitChanged event) {
         if (!baselineReady) {
             return;
         }
 
         int currentSpec = specTracker.getSpecPercent();
+
+        if (!previousSpecReady) {
+            previousSpec = currentSpec;
+            previousSpecReady = true;
+            return;
+        }
+
+        int specChange = currentSpec - previousSpec;
+
         if (config.overheadSpecAlertEnabled()
-                && previousSpec >= 0
+                && specChange > 0
+                && specChange <= MAX_SPEC_RESTORE_STEP
                 && crossedUp(previousSpec, currentSpec, config.specThreshold())) {
             showLocalOverheadMessage(config.specOverheadMessage(), config.specHighColor());
         }
+
         previousSpec = currentSpec;
     }
 
@@ -192,28 +207,22 @@ public void onStatChanged(StatChanged event) {
         if (!eventSubscribers.isEmpty()) {
             return;
         }
+        
+        List<ResettableTracker> trackers = List.of(
+                hpTracker,
+                prayerTracker,
+                specTracker,
+                thrallTracker,
+                markOfDarknessTracker,
+                wardOfArceuusTracker,
+                deathChargeTracker,
+                vengeanceTracker,
+                corruptionTracker,
+                heartTracker
+        );
 
-        eventSubscribers.add(hpTracker);
-        eventSubscribers.add(prayerTracker);
-        eventSubscribers.add(specTracker);
-        eventSubscribers.add(thrallTracker);
-        eventSubscribers.add(markOfDarknessTracker);
-        eventSubscribers.add(wardOfArceuusTracker);
-        eventSubscribers.add(deathChargeTracker);
-        eventSubscribers.add(vengeanceTracker);
-        eventSubscribers.add(corruptionTracker);
-        eventSubscribers.add(heartTracker);
-
-        resettableTrackers.add(hpTracker);
-        resettableTrackers.add(prayerTracker);
-        resettableTrackers.add(specTracker);
-        resettableTrackers.add(thrallTracker);
-        resettableTrackers.add(markOfDarknessTracker);
-        resettableTrackers.add(wardOfArceuusTracker);
-        resettableTrackers.add(deathChargeTracker);
-        resettableTrackers.add(vengeanceTracker);
-        resettableTrackers.add(corruptionTracker);
-        resettableTrackers.add(heartTracker);
+        eventSubscribers.addAll(trackers);
+        resettableTrackers.addAll(trackers);
     }
 
     private void resetSessionState() {
@@ -226,34 +235,36 @@ public void onStatChanged(StatChanged event) {
         previousHitpoints = -1;
         previousPrayer = -1;
         previousSpec = -1;
+        previousSpecReady = false;
         baselineReady = false;
     }
 
     private void captureBaseline() {
         previousHitpoints = client.getBoostedSkillLevel(Skill.HITPOINTS);
         previousPrayer = client.getBoostedSkillLevel(Skill.PRAYER);
-        previousSpec = specTracker.getSpecPercent();
+        previousSpec = -1;
+        previousSpecReady = false;
         baselineReady = true;
     }
 
+    private void showLocalOverheadMessage(String message, Color color) {
+        String trimmed = message == null ? "" : message.trim();
+        if (trimmed.isEmpty()) {
+            return;
+        }
 
-private void showLocalOverheadMessage(String message, Color color) {
-    String trimmed = message == null ? "" : message.trim();
-    if (trimmed.isEmpty()) {
-        return;
+        Player localPlayer = client.getLocalPlayer();
+        if (localPlayer == null) {
+            return;
+        }
+
+        localPlayer.setOverheadText("<col=" + toHexColor(color) + ">" + trimmed);
+        localPlayer.setOverheadCycle(config.overheadAlertCycles());
     }
 
-    Player localPlayer = client.getLocalPlayer();
-    if (localPlayer == null) {
-        return;
-    }
-
-    localPlayer.setOverheadText("<col=" + toHexColor(color) + ">" + trimmed);
-    localPlayer.setOverheadCycle(config.overheadAlertCycles());
-}
     private String toHexColor(Color color) {
-    return String.format("%06x", color.getRGB() & 0xFFFFFF);
-}
+        return String.format("%06x", color.getRGB() & 0xFFFFFF);
+    }
 
     private static boolean crossedDown(int previousValue, int currentValue, int threshold) {
         return previousValue > threshold && currentValue <= threshold;
