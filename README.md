@@ -44,6 +44,17 @@ Chips layout that pairs well with Compact Orbs, with readable stats and spells t
 
 ## Changelog
 
+### v1.4
+
+- Reorganized the plugin into feature packages (`runtime`, `alerts`, `overlay`, `tracking`)
+- Moved runtime lifecycle and tracker registration into dedicated runtime classes
+- Split overhead alerts into focused state, logic, and message-rendering components
+- Moved `HudStyle` and `HudFont` into the overlay package
+- Improved Special Attack overhead alert threshold-crossing reliability
+- Reduced false Spec alerts from likely full-restore events
+
+---
+
 ### v1.3
 
 - Full overlay refactor into a modular system (builders, renderers, state handling)
