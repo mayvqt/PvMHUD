@@ -10,54 +10,74 @@ import java.util.List;
 @Singleton
 final class TextIconHudRenderer extends AbstractHudRenderer {
     Dimension render(Graphics2D graphics, FontMetrics metrics, HudFrame frame, boolean gameIconsMode) {
-        List<List<Segment>> rows = standardRows(frame);
+        List<Segment> spells = frame.spells();
+        List<Segment> stats = frame.stats();
+        List<Segment> hearts = frame.hearts();
+        int paddingX = HudConstants.PADDING_X;
+        int paddingY = HudConstants.PADDING_Y;
+        int localRowGap = rowGap();
 
         if (config.verticalLayout()) {
-            List<Segment> all = frame.allSegments();
-            int width = maxSegmentWidth(metrics, all, gameIconsMode) + HudConstants.PADDING_X * 2;
-            int rowHeight = rowHeight(metrics, all);
-            int height = all.size() * rowHeight
-                    + Math.max(0, all.size() - 1) * rowGap()
-                    + HudConstants.PADDING_Y * 2;
+            int maxWidth = 0;
+            int maxHeight = metrics.getHeight();
+            int total = 0;
+
+            for (Segment segment : stats) {
+                maxWidth = Math.max(maxWidth, segmentWidth(metrics, segment, gameIconsMode));
+                maxHeight = Math.max(maxHeight, iconSize(segment));
+                total++;
+            }
+            for (Segment segment : spells) {
+                maxWidth = Math.max(maxWidth, segmentWidth(metrics, segment, gameIconsMode));
+                maxHeight = Math.max(maxHeight, iconSize(segment));
+                total++;
+            }
+            for (Segment segment : hearts) {
+                maxWidth = Math.max(maxWidth, segmentWidth(metrics, segment, gameIconsMode));
+                maxHeight = Math.max(maxHeight, iconSize(segment));
+                total++;
+            }
+
+            int width = maxWidth + paddingX * 2;
+            int height = total * maxHeight + Math.max(0, total - 1) * localRowGap + paddingY * 2;
 
             text.drawBackground(graphics, width, height);
 
-            int y = HudConstants.PADDING_Y;
-            for (Segment segment : all) {
-                drawSegment(graphics, metrics, segment, HudConstants.PADDING_X, y, rowHeight, gameIconsMode);
-                y += rowHeight + rowGap();
-            }
+            int y = paddingY;
+            y = drawVerticalGroup(graphics, metrics, stats, paddingX, y, maxHeight, gameIconsMode, localRowGap);
+            y = drawVerticalGroup(graphics, metrics, spells, paddingX, y, maxHeight, gameIconsMode, localRowGap);
+            drawVerticalGroup(graphics, metrics, hearts, paddingX, y, maxHeight, gameIconsMode, localRowGap);
 
             return new Dimension(width, height);
         }
 
+        int rowCount = (!spells.isEmpty() ? 1 : 0) + (!stats.isEmpty() ? 1 : 0) + (!hearts.isEmpty() ? 1 : 0);
+        int[] rowWidths = new int[rowCount];
+        int[] rowHeights = new int[rowCount];
         int width = 0;
-        int height = HudConstants.PADDING_Y * 2;
+        int height = paddingY * 2;
+        int idx = 0;
+        idx = measureRow(metrics, spells, gameIconsMode, rowWidths, rowHeights, idx);
+        idx = measureRow(metrics, stats, gameIconsMode, rowWidths, rowHeights, idx);
+        measureRow(metrics, hearts, gameIconsMode, rowWidths, rowHeights, idx);
 
-        for (List<Segment> row : rows) {
-            width = Math.max(width, rowWidth(metrics, row, gameIconsMode));
-            height += rowHeight(metrics, row);
+        for (int i = 0; i < rowCount; i++) {
+            width = Math.max(width, rowWidths[i]);
+            height += rowHeights[i];
         }
 
-        height += Math.max(0, rows.size() - 1) * rowGap();
-        width += HudConstants.PADDING_X * 2;
+        height += Math.max(0, rowCount - 1) * localRowGap;
+        width += paddingX * 2;
 
         text.drawBackground(graphics, width, height);
 
-        int y = HudConstants.PADDING_Y;
-        for (List<Segment> row : rows) {
-            int rowHeight = rowHeight(metrics, row);
-            int rowWidth = rowWidth(metrics, row, gameIconsMode);
-            int x = HudConstants.PADDING_X + (width - HudConstants.PADDING_X * 2 - rowWidth) / 2;
-
-            for (Segment segment : row) {
-                int segmentWidth = segmentWidth(metrics, segment, gameIconsMode);
-                drawSegment(graphics, metrics, segment, x, y, rowHeight, gameIconsMode);
-                x += segmentWidth + groupGap();
-            }
-
-            y += rowHeight + rowGap();
-        }
+        int y = paddingY;
+        int rowIndex = 0;
+        rowIndex = drawRow(graphics, metrics, spells, gameIconsMode, width, rowWidths, rowHeights, rowIndex, y);
+        y += rowIndex > 0 ? rowHeights[rowIndex - 1] + localRowGap : 0;
+        rowIndex = drawRow(graphics, metrics, stats, gameIconsMode, width, rowWidths, rowHeights, rowIndex, y);
+        y += rowIndex > 0 ? rowHeights[rowIndex - 1] + localRowGap : 0;
+        drawRow(graphics, metrics, hearts, gameIconsMode, width, rowWidths, rowHeights, rowIndex, y);
 
         return new Dimension(width, height);
     }
@@ -99,15 +119,6 @@ final class TextIconHudRenderer extends AbstractHudRenderer {
                 y + text.baseline(metrics, rowHeight),
                 segment.color
         );
-    }
-
-    private void drawIconOnly(Graphics2D graphics, Segment segment, int x, int y, int rowHeight) {
-        int size = iconSize(segment);
-        BufferedImage icon = icons.load(segment.icon, size);
-
-        if (icon != null) {
-            graphics.drawImage(icon, x, y + (rowHeight - size) / 2, null);
-        }
     }
 
     private void drawIconWithValue(
@@ -154,13 +165,61 @@ final class TextIconHudRenderer extends AbstractHudRenderer {
         return metrics.stringWidth(segment.text);
     }
 
-    private int maxSegmentWidth(FontMetrics metrics, List<Segment> segments, boolean gameIconsMode) {
-        int width = 0;
-
+    private int drawVerticalGroup(
+            Graphics2D graphics,
+            FontMetrics metrics,
+            List<Segment> segments,
+            int x,
+            int y,
+            int rowHeight,
+            boolean gameIconsMode,
+            int gap
+    ) {
         for (Segment segment : segments) {
-            width = Math.max(width, segmentWidth(metrics, segment, gameIconsMode));
+            drawSegment(graphics, metrics, segment, x, y, rowHeight, gameIconsMode);
+            y += rowHeight + gap;
+        }
+        return y;
+    }
+
+    private int measureRow(
+            FontMetrics metrics,
+            List<Segment> row,
+            boolean gameIconsMode,
+            int[] rowWidths,
+            int[] rowHeights,
+            int index
+    ) {
+        if (row.isEmpty()) {
+            return index;
+        }
+        rowWidths[index] = rowWidth(metrics, row, gameIconsMode);
+        rowHeights[index] = rowHeight(metrics, row);
+        return index + 1;
+    }
+
+    private int drawRow(
+            Graphics2D graphics,
+            FontMetrics metrics,
+            List<Segment> row,
+            boolean gameIconsMode,
+            int totalWidth,
+            int[] rowWidths,
+            int[] rowHeights,
+            int rowIndex,
+            int y
+    ) {
+        if (row.isEmpty()) {
+            return rowIndex;
         }
 
-        return width;
+        int x = centeredStartX(totalWidth, rowWidths[rowIndex]);
+        for (Segment segment : row) {
+            int segmentWidth = segmentWidth(metrics, segment, gameIconsMode);
+            drawSegment(graphics, metrics, segment, x, y, rowHeights[rowIndex], gameIconsMode);
+            x += segmentWidth + groupGap();
+        }
+        return rowIndex + 1;
     }
+
 }

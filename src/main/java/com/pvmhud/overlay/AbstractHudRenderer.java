@@ -3,8 +3,9 @@ package com.pvmhud.overlay;
 import com.pvmhud.PvMHUDConfig;
 
 import javax.inject.Inject;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.awt.FontMetrics;
-import java.util.ArrayList;
 import java.util.List;
 
 abstract class AbstractHudRenderer {
@@ -16,22 +17,6 @@ abstract class AbstractHudRenderer {
 
     @Inject
     protected HudTextRenderer text;
-
-    protected List<List<Segment>> standardRows(HudFrame frame) {
-        List<List<Segment>> rows = new ArrayList<>(3);
-
-        if (!frame.spells().isEmpty()) {
-            rows.add(frame.spells());
-        }
-        if (!frame.stats().isEmpty()) {
-            rows.add(frame.stats());
-        }
-        if (!frame.hearts().isEmpty()) {
-            rows.add(frame.hearts());
-        }
-
-        return rows;
-    }
 
     protected int iconSize(Segment segment) {
         return segment.kind == SegmentKind.STAT ? config.statIconSize() : config.spellIconSize();
@@ -78,5 +63,33 @@ abstract class AbstractHudRenderer {
             width += segmentWidth(metrics, segment, iconsOnly) + groupGap();
         }
         return width - groupGap();
+    }
+
+    protected int centeredStartX(int contentWidth, int rowWidth) {
+        return HudConstants.PADDING_X + Math.max(0, (contentWidth - HudConstants.PADDING_X * 2 - rowWidth) / 2);
+    }
+
+    protected void drawIconOnly(Graphics2D graphics, Segment segment, int x, int y, int rowHeight) {
+        int size = iconSize(segment);
+        BufferedImage icon = icons.load(segment.icon, size);
+
+        if (icon != null) {
+            graphics.drawImage(icon, x, y + (rowHeight - size) / 2, null);
+        }
+    }
+
+    protected void drawSpellTile(Graphics2D graphics, Segment segment, int x, int y, int size) {
+        int alpha = config.backgroundAlpha();
+        graphics.setColor(text.withAlpha(segment.color, Math.max(55, alpha / 2)));
+        graphics.fillRoundRect(x, y, size, size, 6, 6);
+        graphics.setColor(text.withAlpha(segment.color, 220));
+        graphics.drawRoundRect(x, y, size - 1, size - 1, 6, 6);
+
+        BufferedImage icon = icons.load(segment.icon, Math.max(10, size - 6));
+        if (icon != null) {
+            int iconX = x + (size - icon.getWidth()) / 2;
+            int iconY = y + (size - icon.getHeight()) / 2;
+            graphics.drawImage(icon, iconX, iconY, null);
+        }
     }
 }

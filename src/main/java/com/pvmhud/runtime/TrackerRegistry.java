@@ -47,11 +47,7 @@ class TrackerRegistry {
         );
     }
 
-    List<Object> eventSubscribers() {
-        return List.copyOf(trackers);
-    }
-
-    List<ResettableTracker> resettableTrackers() {
-        return List.copyOf(trackers);
+    List<ResettableTracker> trackers() {
+        return trackers;
     }
 }

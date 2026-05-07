@@ -1,6 +1,5 @@
 package com.pvmhud.overlay;
 
-import com.pvmhud.overlay.HudStyle;
 import com.pvmhud.PvMHUDConfig;
 
 import javax.inject.Inject;

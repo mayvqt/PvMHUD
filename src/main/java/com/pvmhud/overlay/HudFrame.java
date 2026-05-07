@@ -27,21 +27,6 @@ final class HudFrame {
         return heartSegments;
     }
 
-    List<Segment> spellsAndHearts() {
-        List<Segment> all = new ArrayList<>(spellSegments.size() + heartSegments.size());
-        all.addAll(spellSegments);
-        all.addAll(heartSegments);
-        return all;
-    }
-
-    List<Segment> allSegments() {
-        List<Segment> all = new ArrayList<>(statSegments.size() + spellSegments.size() + heartSegments.size());
-        all.addAll(statSegments);
-        all.addAll(spellSegments);
-        all.addAll(heartSegments);
-        return all;
-    }
-
     boolean isEmpty() {
         return statSegments.isEmpty() && spellSegments.isEmpty() && heartSegments.isEmpty();
     }

@@ -5,53 +5,77 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.List;
 
 @Singleton
 final class ChipHudRenderer extends AbstractHudRenderer {
     Dimension render(Graphics2D graphics, FontMetrics metrics, HudFrame frame) {
-        List<Segment> spells = frame.spellsAndHearts();
-        int gap = Math.max(1, groupGap() / 2);
+        var spells = frame.spells();
+        var hearts = frame.hearts();
+        int spellCount = spells.size() + hearts.size();
+        int itemGap = groupGap();
+        int lineGap = rowGap();
         int chipHeight = chipHeight(metrics);
 
         if (config.verticalLayout()) {
-            List<Segment> all = frame.allSegments();
-            int width = maxChipWidth(metrics, all) + HudConstants.PADDING_X * 2;
-            int height = all.size() * chipHeight + Math.max(0, all.size() - 1) * gap + HudConstants.PADDING_Y * 2;
+            int total = frame.stats().size() + spellCount;
+            int width = maxChipWidth(metrics, frame.stats(), spells, hearts) + HudConstants.PADDING_X * 2;
+            int height = total * chipHeight + Math.max(0, total - 1) * lineGap + HudConstants.PADDING_Y * 2;
 
             text.drawBackground(graphics, width, height);
 
             int y = HudConstants.PADDING_Y;
-            for (Segment segment : all) {
+            for (Segment segment : frame.stats()) {
                 drawChip(graphics, metrics, segment, HudConstants.PADDING_X, y, width - HudConstants.PADDING_X * 2, chipHeight);
-                y += chipHeight + gap;
+                y += chipHeight + lineGap;
+            }
+            for (Segment segment : spells) {
+                drawChip(graphics, metrics, segment, HudConstants.PADDING_X, y, width - HudConstants.PADDING_X * 2, chipHeight);
+                y += chipHeight + lineGap;
+            }
+            for (Segment segment : hearts) {
+                drawChip(graphics, metrics, segment, HudConstants.PADDING_X, y, width - HudConstants.PADDING_X * 2, chipHeight);
+                y += chipHeight + lineGap;
             }
             return new Dimension(width, height);
         }
 
-        int statWidth = chipsWidth(metrics, frame.stats(), gap);
-        int spellWidth = chipsWidth(metrics, spells, gap);
+        int spellWidth = chipsWidth(metrics, spells, hearts, itemGap);
+        int statWidth = chipsWidth(metrics, frame.stats(), itemGap);
         int width = Math.max(statWidth, spellWidth) + HudConstants.PADDING_X * 2;
-        int rows = (frame.stats().isEmpty() ? 0 : 1) + (spells.isEmpty() ? 0 : 1);
-        int height = rows * chipHeight + Math.max(0, rows - 1) * rowGap() + HudConstants.PADDING_Y * 2;
+        int rows = (frame.stats().isEmpty() ? 0 : 1) + (spellCount == 0 ? 0 : 1);
+        int height = rows * chipHeight + Math.max(0, rows - 1) * lineGap + HudConstants.PADDING_Y * 2;
 
         text.drawBackground(graphics, width, height);
 
         int y = HudConstants.PADDING_Y;
-        if (!frame.stats().isEmpty()) {
-            drawChipRow(graphics, metrics, frame.stats(), y, width, statWidth, gap, chipHeight);
-            y += chipHeight + rowGap();
+        if (spellCount > 0) {
+            drawChipRows(graphics, metrics, spells, hearts, y, width, spellWidth, itemGap, chipHeight);
+            y += chipHeight + lineGap;
         }
-        if (!spells.isEmpty()) {
-            drawChipRow(graphics, metrics, spells, y, width, spellWidth, gap, chipHeight);
+        if (!frame.stats().isEmpty()) {
+            drawChipRow(graphics, metrics, frame.stats(), y, width, statWidth, itemGap, chipHeight);
         }
 
         return new Dimension(width, height);
     }
 
-    private void drawChipRow(Graphics2D graphics, FontMetrics metrics, List<Segment> segments, int y, int width, int rowWidth, int gap, int chipHeight) {
-        int x = HudConstants.PADDING_X + Math.max(0, (width - HudConstants.PADDING_X * 2 - rowWidth) / 2);
+    private void drawChipRow(Graphics2D graphics, FontMetrics metrics, java.util.List<Segment> segments, int y, int width, int rowWidth, int gap, int chipHeight) {
+        int x = centeredStartX(width, rowWidth);
         for (Segment segment : segments) {
+            int chipWidth = chipWidth(metrics, segment);
+            drawChip(graphics, metrics, segment, x, y, chipWidth, chipHeight);
+            x += chipWidth + gap;
+        }
+    }
+
+    private void drawChipRows(Graphics2D graphics, FontMetrics metrics, java.util.List<Segment> spells, java.util.List<Segment> hearts, int y, int width, int rowWidth, int gap, int chipHeight) {
+        int x = centeredStartX(width, rowWidth);
+        for (Segment segment : spells) {
+            int chipWidth = chipWidth(metrics, segment);
+            drawChip(graphics, metrics, segment, x, y, chipWidth, chipHeight);
+            x += chipWidth + gap;
+        }
+        for (Segment segment : hearts) {
             int chipWidth = chipWidth(metrics, segment);
             drawChip(graphics, metrics, segment, x, y, chipWidth, chipHeight);
             x += chipWidth + gap;
@@ -115,7 +139,23 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         return iconSize(segment) + iconTextGap() + metrics.stringWidth(segment.label()) + 14;
     }
 
-    private int chipsWidth(FontMetrics metrics, List<Segment> segments, int gap) {
+    private int chipsWidth(FontMetrics metrics, java.util.List<Segment> spells, java.util.List<Segment> hearts, int gap) {
+        int count = spells.size() + hearts.size();
+        if (count == 0) {
+            return 0;
+        }
+
+        int width = 0;
+        for (Segment segment : spells) {
+            width += chipWidth(metrics, segment) + gap;
+        }
+        for (Segment segment : hearts) {
+            width += chipWidth(metrics, segment) + gap;
+        }
+        return width - gap;
+    }
+
+    private int chipsWidth(FontMetrics metrics, java.util.List<Segment> segments, int gap) {
         if (segments.isEmpty()) {
             return 0;
         }
@@ -127,9 +167,15 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         return width - gap;
     }
 
-    private int maxChipWidth(FontMetrics metrics, List<Segment> segments) {
+    private int maxChipWidth(FontMetrics metrics, java.util.List<Segment> stats, java.util.List<Segment> spells, java.util.List<Segment> hearts) {
         int width = 0;
-        for (Segment segment : segments) {
+        for (Segment segment : stats) {
+            width = Math.max(width, chipWidth(metrics, segment));
+        }
+        for (Segment segment : spells) {
+            width = Math.max(width, chipWidth(metrics, segment));
+        }
+        for (Segment segment : hearts) {
             width = Math.max(width, chipWidth(metrics, segment));
         }
         return width;

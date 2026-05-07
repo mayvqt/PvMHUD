@@ -13,6 +13,7 @@ import net.runelite.client.eventbus.EventBus;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
@@ -39,8 +40,8 @@ public class PvMHUDRuntimeController {
     private List<ResettableTracker> resettableTrackers = List.of();
 
     public void start() {
-        eventSubscribers = trackerRegistry.eventSubscribers();
-        resettableTrackers = trackerRegistry.resettableTrackers();
+        resettableTrackers = trackerRegistry.trackers();
+        eventSubscribers = new ArrayList<Object>(resettableTrackers);
         resetSessionState();
 
         for (Object subscriber : eventSubscribers) {

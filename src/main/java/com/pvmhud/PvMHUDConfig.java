@@ -12,10 +12,10 @@ import java.awt.Color;
 
 @ConfigGroup("pvmhud")
 public interface PvMHUDConfig extends Config {
-    Color DEFAULT_READY = new Color(222, 205, 164);
-    Color DEFAULT_COOLDOWN = new Color(104, 96, 84);
-    Color DEFAULT_DANGER = new Color(224, 42, 42);
-    Color DEFAULT_WARNING = new Color(255, 178, 48);
+    Color DEFAULT_READY = new Color(170, 152, 112);
+    Color DEFAULT_COOLDOWN = new Color(74, 68, 60);
+    Color DEFAULT_DANGER = new Color(166, 36, 36);
+    Color DEFAULT_WARNING = new Color(198, 132, 44);
 
     @ConfigSection(name = "HUD", description = "Choose the HUD style and layout.", position = 0)
     String generalSection = "general";
@@ -128,116 +128,116 @@ public interface PvMHUDConfig extends Config {
     @ConfigItem(keyName = "overheadAlertCycles", name = "Alert Duration", description = "How long overhead alerts stay visible, measured in client cycles.", position = 6, section = alertSection)
     default int overheadAlertCycles() { return 200; }
 
-    @ConfigItem(keyName = "hpNormalColor", name = "HP", description = "Color for normal HP.", position = 0, section = statColorSection)
-    default Color hpNormalColor() { return new Color(222, 48, 48); }
+    @ConfigItem(keyName = "hpNormalColor", name = "HP", description = "Color for normal HP in all HUD styles.", position = 0, section = statColorSection)
+    default Color hpNormalColor() { return new Color(178, 54, 54); }
 
-    @ConfigItem(keyName = "hpLowColor", name = "Low HP", description = "Color for low HP.", position = 1, section = statColorSection)
+    @ConfigItem(keyName = "hpLowColor", name = "Low HP", description = "Color for low HP in all HUD styles.", position = 1, section = statColorSection)
     default Color hpLowColor() { return DEFAULT_DANGER; }
 
-    @ConfigItem(keyName = "poisonedHpColor", name = "Poisoned HP", description = "Color for HP while poisoned.", position = 2, section = statColorSection)
-    default Color poisonedHpColor() { return new Color(64, 184, 48); }
+    @ConfigItem(keyName = "poisonedHpColor", name = "Poisoned HP", description = "Color for HP while poisoned in all HUD styles.", position = 2, section = statColorSection)
+    default Color poisonedHpColor() { return new Color(52, 130, 44); }
 
-    @ConfigItem(keyName = "venomedHpColor", name = "Venomed HP", description = "Color for HP while venomed.", position = 3, section = statColorSection)
-    default Color venomedHpColor() { return new Color(18, 122, 30); }
+    @ConfigItem(keyName = "venomedHpColor", name = "Venomed HP", description = "Color for HP while venomed in all HUD styles.", position = 3, section = statColorSection)
+    default Color venomedHpColor() { return new Color(34, 94, 34); }
 
-    @ConfigItem(keyName = "prayerNormalColor", name = "Prayer", description = "Color for normal Prayer.", position = 4, section = statColorSection)
-    default Color prayerNormalColor() { return new Color(74, 156, 232); }
+    @ConfigItem(keyName = "prayerNormalColor", name = "Prayer", description = "Color for normal Prayer in all HUD styles.", position = 4, section = statColorSection)
+    default Color prayerNormalColor() { return new Color(62, 122, 184); }
 
-    @ConfigItem(keyName = "prayerLowColor", name = "Low Prayer", description = "Color for low Prayer.", position = 5, section = statColorSection)
+    @ConfigItem(keyName = "prayerLowColor", name = "Low Prayer", description = "Color for low Prayer in all HUD styles.", position = 5, section = statColorSection)
     default Color prayerLowColor() { return DEFAULT_DANGER; }
 
-    @ConfigItem(keyName = "specHighColor", name = "High Spec", description = "Color for Special Attack at or above the spec threshold.", position = 6, section = statColorSection)
-    default Color specHighColor() { return new Color(255, 212, 64); }
+    @ConfigItem(keyName = "specHighColor", name = "High Spec", description = "Color for Special Attack at or above the spec threshold in all HUD styles.", position = 6, section = statColorSection)
+    default Color specHighColor() { return new Color(204, 168, 66); }
 
-    @ConfigItem(keyName = "specLowColor", name = "Low Spec", description = "Color for Special Attack below the spec threshold.", position = 7, section = statColorSection)
-    default Color specLowColor() { return new Color(146, 116, 54); }
+    @ConfigItem(keyName = "specLowColor", name = "Low Spec", description = "Color for Special Attack below the spec threshold in all HUD styles.", position = 7, section = statColorSection)
+    default Color specLowColor() { return new Color(108, 88, 48); }
 
-    @ConfigItem(keyName = "readySpellColor", name = "Ready", description = "Color for ready spells.", position = 0, section = spellStateColorSection)
+    @ConfigItem(keyName = "readySpellColor", name = "Ready", description = "Shared color for ready spells in all HUD styles.", position = 0, section = spellStateColorSection)
     default Color readySpellColor() { return DEFAULT_READY; }
 
-    @ConfigItem(keyName = "cooldownSpellColor", name = "Cooldown", description = "Color for spells on cooldown.", position = 1, section = spellStateColorSection)
+    @ConfigItem(keyName = "cooldownSpellColor", name = "Cooldown", description = "Shared color for spells on cooldown in all HUD styles.", position = 1, section = spellStateColorSection)
     default Color cooldownSpellColor() { return DEFAULT_COOLDOWN; }
 
-    @ConfigItem(keyName = "expiringSpellColor", name = "Expiring Soon", description = "Color for spells close to expiring.", position = 2, section = spellStateColorSection)
+    @ConfigItem(keyName = "expiringSpellColor", name = "Expiring Soon", description = "Shared color for spells close to expiring in all HUD styles.", position = 2, section = spellStateColorSection)
     default Color expiringSpellColor() { return DEFAULT_WARNING; }
 
-    @ConfigItem(keyName = "deathChargeCooldownColor", name = "Death Charge Consumed", description = "Color for Death Charge after spec restore but before the effect fully ends.", position = 3, section = spellStateColorSection)
-    default Color deathChargeCooldownColor() { return new Color(112, 42, 46); }
+    @ConfigItem(keyName = "deathChargeCooldownColor", name = "Death Charge Consumed", description = "Shared color for Death Charge after spec restore but before the effect fully ends.", position = 3, section = spellStateColorSection)
+    default Color deathChargeCooldownColor() { return new Color(88, 38, 44); }
 
     @ConfigItem(keyName = "flashReadySpells", name = "Flash When Ready", description = "Flash spell indicators when they become ready.", position = 3, section = timingSection)
     default boolean flashReadySpells() { return true; }
 
-    @ConfigItem(keyName = "readySpellFlashColor", name = "Ready Flash", description = "Flash color for newly-ready spells.", position = 4, section = spellStateColorSection)
-    default Color readySpellFlashColor() { return new Color(255, 230, 88); }
+    @ConfigItem(keyName = "readySpellFlashColor", name = "Ready Flash", description = "Flash color for newly-ready spells in all HUD styles.", position = 4, section = spellStateColorSection)
+    default Color readySpellFlashColor() { return new Color(224, 196, 82); }
 
     @Range(min = 0, max = 600)
     @ConfigItem(keyName = "readySpellFlashRecentSeconds", name = "Ready Flash Window", description = "Seconds after becoming ready that a spell can flash. Set to 0 to always flash ready spells.", position = 4, section = timingSection)
     default int readySpellFlashRecentSeconds() { return 30; }
 
-    @ConfigItem(keyName = "thrallActiveColor", name = "Thrall", description = "Active color for Thrall.", position = 0, section = activeSpellColorSection)
-    default Color thrallActiveColor() { return new Color(92, 214, 184); }
+    @ConfigItem(keyName = "thrallActiveColor", name = "Thrall", description = "Active color for Thrall in all HUD styles.", position = 0, section = activeSpellColorSection)
+    default Color thrallActiveColor() { return new Color(70, 158, 138); }
 
-    @ConfigItem(keyName = "markOfDarknessActiveColor", name = "Mark of Darkness", description = "Active color for Mark of Darkness.", position = 1, section = activeSpellColorSection)
-    default Color markOfDarknessActiveColor() { return new Color(126, 70, 196); }
+    @ConfigItem(keyName = "markOfDarknessActiveColor", name = "Mark of Darkness", description = "Active color for Mark of Darkness in all HUD styles.", position = 1, section = activeSpellColorSection)
+    default Color markOfDarknessActiveColor() { return new Color(96, 64, 150); }
 
-    @ConfigItem(keyName = "vengeanceActiveColor", name = "Vengeance", description = "Active color for Vengeance.", position = 2, section = activeSpellColorSection)
-    default Color vengeanceActiveColor() { return new Color(86, 174, 255); }
+    @ConfigItem(keyName = "vengeanceActiveColor", name = "Vengeance", description = "Active color for Vengeance in all HUD styles.", position = 2, section = activeSpellColorSection)
+    default Color vengeanceActiveColor() { return new Color(74, 142, 210); }
 
-    @ConfigItem(keyName = "corruptionActiveColor", name = "Corruption", description = "Active color for Corruption.", position = 3, section = activeSpellColorSection)
-    default Color corruptionActiveColor() { return new Color(170, 66, 220); }
+    @ConfigItem(keyName = "corruptionActiveColor", name = "Corruption", description = "Active color for Corruption in all HUD styles.", position = 3, section = activeSpellColorSection)
+    default Color corruptionActiveColor() { return new Color(132, 64, 176); }
 
-    @ConfigItem(keyName = "wardOfArceuusActiveColor", name = "Ward of Arceuus", description = "Active color for Ward of Arceuus.", position = 4, section = activeSpellColorSection)
-    default Color wardOfArceuusActiveColor() { return new Color(64, 196, 210); }
+    @ConfigItem(keyName = "wardOfArceuusActiveColor", name = "Ward of Arceuus", description = "Active color for Ward of Arceuus in all HUD styles.", position = 4, section = activeSpellColorSection)
+    default Color wardOfArceuusActiveColor() { return new Color(56, 150, 164); }
 
-    @ConfigItem(keyName = "imbuedHeartActiveColor", name = "Heart", description = "Active color for Imbued/Saturated Heart.", position = 5, section = activeSpellColorSection)
-    default Color heartActiveColor() { return new Color(214, 62, 156); }
+    @ConfigItem(keyName = "imbuedHeartActiveColor", name = "Heart", description = "Active color for Imbued/Saturated Heart in all HUD styles.", position = 5, section = activeSpellColorSection)
+    default Color heartActiveColor() { return new Color(166, 58, 128); }
 
-    @ConfigItem(keyName = "deathChargeActiveColor", name = "Death Charge", description = "Active color for Death Charge.", position = 6, section = activeSpellColorSection)
-    default Color deathChargeActiveColor() { return new Color(204, 30, 44); }
+    @ConfigItem(keyName = "deathChargeActiveColor", name = "Death Charge", description = "Active color for Death Charge in all HUD styles.", position = 6, section = activeSpellColorSection)
+    default Color deathChargeActiveColor() { return new Color(156, 34, 46); }
 
-    @ConfigItem(keyName = "fontType", name = "Font", description = "Font used by Text and Game Icons layouts.", position = 0, section = textIconSection)
+    @ConfigItem(keyName = "fontType", name = "Font", description = "Font used by Text, Game Icons, Bars, Chips, Orbs, and Stack layouts.", position = 0, section = textIconSection)
     default HudFont fontType() { return HudFont.SYSTEM; }
 
     @Range(min = 8, max = 32)
-    @ConfigItem(keyName = "fontSize", name = "Font Size", description = "Text size used by Text and Game Icons layouts.", position = 1, section = textIconSection)
+    @ConfigItem(keyName = "fontSize", name = "Font Size", description = "Text size used by Text, Game Icons, Bars, Chips, Orbs, and Stack layouts.", position = 1, section = textIconSection)
     default int fontSize() { return 16; }
 
-    @ConfigItem(keyName = "boldFont", name = "Bold Font", description = "Use bold text when using the system font.", position = 2, section = textIconSection)
+    @ConfigItem(keyName = "boldFont", name = "Bold Font", description = "Use bold text when using the system font (all HUD styles with text).", position = 2, section = textIconSection)
     default boolean boldFont() { return true; }
 
-    @ConfigItem(keyName = "verticalLayout", name = "Vertical Layout", description = "Stack the selected HUD style vertically instead of horizontally.", position = 1, section = generalSection)
+    @ConfigItem(keyName = "verticalLayout", name = "Vertical Layout", description = "Stack Text, Game Icons, Bars, Chips, and Orbs vertically instead of horizontally.", position = 1, section = generalSection)
     default boolean verticalLayout() { return true; }
 
     @Range(min = 10, max = 32)
-    @ConfigItem(keyName = "spellIconSize", name = "Spell Icon Size", description = "Size of spell and cooldown icons.", position = 3, section = textIconSection)
+    @ConfigItem(keyName = "spellIconSize", name = "Spell Icon Size", description = "Size of spell and cooldown icons in Game Icons, Chips, and Stack layouts.", position = 3, section = textIconSection)
     default int spellIconSize() { return 20; }
 
     @Range(min = 10, max = 32)
-    @ConfigItem(keyName = "statIconSize", name = "Stat Icon Size", description = "Size of HP, Prayer, and Special Attack icons.", position = 4, section = textIconSection)
+    @ConfigItem(keyName = "statIconSize", name = "Stat Icon Size", description = "Size of HP, Prayer, and Special Attack icons in Game Icons, Chips, Orbs, and Stack layouts.", position = 4, section = textIconSection)
     default int statIconSize() { return 14; }
 
     @Range(min = 0, max = 24)
-    @ConfigItem(keyName = "groupGap", name = "Item Spacing", description = "Spacing between HUD indicators.", position = 5, section = textIconSection)
+    @ConfigItem(keyName = "groupGap", name = "Item Spacing", description = "Spacing between indicators in Text, Game Icons, and Chips layouts.", position = 5, section = textIconSection)
     default int groupGap() { return 7; }
 
     @Range(min = 0, max = 12)
-    @ConfigItem(keyName = "rowGap", name = "Row Spacing", description = "Spacing between HUD rows.", position = 6, section = textIconSection)
+    @ConfigItem(keyName = "rowGap", name = "Row Spacing", description = "Spacing between rows in Text, Game Icons, Chips, and Stack layouts.", position = 6, section = textIconSection)
     default int rowGap() { return 0; }
 
     @Range(min = 0, max = 8)
-    @ConfigItem(keyName = "iconTextGap", name = "Icon/Value Spacing", description = "Spacing between an icon and its value text.", position = 7, section = textIconSection)
+    @ConfigItem(keyName = "iconTextGap", name = "Icon/Value Spacing", description = "Spacing between icon and value text in Game Icons, Bars, Chips, and Stack layouts.", position = 7, section = textIconSection)
     default int iconTextGap() { return 2; }
 
-    @ConfigItem(keyName = "textShadow", name = "Text Shadow", description = "Draw a shadow behind HUD text.", position = 8, section = textIconSection)
+    @ConfigItem(keyName = "textShadow", name = "Text Shadow", description = "Draw a shadow behind text in all HUD styles with text.", position = 8, section = textIconSection)
     default boolean textShadow() { return true; }
 
-    @ConfigItem(keyName = "shadowColor", name = "Shadow Color", description = "Color used for text shadows.", position = 9, section = textIconSection)
+    @ConfigItem(keyName = "shadowColor", name = "Shadow Color", description = "Color used for text shadows in all HUD styles with text.", position = 9, section = textIconSection)
     default Color shadowColor() { return new Color(8, 10, 14, 190); }
 
-    @ConfigItem(keyName = "textOutline", name = "Text Outline", description = "Draw an outline around HUD text.", position = 10, section = textIconSection)
+    @ConfigItem(keyName = "textOutline", name = "Text Outline", description = "Draw an outline around text in all HUD styles with text.", position = 10, section = textIconSection)
     default boolean textOutline() { return true; }
 
-    @ConfigItem(keyName = "outlineColor", name = "Outline Color", description = "Color used for text outlines.", position = 11, section = textIconSection)
+    @ConfigItem(keyName = "outlineColor", name = "Outline Color", description = "Color used for text outlines in all HUD styles with text.", position = 11, section = textIconSection)
     default Color outlineColor() { return new Color(8, 12, 18); }
 
     @Range(min = 100, max = 2000)
@@ -245,40 +245,40 @@ public interface PvMHUDConfig extends Config {
     default int flashPeriodMillis() { return 500; }
 
     @Range(min = 60, max = 220)
-    @ConfigItem(keyName = "barWidth", name = "Bar Width", description = "Width of horizontal stat bars.", position = 0, section = barStyleSection)
+    @ConfigItem(keyName = "barWidth", name = "Bar Width", description = "Width of horizontal stat bars in Bars layout.", position = 0, section = barStyleSection)
     default int barWidth() { return 112; }
 
     @Range(min = 8, max = 28)
-    @ConfigItem(keyName = "barHeight", name = "Bar Height", description = "Height of horizontal stat bars.", position = 1, section = barStyleSection)
+    @ConfigItem(keyName = "barHeight", name = "Bar Height", description = "Height of horizontal stat bars in Bars layout.", position = 1, section = barStyleSection)
     default int barHeight() { return 14; }
 
     @Range(min = 4, max = 24)
-    @ConfigItem(keyName = "verticalBarWidth", name = "Vertical Bar Width", description = "Width of vertical stat bars.", position = 2, section = barStyleSection)
+    @ConfigItem(keyName = "verticalBarWidth", name = "Vertical Bar Width", description = "Width of vertical stat bars in Bars layout when Vertical Layout is enabled.", position = 2, section = barStyleSection)
     default int verticalBarWidth() { return 20; }
 
     @Range(min = 30, max = 140)
-    @ConfigItem(keyName = "verticalBarHeight", name = "Vertical Bar Height", description = "Height of vertical stat bars.", position = 3, section = barStyleSection)
+    @ConfigItem(keyName = "verticalBarHeight", name = "Vertical Bar Height", description = "Height of vertical stat bars in Bars layout when Vertical Layout is enabled.", position = 3, section = barStyleSection)
     default int verticalBarHeight() { return 70; }
 
     @Range(min = 0, max = 12)
-    @ConfigItem(keyName = "barGap", name = "Bar Spacing", description = "Spacing between Bars, Orbs, and spell tiles.", position = 4, section = barStyleSection)
+    @ConfigItem(keyName = "barGap", name = "Bar Spacing", description = "Spacing in Bars and Orbs layouts.", position = 4, section = barStyleSection)
     default int barGap() { return 1; }
 
     @Range(min = 14, max = 40)
     @ConfigItem(keyName = "barSpellTileSize", name = "Spell Tile Size", description = "Size of spell tiles in Bars and Orbs layouts.", position = 5, section = barStyleSection)
     default int barSpellTileSize() { return 22; }
 
-    @ConfigItem(keyName = "verticalBarText", name = "Show Vertical Values", description = "Draw stat values inside vertical bars.", position = 6, section = barStyleSection)
+    @ConfigItem(keyName = "verticalBarText", name = "Show Vertical Values", description = "Draw stat values inside Bars layout vertical bars.", position = 6, section = barStyleSection)
     default boolean verticalBarText() { return true; }
 
     @Range(min = 28, max = 96)
-    @ConfigItem(keyName = "statChipWidth", name = "Stat Chip Width", description = "Fixed width for HP, Prayer, and Special Attack chips.", position = 7, section = barStyleSection)
+    @ConfigItem(keyName = "statChipWidth", name = "Stat Chip Width", description = "Fixed width for HP, Prayer, and Special Attack chips in Chips layout.", position = 7, section = barStyleSection)
     default int statChipWidth() { return 48; }
 
-    @ConfigItem(keyName = "backgroundColor", name = "Background Color", description = "HUD background color.", position = 0, section = backgroundSection)
+    @ConfigItem(keyName = "backgroundColor", name = "Background Color", description = "HUD background color for all HUD styles.", position = 0, section = backgroundSection)
     default Color backgroundColor() { return new Color(12, 16, 22); }
 
     @Range(min = 0, max = 255)
-    @ConfigItem(keyName = "backgroundAlpha", name = "Background Opacity", description = "HUD background opacity. Set to 0 for no background.", position = 1, section = backgroundSection)
+    @ConfigItem(keyName = "backgroundAlpha", name = "Background Opacity", description = "HUD background opacity for all HUD styles. Set to 0 for no background.", position = 1, section = backgroundSection)
     default int backgroundAlpha() { return 0; }
 }

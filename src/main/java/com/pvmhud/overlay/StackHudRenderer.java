@@ -5,27 +5,40 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.List;
 
 @Singleton
 final class StackHudRenderer extends AbstractHudRenderer {
     Dimension render(Graphics2D graphics, FontMetrics metrics, HudFrame frame) {
-        List<Segment> all = frame.allSegments();
         int iconSize = Math.max(config.statIconSize(), config.spellIconSize());
         int rowHeight = Math.max(iconSize, metrics.getHeight());
         int gap = rowGap();
+        int total = frame.stats().size() + frame.spells().size() + frame.hearts().size();
 
         int width = 0;
-        for (Segment segment : all) {
+        for (Segment segment : frame.stats()) {
+            width = Math.max(width, iconSize + iconTextGap() + 6 + metrics.stringWidth(segment.label()));
+        }
+        for (Segment segment : frame.spells()) {
+            width = Math.max(width, iconSize + iconTextGap() + 6 + metrics.stringWidth(segment.label()));
+        }
+        for (Segment segment : frame.hearts()) {
             width = Math.max(width, iconSize + iconTextGap() + 6 + metrics.stringWidth(segment.label()));
         }
         width += HudConstants.PADDING_X * 2;
 
-        int height = all.size() * rowHeight + Math.max(0, all.size() - 1) * gap + HudConstants.PADDING_Y * 2;
+        int height = total * rowHeight + Math.max(0, total - 1) * gap + HudConstants.PADDING_Y * 2;
         text.drawBackground(graphics, width, height);
 
         int y = HudConstants.PADDING_Y;
-        for (Segment segment : all) {
+        for (Segment segment : frame.stats()) {
+            drawStackItem(graphics, metrics, segment, y, iconSize, rowHeight);
+            y += rowHeight + gap;
+        }
+        for (Segment segment : frame.spells()) {
+            drawStackItem(graphics, metrics, segment, y, iconSize, rowHeight);
+            y += rowHeight + gap;
+        }
+        for (Segment segment : frame.hearts()) {
             drawStackItem(graphics, metrics, segment, y, iconSize, rowHeight);
             y += rowHeight + gap;
         }
