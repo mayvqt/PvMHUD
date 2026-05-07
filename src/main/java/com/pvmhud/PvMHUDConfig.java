@@ -12,10 +12,10 @@ import java.awt.Color;
 
 @ConfigGroup("pvmhud")
 public interface PvMHUDConfig extends Config {
-    Color DEFAULT_READY = new Color(170, 152, 112);
-    Color DEFAULT_COOLDOWN = new Color(74, 68, 60);
-    Color DEFAULT_DANGER = new Color(166, 36, 36);
-    Color DEFAULT_WARNING = new Color(198, 132, 44);
+    Color DEFAULT_READY = new Color(224, 206, 156);
+    Color DEFAULT_COOLDOWN = new Color(118, 108, 92);
+    Color DEFAULT_DANGER = new Color(132, 28, 28);
+    Color DEFAULT_WARNING = new Color(245, 170, 58);
 
     @ConfigSection(name = "HUD", description = "Choose the HUD style and layout.", position = 0)
     String generalSection = "general";
@@ -129,28 +129,28 @@ public interface PvMHUDConfig extends Config {
     default int overheadAlertCycles() { return 200; }
 
     @ConfigItem(keyName = "hpNormalColor", name = "HP", description = "Color for normal HP in all HUD styles.", position = 0, section = statColorSection)
-    default Color hpNormalColor() { return new Color(178, 54, 54); }
+    default Color hpNormalColor() { return new Color(224, 64, 64); }
 
     @ConfigItem(keyName = "hpLowColor", name = "Low HP", description = "Color for low HP in all HUD styles.", position = 1, section = statColorSection)
     default Color hpLowColor() { return DEFAULT_DANGER; }
 
     @ConfigItem(keyName = "poisonedHpColor", name = "Poisoned HP", description = "Color for HP while poisoned in all HUD styles.", position = 2, section = statColorSection)
-    default Color poisonedHpColor() { return new Color(52, 130, 44); }
+    default Color poisonedHpColor() { return new Color(86, 208, 72); }
 
     @ConfigItem(keyName = "venomedHpColor", name = "Venomed HP", description = "Color for HP while venomed in all HUD styles.", position = 3, section = statColorSection)
-    default Color venomedHpColor() { return new Color(34, 94, 34); }
+    default Color venomedHpColor() { return new Color(24, 132, 44); }
 
     @ConfigItem(keyName = "prayerNormalColor", name = "Prayer", description = "Color for normal Prayer in all HUD styles.", position = 4, section = statColorSection)
-    default Color prayerNormalColor() { return new Color(62, 122, 184); }
+    default Color prayerNormalColor() { return new Color(84, 168, 244); }
 
     @ConfigItem(keyName = "prayerLowColor", name = "Low Prayer", description = "Color for low Prayer in all HUD styles.", position = 5, section = statColorSection)
-    default Color prayerLowColor() { return DEFAULT_DANGER; }
+    default Color prayerLowColor() { return new Color(34, 72, 130); }
 
     @ConfigItem(keyName = "specHighColor", name = "High Spec", description = "Color for Special Attack at or above the spec threshold in all HUD styles.", position = 6, section = statColorSection)
-    default Color specHighColor() { return new Color(204, 168, 66); }
+    default Color specHighColor() { return new Color(255, 214, 78); }
 
     @ConfigItem(keyName = "specLowColor", name = "Low Spec", description = "Color for Special Attack below the spec threshold in all HUD styles.", position = 7, section = statColorSection)
-    default Color specLowColor() { return new Color(108, 88, 48); }
+    default Color specLowColor() { return new Color(162, 126, 62); }
 
     @ConfigItem(keyName = "readySpellColor", name = "Ready", description = "Shared color for ready spells in all HUD styles.", position = 0, section = spellStateColorSection)
     default Color readySpellColor() { return DEFAULT_READY; }
@@ -162,38 +162,38 @@ public interface PvMHUDConfig extends Config {
     default Color expiringSpellColor() { return DEFAULT_WARNING; }
 
     @ConfigItem(keyName = "deathChargeCooldownColor", name = "Death Charge Consumed", description = "Shared color for Death Charge after spec restore but before the effect fully ends.", position = 3, section = spellStateColorSection)
-    default Color deathChargeCooldownColor() { return new Color(88, 38, 44); }
+    default Color deathChargeCooldownColor() { return new Color(132, 48, 58); }
 
     @ConfigItem(keyName = "flashReadySpells", name = "Flash When Ready", description = "Flash spell indicators when they become ready.", position = 3, section = timingSection)
     default boolean flashReadySpells() { return true; }
 
     @ConfigItem(keyName = "readySpellFlashColor", name = "Ready Flash", description = "Flash color for newly-ready spells in all HUD styles.", position = 4, section = spellStateColorSection)
-    default Color readySpellFlashColor() { return new Color(224, 196, 82); }
+    default Color readySpellFlashColor() { return new Color(255, 232, 98); }
 
     @Range(min = 0, max = 600)
     @ConfigItem(keyName = "readySpellFlashRecentSeconds", name = "Ready Flash Window", description = "Seconds after becoming ready that a spell can flash. Set to 0 to always flash ready spells.", position = 4, section = timingSection)
     default int readySpellFlashRecentSeconds() { return 30; }
 
     @ConfigItem(keyName = "thrallActiveColor", name = "Thrall", description = "Active color for Thrall in all HUD styles.", position = 0, section = activeSpellColorSection)
-    default Color thrallActiveColor() { return new Color(70, 158, 138); }
+    default Color thrallActiveColor() { return new Color(104, 220, 192); }
 
     @ConfigItem(keyName = "markOfDarknessActiveColor", name = "Mark of Darkness", description = "Active color for Mark of Darkness in all HUD styles.", position = 1, section = activeSpellColorSection)
-    default Color markOfDarknessActiveColor() { return new Color(96, 64, 150); }
+    default Color markOfDarknessActiveColor() { return new Color(136, 84, 210); }
 
     @ConfigItem(keyName = "vengeanceActiveColor", name = "Vengeance", description = "Active color for Vengeance in all HUD styles.", position = 2, section = activeSpellColorSection)
-    default Color vengeanceActiveColor() { return new Color(74, 142, 210); }
+    default Color vengeanceActiveColor() { return new Color(98, 184, 255); }
 
     @ConfigItem(keyName = "corruptionActiveColor", name = "Corruption", description = "Active color for Corruption in all HUD styles.", position = 3, section = activeSpellColorSection)
-    default Color corruptionActiveColor() { return new Color(132, 64, 176); }
+    default Color corruptionActiveColor() { return new Color(182, 78, 234); }
 
     @ConfigItem(keyName = "wardOfArceuusActiveColor", name = "Ward of Arceuus", description = "Active color for Ward of Arceuus in all HUD styles.", position = 4, section = activeSpellColorSection)
-    default Color wardOfArceuusActiveColor() { return new Color(56, 150, 164); }
+    default Color wardOfArceuusActiveColor() { return new Color(76, 210, 224); }
 
     @ConfigItem(keyName = "imbuedHeartActiveColor", name = "Heart", description = "Active color for Imbued/Saturated Heart in all HUD styles.", position = 5, section = activeSpellColorSection)
-    default Color heartActiveColor() { return new Color(166, 58, 128); }
+    default Color heartActiveColor() { return new Color(222, 74, 166); }
 
     @ConfigItem(keyName = "deathChargeActiveColor", name = "Death Charge", description = "Active color for Death Charge in all HUD styles.", position = 6, section = activeSpellColorSection)
-    default Color deathChargeActiveColor() { return new Color(156, 34, 46); }
+    default Color deathChargeActiveColor() { return new Color(214, 40, 56); }
 
     @ConfigItem(keyName = "fontType", name = "Font", description = "Font used by Text, Game Icons, Bars, Chips, Orbs, and Stack layouts.", position = 0, section = textIconSection)
     default HudFont fontType() { return HudFont.SYSTEM; }
