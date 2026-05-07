@@ -64,8 +64,10 @@ final class StackHudRenderer extends AbstractHudRenderer {
         }
 
         int textX = HudConstants.PADDING_X + iconSize + iconTextGap() + 4;
-        graphics.setColor(segment.color);
-        graphics.fillRect(HudConstants.PADDING_X + iconSize + Math.max(1, iconTextGap() / 2), y + 2, 2, rowHeight - 4);
+        if (segment.kind != SegmentKind.STAT) {
+            graphics.setColor(segment.color);
+            graphics.fillRect(HudConstants.PADDING_X + iconSize + Math.max(1, iconTextGap() / 2), y + 2, 2, rowHeight - 4);
+        }
         text.drawText(graphics, label, textX, y + text.baseline(metrics, rowHeight), segment.color);
     }
 }

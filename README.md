@@ -59,6 +59,7 @@ Chips layout that pairs well with Compact Orbs, with readable stats and spells t
 - Simplified tracker registry wiring and runtime access patterns
 - Fixed Chips settings behavior so spacing controls consistently affect chip rows/items
 - Standardized horizontal ordering so spells/cooldowns render above stats across HUD styles
+- Fixed Stack layout stat rows showing an unwanted divider bar beside stat icons
 - Clarified config descriptions so each setting states which HUD styles it affects
 - Updated default HUD colors for brighter readability with stronger separation (especially Poisoned vs Venomed HP)
 
