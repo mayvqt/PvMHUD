@@ -10,7 +10,8 @@ import java.awt.Color;
 
 @Singleton
 public class OverheadAlertManager {
-    private static final int FULL_RESTORE_MIN_SPEC_INCREASE = 30;
+    // Natural regen is 10%; Death Charge or Surge potion restores can produce larger legitimate increments.
+    private static final int MAX_EXPECTED_INCREMENTAL_SPEC_RESTORE = 25;
 
     @Inject
     private PvMHUDConfig config;
@@ -56,7 +57,7 @@ public class OverheadAlertManager {
         }
     }
 
-    public void onSpecPercentChanged(int currentSpecPercent) {
+    public void onSpecPercentChanged(int currentSpecPercent, boolean hasRecentCombatContext) {
         if (!state.isBaselineReady()) {
             return;
         }
@@ -71,8 +72,7 @@ public class OverheadAlertManager {
         int specChange = currentSpecPercent - previousSpec;
 
         if (config.overheadSpecAlertEnabled()
-                && specChange > 0
-                && !isLikelyFullRestore(specChange, currentSpecPercent)
+                && isAlertableSpecRestore(specChange, hasRecentCombatContext)
                 && crossedUp(previousSpec, currentSpecPercent, config.specThreshold())) {
             overheadMessageRenderer.showLocalMessage(config.specOverheadMessage(), config.specHighColor());
         }
@@ -88,7 +88,8 @@ public class OverheadAlertManager {
         return previousValue < threshold && currentValue >= threshold;
     }
 
-    private static boolean isLikelyFullRestore(int specChange, int currentSpecPercent) {
-        return currentSpecPercent == 100 && specChange >= FULL_RESTORE_MIN_SPEC_INCREASE;
+    private static boolean isAlertableSpecRestore(int specChange, boolean hasRecentCombatContext) {
+        return specChange > 0
+                && (specChange <= MAX_EXPECTED_INCREMENTAL_SPEC_RESTORE || hasRecentCombatContext);
     }
 }

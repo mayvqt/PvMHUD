@@ -1,7 +1,9 @@
 package com.pvmhud.tracking;
 
+import net.runelite.api.gameval.VarPlayerID;
+
 public final class GameStateIds {
-    public static final int SPECIAL_ATTACK_PERCENT = 300;
+    public static final int SPECIAL_ATTACK_PERCENT = VarPlayerID.SA_ENERGY;
     public static final int POISON = 102;
 
     public static final int VENGEANCE_ACTIVE = 2450;

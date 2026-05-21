@@ -44,63 +44,7 @@ Chips layout that pairs well with Compact Orbs, with readable stats and spells t
 
 ## Changelog
 
-### v1.4
-
-- Reorganized the plugin into feature packages (`runtime`, `alerts`, `overlay`, `tracking`)
-- Moved runtime lifecycle and tracker registration into dedicated runtime classes
-- Split overhead alerts into focused state, logic, and message-rendering components
-- Moved `HudStyle` and `HudFont` into the overlay package
-- Improved Special Attack overhead alert threshold-crossing reliability
-- Reduced false Spec alerts from likely full-restore events
-- Added safer Special Attack restore handling for Death Charge + passive regen overlaps
-- Added Yama flare/spec-restore handling support in Special Attack overhead logic
-- Refactored HUD renderers to share common drawing/layout helpers and reduce duplicate code
-- Reduced per-frame allocations and unnecessary list work across overlay render paths
-- Simplified tracker registry wiring and runtime access patterns
-- Fixed Chips settings behavior so spacing controls consistently affect chip rows/items
-- Standardized horizontal ordering so spells/cooldowns render above stats across HUD styles
-- Fixed Stack layout stat rows showing an unwanted divider bar beside stat icons
-- Clarified config descriptions so each setting states which HUD styles it affects
-- Updated default HUD colors for brighter readability with stronger separation (especially Poisoned vs Venomed HP)
-
----
-
-### v1.3
-
-- Full overlay refactor into a modular system (builders, renderers, state handling)
-- Reworked all trackers to use single reliable data sources
-- Fixed Thrall tracking (recast, desync, first-cast break, cooldown flicker)
-- Fixed Death Charge getting stuck active
-- Fixed Vengeance and Ward of Arceuus state inconsistencies
-- Fixed Game Icons layout (stats show icon + value, spells are icon-only)
-- Fixed Text layout spacing and overlapping labels
-- Fixed Chips layout alignment, sizing, and icon centering
-- Fixed visual state priority (active overrides cooldown/ready)
-- Fixed flickering and incorrect cooldown colouring
-- Fixed layout shifting when stats change
-- Fixed overhead alerts (colour, login triggers, overwrites, priority)
-- Improved expiry warning and flashing behaviour
-- Fixed tracker resets during loading/instances
-- Improved icon loading and caching
-- General performance and stability improvements
-
----
-
-### v1.2
-
-- Improved Thrall tracking reliability and despawn handling  
-- Reduced false clears from other players/NPCs  
-- Removed unreliable Thrall varbit dependency  
-
----
-
-### v1.1
-
-- Added multiple HUD styles and layouts  
-- Added overhead alerts for HP and Prayer  
-- Added extensive configuration options  
-- Improved layout alignment and rendering  
-- Fixed overlay and opacity issues  
+See [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ---
 

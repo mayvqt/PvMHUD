@@ -3,10 +3,15 @@ package com.pvmhud.runtime;
 import com.pvmhud.alerts.OverheadAlertManager;
 import com.pvmhud.alerts.OverheadAlertState;
 import com.pvmhud.overlay.PvMHUDOverlay;
+import com.pvmhud.tracking.GameStateIds;
 import com.pvmhud.tracking.ResettableTracker;
 import com.pvmhud.tracking.SpecTracker;
+import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import net.runelite.api.events.ClientTick;
+import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.StatChanged;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.eventbus.EventBus;
@@ -18,8 +23,13 @@ import java.util.List;
 
 @Singleton
 public class PvMHUDRuntimeController {
+    private static final int RECENT_COMBAT_TICKS = 8;
+
     @Inject
     private EventBus eventBus;
+
+    @Inject
+    private Client client;
 
     @Inject
     private PvMHUDOverlay hudOverlay;
@@ -38,6 +48,9 @@ public class PvMHUDRuntimeController {
 
     private List<Object> eventSubscribers = List.of();
     private List<ResettableTracker> resettableTrackers = List.of();
+    private boolean pendingAlertBaseline;
+    private boolean pendingSpecAlertEvaluation;
+    private int recentCombatTicks;
 
     public void start() {
         resettableTrackers = trackerRegistry.trackers();
@@ -46,6 +59,10 @@ public class PvMHUDRuntimeController {
 
         for (Object subscriber : eventSubscribers) {
             eventBus.register(subscriber);
+        }
+
+        if (client.getGameState() == GameState.LOGGED_IN) {
+            pendingAlertBaseline = true;
         }
     }
 
@@ -63,7 +80,8 @@ public class PvMHUDRuntimeController {
         GameState state = event.getGameState();
 
         if (state == GameState.LOGGED_IN) {
-            overheadAlertState.captureBaseline();
+            overheadAlertState.reset();
+            pendingAlertBaseline = true;
             return;
         }
 
@@ -72,12 +90,43 @@ public class PvMHUDRuntimeController {
         }
     }
 
+    public void onGameTick(GameTick event) {
+        updateRecentCombatTicks();
+    }
+
+    public void onClientTick(ClientTick event) {
+        if (pendingAlertBaseline) {
+            capturePendingAlertBaseline();
+            return;
+        }
+
+        evaluatePendingSpecAlert();
+    }
+
+    private void capturePendingAlertBaseline() {
+        if (client.getGameState() == GameState.LOGGED_IN && client.getLocalPlayer() != null) {
+            overheadAlertState.captureBaseline(specTracker.getSpecPercent());
+            pendingAlertBaseline = false;
+            pendingSpecAlertEvaluation = false;
+        }
+    }
+
     public void onStatChanged(StatChanged event) {
         overheadAlertManager.onStatChanged(event);
     }
 
+    public void onHitsplatApplied(HitsplatApplied event) {
+        if (event.getActor() == client.getLocalPlayer()) {
+            recentCombatTicks = RECENT_COMBAT_TICKS;
+        }
+    }
+
     public void onVarbitChanged(VarbitChanged event) {
-        overheadAlertManager.onSpecPercentChanged(specTracker.getSpecPercent());
+        if (event.getVarpId() != GameStateIds.SPECIAL_ATTACK_PERCENT) {
+            return;
+        }
+
+        pendingSpecAlertEvaluation = true;
     }
 
     private void resetSessionState() {
@@ -87,5 +136,33 @@ public class PvMHUDRuntimeController {
             tracker.reset();
         }
         overheadAlertState.reset();
+        pendingAlertBaseline = false;
+        pendingSpecAlertEvaluation = false;
+        recentCombatTicks = 0;
+    }
+
+    private void updateRecentCombatTicks() {
+        if (client.getLocalPlayer() != null && client.getLocalPlayer().getInteracting() != null) {
+            recentCombatTicks = RECENT_COMBAT_TICKS;
+            return;
+        }
+
+        recentCombatTicks = Math.max(0, recentCombatTicks - 1);
+    }
+
+    private boolean hasRecentCombatContext() {
+        return recentCombatTicks > 0
+                || (client.getLocalPlayer() != null && client.getLocalPlayer().getInteracting() != null);
+    }
+
+    private void evaluatePendingSpecAlert() {
+        if (!pendingSpecAlertEvaluation) {
+            return;
+        }
+
+        pendingSpecAlertEvaluation = false;
+        if (client.getGameState() == GameState.LOGGED_IN && client.getLocalPlayer() != null) {
+            overheadAlertManager.onSpecPercentChanged(specTracker.getSpecPercent(), hasRecentCombatContext());
+        }
     }
 }

@@ -3,7 +3,10 @@ package com.pvmhud;
 import com.google.inject.Provides;
 import com.pvmhud.overlay.PvMHUDOverlay;
 import com.pvmhud.runtime.PvMHUDRuntimeController;
+import net.runelite.api.events.ClientTick;
+import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.StatChanged;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
@@ -52,8 +55,23 @@ public class PvMHUDPlugin extends Plugin {
     }
 
     @Subscribe
+    public void onGameTick(GameTick event) {
+        runtimeController.onGameTick(event);
+    }
+
+    @Subscribe
+    public void onClientTick(ClientTick event) {
+        runtimeController.onClientTick(event);
+    }
+
+    @Subscribe
     public void onStatChanged(StatChanged event) {
         runtimeController.onStatChanged(event);
+    }
+
+    @Subscribe
+    public void onHitsplatApplied(HitsplatApplied event) {
+        runtimeController.onHitsplatApplied(event);
     }
 
     @Subscribe

@@ -25,11 +25,11 @@ public class OverheadAlertState {
         baselineReady = false;
     }
 
-    public void captureBaseline() {
+    public void captureBaseline(int specPercent) {
         previousHitpoints = client.getBoostedSkillLevel(Skill.HITPOINTS);
         previousPrayer = client.getBoostedSkillLevel(Skill.PRAYER);
-        previousSpec = -1;
-        previousSpecReady = false;
+        previousSpec = specPercent;
+        previousSpecReady = true;
         baselineReady = true;
     }
 
