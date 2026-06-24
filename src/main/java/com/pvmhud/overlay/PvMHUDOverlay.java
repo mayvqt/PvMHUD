@@ -29,6 +29,9 @@ public class PvMHUDOverlay extends Overlay {
     @Inject
     private HudStyleRenderer styleRenderer;
 
+    @Inject
+    private HudIconCache iconCache;
+
     public PvMHUDOverlay() {
         setPosition(OverlayPosition.TOP_LEFT);
         setLayer(OverlayLayer.ABOVE_SCENE);
@@ -37,6 +40,10 @@ public class PvMHUDOverlay extends Overlay {
 
     public void reset() {
         visualStateManager.reset();
+    }
+
+    public void clearCachedResources() {
+        iconCache.clear();
     }
 
     @Override

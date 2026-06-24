@@ -13,7 +13,7 @@ public class ThrallTracker extends BaseTimedSpellTracker {
 
     @Subscribe
     public void onVarbitChanged(VarbitChanged event) {
-        if (event.getVarbitId() != GameStateIds.RESURRECT_THRALL_COOLDOWN) {
+        if (event.getVarbitId() != VarbitID.ARCEUUS_RESURRECTION_COOLDOWN) {
             return;
         }
 
@@ -27,7 +27,7 @@ public class ThrallTracker extends BaseTimedSpellTracker {
 
     @Override
     protected void sync() {
-        int cooldownTicks = client.getVarbitValue(GameStateIds.RESURRECT_THRALL_COOLDOWN);
+        int cooldownTicks = client.getVarbitValue(VarbitID.ARCEUUS_RESURRECTION_COOLDOWN);
         setCooldownActive(cooldownTicks > 0);
     }
 

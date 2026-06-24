@@ -1,6 +1,7 @@
 package com.pvmhud.tracking;
 
 import net.runelite.api.events.VarbitChanged;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.client.eventbus.Subscribe;
 
 import javax.inject.Singleton;
@@ -11,7 +12,7 @@ public class DeathChargeTracker extends BaseTimedSpellTracker {
 
     @Subscribe
     public void onVarbitChanged(VarbitChanged event) {
-        if (event.getVarbitId() != GameStateIds.DEATH_CHARGE_COOLDOWN) {
+        if (event.getVarbitId() != VarbitID.ARCEUUS_DEATH_CHARGE_COOLDOWN) {
             return;
         }
 
@@ -27,7 +28,7 @@ public class DeathChargeTracker extends BaseTimedSpellTracker {
 
     @Override
     protected void sync() {
-        int cooldown = client.getVarbitValue(GameStateIds.DEATH_CHARGE_COOLDOWN);
+        int cooldown = client.getVarbitValue(VarbitID.ARCEUUS_DEATH_CHARGE_COOLDOWN);
         setCooldownActive(cooldown > 0);
     }
 }

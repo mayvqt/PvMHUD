@@ -31,10 +31,5 @@ public abstract class CooldownVarbitTracker extends CachedVarbitTracker implemen
         invalidateCache();
     }
 
-    protected final int getCooldownTicks() {
-        syncIfNeeded();
-        return cooldownTicks;
-    }
-
     protected abstract int cooldownVarbitId();
 }

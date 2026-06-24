@@ -1,5 +1,7 @@
 package com.pvmhud.tracking;
 
+import net.runelite.api.gameval.VarbitID;
+
 import javax.inject.Singleton;
 
 @Singleton
@@ -23,8 +25,8 @@ public class VengeanceTracker extends CachedVarbitTracker implements SpellStateT
 
     @Override
     protected void sync() {
-        rebound = client.getVarbitValue(GameStateIds.VENGEANCE_ACTIVE);
-        cooldownTicks = client.getVarbitValue(GameStateIds.VENGEANCE_COOLDOWN);
+        rebound = client.getVarbitValue(VarbitID.VENGEANCE_REBOUND);
+        cooldownTicks = client.getVarbitValue(VarbitID.VENGEANCE_TIMELIMIT);
     }
 
     @Override

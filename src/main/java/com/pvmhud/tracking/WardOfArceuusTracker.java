@@ -4,6 +4,7 @@ import net.runelite.api.ChatMessageType;
 import net.runelite.api.Skill;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.VarbitChanged;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.util.Text;
 
@@ -16,7 +17,7 @@ public class WardOfArceuusTracker extends BaseTimedSpellTracker {
 
     @Subscribe
     public void onVarbitChanged(VarbitChanged event) {
-        if (event.getVarbitId() != GameStateIds.WARD_OF_ARCEUUS_COOLDOWN) {
+        if (event.getVarbitId() != VarbitID.ARCEUUS_WARD_COOLDOWN) {
             return;
         }
 
@@ -43,7 +44,7 @@ public class WardOfArceuusTracker extends BaseTimedSpellTracker {
 
     @Override
     protected void sync() {
-        int cooldownTicks = client.getVarbitValue(GameStateIds.WARD_OF_ARCEUUS_COOLDOWN);
+        int cooldownTicks = client.getVarbitValue(VarbitID.ARCEUUS_WARD_COOLDOWN);
         setCooldownActive(cooldownTicks > 0);
     }
 

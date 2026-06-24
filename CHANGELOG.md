@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.6
+
+- Replaced remaining raw varplayer and varbit IDs with RuneLite gameval constants
+- Removed the redundant game-state ID wrapper and unused tracker cache methods
+- Deduplicated Hitpoints and Prayer event caching into a shared tracker
+- Simplified tracker event registration and shutdown bookkeeping
+- Switched tracker cache expiry checks to a monotonic clock
+- Cleared cached resized HUD icons when the plugin shuts down
+- Added the plugin version to `runelite-plugin.properties`
+
+---
+
 ## v1.5
 
 - Moved release history out of the main README into this dedicated changelog

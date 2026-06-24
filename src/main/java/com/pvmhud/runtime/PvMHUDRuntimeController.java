@@ -3,7 +3,6 @@ package com.pvmhud.runtime;
 import com.pvmhud.alerts.OverheadAlertManager;
 import com.pvmhud.alerts.OverheadAlertState;
 import com.pvmhud.overlay.PvMHUDOverlay;
-import com.pvmhud.tracking.GameStateIds;
 import com.pvmhud.tracking.ResettableTracker;
 import com.pvmhud.tracking.SpecTracker;
 import net.runelite.api.Client;
@@ -14,11 +13,11 @@ import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.StatChanged;
 import net.runelite.api.events.VarbitChanged;
+import net.runelite.api.gameval.VarPlayerID;
 import net.runelite.client.eventbus.EventBus;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
@@ -46,7 +45,6 @@ public class PvMHUDRuntimeController {
     @Inject
     private OverheadAlertManager overheadAlertManager;
 
-    private List<Object> eventSubscribers = List.of();
     private List<ResettableTracker> resettableTrackers = List.of();
     private boolean pendingAlertBaseline;
     private boolean pendingSpecAlertEvaluation;
@@ -54,11 +52,10 @@ public class PvMHUDRuntimeController {
 
     public void start() {
         resettableTrackers = trackerRegistry.trackers();
-        eventSubscribers = new ArrayList<Object>(resettableTrackers);
         resetSessionState();
 
-        for (Object subscriber : eventSubscribers) {
-            eventBus.register(subscriber);
+        for (ResettableTracker tracker : resettableTrackers) {
+            eventBus.register(tracker);
         }
 
         if (client.getGameState() == GameState.LOGGED_IN) {
@@ -67,12 +64,12 @@ public class PvMHUDRuntimeController {
     }
 
     public void stop() {
-        for (Object subscriber : eventSubscribers) {
-            eventBus.unregister(subscriber);
+        for (ResettableTracker tracker : resettableTrackers) {
+            eventBus.unregister(tracker);
         }
 
         resetSessionState();
-        eventSubscribers = List.of();
+        hudOverlay.clearCachedResources();
         resettableTrackers = List.of();
     }
 
@@ -122,7 +119,7 @@ public class PvMHUDRuntimeController {
     }
 
     public void onVarbitChanged(VarbitChanged event) {
-        if (event.getVarpId() != GameStateIds.SPECIAL_ATTACK_PERCENT) {
+        if (event.getVarpId() != VarPlayerID.SA_ENERGY) {
             return;
         }
 

@@ -1,7 +1,6 @@
 package com.pvmhud.overlay;
 
 import com.pvmhud.PvMHUDConfig;
-import com.pvmhud.tracking.GameStateIds;
 import com.pvmhud.tracking.HpTracker;
 import com.pvmhud.tracking.PrayerTracker;
 import com.pvmhud.tracking.SpecTracker;
@@ -9,6 +8,7 @@ import net.runelite.api.Client;
 import net.runelite.api.Skill;
 import net.runelite.api.gameval.ItemID;
 import net.runelite.api.gameval.SpriteID;
+import net.runelite.api.gameval.VarPlayerID;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -56,7 +56,7 @@ final class HudSegmentBuilder {
 
         if (config.showHp()) {
             int hp = hpTracker.getCurrentHp();
-            int poison = client.getVarpValue(GameStateIds.POISON);
+            int poison = client.getVarpValue(VarPlayerID.POISON);
             segments.add(new Segment(SegmentKind.STAT, "H " + hp, Integer.toString(hp), hpColor(hp, poison), HITPOINTS_ICON));
         }
 

@@ -1,6 +1,7 @@
 package com.pvmhud.tracking;
 
 import net.runelite.api.Client;
+import net.runelite.api.gameval.VarPlayerID;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -13,7 +14,7 @@ public class SpecTracker implements ResettableTracker {
     private Client client;
 
     public int getSpecPercent() {
-        int rawSpec = client.getVarpValue(GameStateIds.SPECIAL_ATTACK_PERCENT);
+        int rawSpec = client.getVarpValue(VarPlayerID.SA_ENERGY);
         return normalizeSpec(rawSpec);
     }
 

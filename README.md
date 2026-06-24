@@ -46,9 +46,4 @@ Chips layout that pairs well with Compact Orbs, with readable stats and spells t
 
 See [CHANGELOG.md](CHANGELOG.md) for release history.
 
----
 
-## Notes
-
-- Overhead alerts are **local-only** and do not send chat messages  
-- Some durations (Thrall, Ward) are **estimated based on stats**  
