@@ -5,12 +5,13 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 @Singleton
 final class ChipHudRenderer extends AbstractHudRenderer {
     Dimension render(Graphics2D graphics, FontMetrics metrics, HudFrame frame) {
-        var spells = frame.spells();
-        var hearts = frame.hearts();
+        List<Segment> spells = frame.spells();
+        List<Segment> hearts = frame.hearts();
         int spellCount = spells.size() + hearts.size();
         int itemGap = groupGap();
         int lineGap = rowGap();
@@ -59,7 +60,7 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         return new Dimension(width, height);
     }
 
-    private void drawChipRow(Graphics2D graphics, FontMetrics metrics, java.util.List<Segment> segments, int y, int width, int rowWidth, int gap, int chipHeight) {
+    private void drawChipRow(Graphics2D graphics, FontMetrics metrics, List<Segment> segments, int y, int width, int rowWidth, int gap, int chipHeight) {
         int x = centeredStartX(width, rowWidth);
         for (Segment segment : segments) {
             int chipWidth = chipWidth(metrics, segment);
@@ -68,7 +69,7 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         }
     }
 
-    private void drawChipRows(Graphics2D graphics, FontMetrics metrics, java.util.List<Segment> spells, java.util.List<Segment> hearts, int y, int width, int rowWidth, int gap, int chipHeight) {
+    private void drawChipRows(Graphics2D graphics, FontMetrics metrics, List<Segment> spells, List<Segment> hearts, int y, int width, int rowWidth, int gap, int chipHeight) {
         int x = centeredStartX(width, rowWidth);
         for (Segment segment : spells) {
             int chipWidth = chipWidth(metrics, segment);
@@ -136,10 +137,14 @@ final class ChipHudRenderer extends AbstractHudRenderer {
             return iconSize(segment) + 10;
         }
 
+        if (segment.kind == SegmentKind.POTION) {
+            return iconSize(segment) + iconTextGap() + metrics.stringWidth(segment.label()) + 12;
+        }
+
         return iconSize(segment) + iconTextGap() + metrics.stringWidth(segment.label()) + 14;
     }
 
-    private int chipsWidth(FontMetrics metrics, java.util.List<Segment> spells, java.util.List<Segment> hearts, int gap) {
+    private int chipsWidth(FontMetrics metrics, List<Segment> spells, List<Segment> hearts, int gap) {
         int count = spells.size() + hearts.size();
         if (count == 0) {
             return 0;
@@ -155,7 +160,7 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         return width - gap;
     }
 
-    private int chipsWidth(FontMetrics metrics, java.util.List<Segment> segments, int gap) {
+    private int chipsWidth(FontMetrics metrics, List<Segment> segments, int gap) {
         if (segments.isEmpty()) {
             return 0;
         }
@@ -167,7 +172,7 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         return width - gap;
     }
 
-    private int maxChipWidth(FontMetrics metrics, java.util.List<Segment> stats, java.util.List<Segment> spells, java.util.List<Segment> hearts) {
+    private int maxChipWidth(FontMetrics metrics, List<Segment> stats, List<Segment> spells, List<Segment> hearts) {
         int width = 0;
         for (Segment segment : stats) {
             width = Math.max(width, chipWidth(metrics, segment));

@@ -107,7 +107,7 @@ final class TextIconHudRenderer extends AbstractHudRenderer {
             return;
         }
 
-        if (segment.kind == SegmentKind.STAT) {
+        if (segment.kind == SegmentKind.STAT || segment.kind == SegmentKind.POTION) {
             drawIconWithValue(graphics, metrics, segment, x, y, rowHeight);
             return;
         }
@@ -158,7 +158,7 @@ final class TextIconHudRenderer extends AbstractHudRenderer {
             return iconSize(segment);
         }
 
-        if (segment.kind == SegmentKind.STAT && segment.icon != null) {
+        if ((segment.kind == SegmentKind.STAT || segment.kind == SegmentKind.POTION) && segment.icon != null) {
             return iconSize(segment) + iconTextGap() + metrics.stringWidth(segment.iconText);
         }
 

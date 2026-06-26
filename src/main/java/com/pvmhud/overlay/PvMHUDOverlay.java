@@ -1,25 +1,12 @@
 package com.pvmhud.overlay;
 
-import net.runelite.api.Client;
-import net.runelite.client.ui.overlay.Overlay;
-import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
 
 @Singleton
-public class PvMHUDOverlay extends Overlay {
-    @Inject
-    private Client client;
-
-    @Inject
-    private HudFontResolver fontResolver;
-
+public class PvMHUDOverlay extends AbstractPvMHUDFrameOverlay {
     @Inject
     private HudSegmentBuilder segmentBuilder;
 
@@ -33,9 +20,7 @@ public class PvMHUDOverlay extends Overlay {
     private HudIconCache iconCache;
 
     public PvMHUDOverlay() {
-        setPosition(OverlayPosition.TOP_LEFT);
-        setLayer(OverlayLayer.ABOVE_SCENE);
-        setDragTargetable(true);
+        super(OverlayPosition.TOP_LEFT);
     }
 
     public void reset() {
@@ -47,23 +32,12 @@ public class PvMHUDOverlay extends Overlay {
     }
 
     @Override
-    public Dimension render(Graphics2D graphics) {
-        if (client.getLocalPlayer() == null) {
-            return null;
-        }
+    protected HudFrame buildFrame(long now) {
+        return segmentBuilder.build(now);
+    }
 
-        HudFrame frame = segmentBuilder.build(System.nanoTime());
-        if (frame.isEmpty()) {
-            return null;
-        }
-
-        Font oldFont = graphics.getFont();
-        graphics.setFont(fontResolver.resolve(oldFont));
-
-        FontMetrics metrics = graphics.getFontMetrics();
-        Dimension dimension = styleRenderer.render(graphics, metrics, frame);
-
-        graphics.setFont(oldFont);
-        return dimension;
+    @Override
+    protected HudStyle hudStyle() {
+        return config.hudStyle();
     }
 }

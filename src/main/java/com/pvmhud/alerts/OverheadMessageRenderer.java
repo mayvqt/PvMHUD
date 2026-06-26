@@ -10,6 +10,8 @@ import java.awt.Color;
 
 @Singleton
 class OverheadMessageRenderer {
+    private static final int CLIENT_CYCLES_PER_SECOND = 50;
+
     @Inject
     private Client client;
 
@@ -28,10 +30,11 @@ class OverheadMessageRenderer {
         }
 
         localPlayer.setOverheadText("<col=" + toHexColor(color) + ">" + trimmed);
-        localPlayer.setOverheadCycle(config.overheadAlertCycles());
+        localPlayer.setOverheadCycle(Math.max(1, config.overheadAlertSeconds() * CLIENT_CYCLES_PER_SECOND));
     }
 
     private String toHexColor(Color color) {
-        return String.format("%06x", color.getRGB() & 0xFFFFFF);
+        String hex = Integer.toHexString(color.getRGB() & 0xFFFFFF);
+        return "000000".substring(hex.length()) + hex;
     }
 }

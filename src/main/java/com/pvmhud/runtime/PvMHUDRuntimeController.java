@@ -5,6 +5,7 @@ import com.pvmhud.alerts.OverheadAlertState;
 import com.pvmhud.overlay.PvMHUDOverlay;
 import com.pvmhud.tracking.ResettableTracker;
 import com.pvmhud.tracking.SpecTracker;
+import com.pvmhud.tracking.TimedPotionTracker;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.events.ClientTick;
@@ -120,6 +121,9 @@ public class PvMHUDRuntimeController {
 
     public void onVarbitChanged(VarbitChanged event) {
         if (event.getVarpId() != VarPlayerID.SA_ENERGY) {
+            if (TimedPotionTracker.isPotionTimerVarbit(event.getVarbitId())) {
+                overheadAlertManager.onTimedPotionTimersChanged();
+            }
             return;
         }
 
@@ -162,4 +166,5 @@ public class PvMHUDRuntimeController {
             overheadAlertManager.onSpecPercentChanged(specTracker.getSpecPercent(), hasRecentCombatContext());
         }
     }
+
 }

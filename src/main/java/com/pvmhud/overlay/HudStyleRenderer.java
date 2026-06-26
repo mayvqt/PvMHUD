@@ -22,15 +22,11 @@ class HudStyleRenderer {
     @Inject
     private ChipHudRenderer chipRenderer;
 
-    @Inject
-    private OrbHudRenderer orbRenderer;
-
-    @Inject
-    private StackHudRenderer stackRenderer;
-
     Dimension render(Graphics2D graphics, FontMetrics metrics, HudFrame frame) {
-        HudStyle style = config.hudStyle();
+        return render(graphics, metrics, frame, config.hudStyle());
+    }
 
+    Dimension render(Graphics2D graphics, FontMetrics metrics, HudFrame frame, HudStyle style) {
         switch (style) {
             case GAME_ICONS:
                 return textIconRenderer.render(graphics, metrics, frame, true);
@@ -38,10 +34,6 @@ class HudStyleRenderer {
                 return barRenderer.render(graphics, metrics, frame);
             case CHIPS:
                 return chipRenderer.render(graphics, metrics, frame);
-            case ORBS:
-                return orbRenderer.render(graphics, metrics, frame);
-            case STACK:
-                return stackRenderer.render(graphics, metrics, frame);
             case TEXT:
             default:
                 return textIconRenderer.render(graphics, metrics, frame, false);

@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.7
+
+- Added a separate draggable potion timer overlay for CoX overloads, ToA salts, and divine combat potions
+- Added a separate draggable combat boost overlay for Attack, Strength, Defence, Ranged, and Magic boosts
+- Added boost percentage colouring and configurable low-boost overhead alerts
+- Added expiring and expired overhead alerts for timed potions
+- Removed Orbs and Stack HUD styles from the codebase
+
+---
+
 ## v1.6
 
 - Replaced remaining raw varplayer and varbit IDs with RuneLite gameval constants

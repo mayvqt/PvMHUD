@@ -22,6 +22,10 @@ final class Segment {
             return "";
         }
 
+        if (kind == SegmentKind.POTION) {
+            return iconText.isEmpty() ? text : iconText;
+        }
+
         return iconText.isEmpty() ? text : iconText;
     }
 }

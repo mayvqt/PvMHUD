@@ -6,12 +6,13 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 @Singleton
 final class BarHudRenderer extends AbstractHudRenderer {
     Dimension render(Graphics2D graphics, FontMetrics metrics, HudFrame frame) {
-        var spells = frame.spells();
-        var hearts = frame.hearts();
+        List<Segment> spells = frame.spells();
+        List<Segment> hearts = frame.hearts();
         int spellCount = spells.size() + hearts.size();
         int gap = barGap();
         int tile = barSpellTileSize();
@@ -57,7 +58,7 @@ final class BarHudRenderer extends AbstractHudRenderer {
         return new Dimension(width, height);
     }
 
-    private Dimension renderVertical(Graphics2D graphics, FontMetrics metrics, HudFrame frame, java.util.List<Segment> spells, java.util.List<Segment> hearts, int gap, int tile) {
+    private Dimension renderVertical(Graphics2D graphics, FontMetrics metrics, HudFrame frame, List<Segment> spells, List<Segment> hearts, int gap, int tile) {
         int statIconSize = config.statIconSize();
         int verticalBarWidth = Math.max(1, config.verticalBarWidth());
         int verticalBarHeight = config.verticalBarHeight();
