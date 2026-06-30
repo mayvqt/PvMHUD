@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Polished the configuration panel with clearer section names, descriptions, threshold grouping, and collapsed advanced appearance sections
+- Clarified alert, spell timing, potion, boost, and color setting labels without renaming saved config keys
+- Updated varbit-backed timer and cooldown trackers from RuneLite varbit events to reduce stale overlay and alert state
+
+---
+
 ## v1.7
 
 - Added a separate draggable potion timer overlay for CoX overloads, ToA salts, and divine combat potions

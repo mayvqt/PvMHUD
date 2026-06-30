@@ -20,139 +20,139 @@ public interface PvMHUDConfig extends Config {
     Color DEFAULT_DANGER = new Color(132, 28, 28);
     Color DEFAULT_WARNING = new Color(245, 170, 58);
 
-    @ConfigSection(name = "HUD", description = "Choose the HUD style and layout.", position = 0)
+    @ConfigSection(name = "Main HUD", description = "Choose the primary HUD style and layout.", position = 0)
     String generalSection = "general";
 
-    @ConfigSection(name = "Tracked Indicators", description = "Choose which stats, spells, and cooldowns are shown.", position = 1)
+    @ConfigSection(name = "Main Indicators", description = "Choose which stats, spells, and cooldowns appear in the main HUD.", position = 1)
     String indicatorSection = "indicators";
 
-    @ConfigSection(name = "Text & Icons", description = "Configure Text and Game Icons layouts.", position = 2)
-    String textIconSection = "textIcon";
-
-    @ConfigSection(name = "Bars & Chips", description = "Configure Bars and Chips layouts.", position = 3)
-    String barStyleSection = "barStyle";
-
-    @ConfigSection(name = "Alerts", description = "Configure local-only overhead alerts.", position = 4)
-    String alertSection = "alerts";
-
-    @ConfigSection(name = "Potion Display", description = "Choose which potion and boost indicators are shown.", position = 5)
+    @ConfigSection(name = "Potion & Boost Overlays", description = "Choose which timed potion and combat boost overlays are shown.", position = 2)
     String potionSection = "potions";
 
-    @ConfigSection(name = "Potion Alerts", description = "Configure potion and boost alert thresholds and messages.", position = 6)
+    @ConfigSection(name = "Alerts", description = "Configure local-only overhead alerts for HP, Prayer, and Special Attack.", position = 3)
+    String alertSection = "alerts";
+
+    @ConfigSection(name = "Potion & Boost Alerts", description = "Configure local-only overhead alerts for timed potions and combat boosts.", position = 4)
     String potionAlertSection = "potionAlerts";
 
-    @ConfigSection(name = "Potion Colors", description = "Set colors for potion timers and boost warning states.", position = 7)
-    String potionColorSection = "potionColors";
-
-    @ConfigSection(name = "Thresholds", description = "Configure HP, Prayer, and Special Attack thresholds.", position = 8)
+    @ConfigSection(name = "Thresholds", description = "Set the HP, Prayer, Special Attack, potion, and boost thresholds used by colors and alerts.", position = 5)
     String thresholdSection = "thresholds";
 
-    @ConfigSection(name = "Spell Timing", description = "Configure spell visibility, expiry warnings, and ready flashes.", position = 9)
+    @ConfigSection(name = "Spell Timing", description = "Configure spell visibility, expiry warnings, and ready flashes.", position = 6)
     String timingSection = "timing";
 
-    @ConfigSection(name = "Background", description = "Configure the HUD background.", position = 10)
+    @ConfigSection(name = "Text & Icon Layout", description = "Fine-tune text, icon, and spacing settings for Text, Game Icons, Bars, and Chips layouts.", position = 7, closedByDefault = true)
+    String textIconSection = "textIcon";
+
+    @ConfigSection(name = "Bars & Chips Layout", description = "Fine-tune sizing for Bars and Chips layouts.", position = 8, closedByDefault = true)
+    String barStyleSection = "barStyle";
+
+    @ConfigSection(name = "Potion & Boost Colors", description = "Set colors for active potion timers, expiring timers, and low combat boosts.", position = 9, closedByDefault = true)
+    String potionColorSection = "potionColors";
+
+    @ConfigSection(name = "Background", description = "Configure HUD background color and opacity.", position = 10, closedByDefault = true)
     String backgroundSection = "background";
 
-    @ConfigSection(name = "Stat Colors", description = "Set colors for HP, Prayer, Special Attack, poison, and venom.", position = 11)
+    @ConfigSection(name = "Stat Colors", description = "Set colors for HP, Prayer, Special Attack, poison, and venom states.", position = 11, closedByDefault = true)
     String statColorSection = "statColors";
 
-    @ConfigSection(name = "Spell State Colors", description = "Set shared colors for ready, cooldown, expiring, and flash states.", position = 12)
+    @ConfigSection(name = "Spell State Colors", description = "Set shared colors for ready, cooldown, expiring, consumed, and flash states.", position = 12, closedByDefault = true)
     String spellStateColorSection = "spellStateColors";
 
-    @ConfigSection(name = "Active Spell Colors", description = "Set active colors for each tracked spell or cooldown.", position = 13)
+    @ConfigSection(name = "Active Spell Colors", description = "Set active colors for each tracked spell and cooldown.", position = 13, closedByDefault = true)
     String activeSpellColorSection = "activeSpellColors";
 
-    @ConfigItem(keyName = "hudStyle", name = "HUD Style", description = "Choose how PvM HUD is displayed.", position = 0, section = generalSection)
+    @ConfigItem(keyName = "hudStyle", name = "Style", description = "Choose the layout used by the main PvM HUD.", position = 0, section = generalSection)
     default HudStyle hudStyle() { return HudStyle.CHIPS; }
 
-    @ConfigItem(keyName = "showThrall", name = "Thrall", description = "Show Resurrect Thrall timer and state.", position = 3, section = indicatorSection)
+    @ConfigItem(keyName = "showThrall", name = "Thrall", description = "Show Resurrect Thrall active time, cooldown, and ready state.", position = 3, section = indicatorSection)
     default boolean showThrall() { return true; }
 
-    @ConfigItem(keyName = "showVengeance", name = "Vengeance", description = "Show Vengeance active/cooldown state.", position = 4, section = indicatorSection)
+    @ConfigItem(keyName = "showVengeance", name = "Vengeance", description = "Show Vengeance active, cooldown, and ready state.", position = 4, section = indicatorSection)
     default boolean showVengeance() { return true; }
 
-    @ConfigItem(keyName = "showDeathCharge", name = "Death Charge", description = "Show Death Charge active/cooldown state.", position = 5, section = indicatorSection)
+    @ConfigItem(keyName = "showDeathCharge", name = "Death Charge", description = "Show Death Charge active, consumed, cooldown, and ready state.", position = 5, section = indicatorSection)
     default boolean showDeathCharge() { return true; }
 
-    @ConfigItem(keyName = "showMarkOfDarkness", name = "Mark of Darkness", description = "Show Mark of Darkness active/expiring state.", position = 6, section = indicatorSection)
+    @ConfigItem(keyName = "showMarkOfDarkness", name = "Mark of Darkness", description = "Show Mark of Darkness active, expiring, faded, and ready state.", position = 6, section = indicatorSection)
     default boolean showMarkOfDarkness() { return true; }
 
-    @ConfigItem(keyName = "showCorruption", name = "Corruption", description = "Show Corruption cooldown state.", position = 7, section = indicatorSection)
+    @ConfigItem(keyName = "showCorruption", name = "Corruption", description = "Show Corruption cooldown and ready state.", position = 7, section = indicatorSection)
     default boolean showCorruption() { return true; }
 
-    @ConfigItem(keyName = "showWardOfArceuus", name = "Ward of Arceuus", description = "Show Ward of Arceuus active/cooldown state.", position = 8, section = indicatorSection)
+    @ConfigItem(keyName = "showWardOfArceuus", name = "Ward of Arceuus", description = "Show Ward of Arceuus active, cooldown, and ready state.", position = 8, section = indicatorSection)
     default boolean showWardOfArceuus() { return true; }
 
-    @ConfigItem(keyName = "showImbuedHeart", name = "Heart", description = "Show Imbued/Saturated Heart cooldown state.", position = 9, section = indicatorSection)
+    @ConfigItem(keyName = "showImbuedHeart", name = "Heart", description = "Show Imbued Heart and Saturated Heart cooldown state.", position = 9, section = indicatorSection)
     default boolean showHeart() { return true; }
 
-    @ConfigItem(keyName = "showHp", name = "Hitpoints", description = "Show boosted Hitpoints.", position = 0, section = indicatorSection)
+    @ConfigItem(keyName = "showHp", name = "Hitpoints", description = "Show current boosted Hitpoints, including poison and venom colors.", position = 0, section = indicatorSection)
     default boolean showHp() { return true; }
 
-    @ConfigItem(keyName = "showPrayer", name = "Prayer", description = "Show boosted Prayer.", position = 1, section = indicatorSection)
+    @ConfigItem(keyName = "showPrayer", name = "Prayer", description = "Show current Prayer points.", position = 1, section = indicatorSection)
     default boolean showPrayer() { return true; }
 
-    @ConfigItem(keyName = "showSpec", name = "Special Attack", description = "Show Special Attack energy.", position = 2, section = indicatorSection)
+    @ConfigItem(keyName = "showSpec", name = "Special Attack", description = "Show current Special Attack energy.", position = 2, section = indicatorSection)
     default boolean showSpec() { return true; }
 
-    @ConfigItem(keyName = "showPotionOverlay", name = "Potion Overlay", description = "Show the separate overlay for raid and divine potion timers.", position = 0, section = potionSection)
+    @ConfigItem(keyName = "showPotionOverlay", name = "Timed Potion Overlay", description = "Show the separate draggable overlay for raid and divine potion timers.", position = 0, section = potionSection)
     default boolean showPotionOverlay() { return true; }
 
-    @ConfigItem(keyName = "showRaidPotionTimers", name = "Raid Timers", description = "Show CoX overload and ToA salt/stat boost timers when active.", position = 1, section = potionSection)
+    @ConfigItem(keyName = "showRaidPotionTimers", name = "Raid Timers", description = "Show Chambers overload and Tombs salt timers when active.", position = 1, section = potionSection)
     default boolean showRaidPotionTimers() { return true; }
 
-    @ConfigItem(keyName = "showDivinePotionTimers", name = "Divine Timers", description = "Show active divine combat potion timers separately from boost levels.", position = 2, section = potionSection)
+    @ConfigItem(keyName = "showDivinePotionTimers", name = "Divine Timers", description = "Show active divine combat potion timers separately from boosted skill levels.", position = 2, section = potionSection)
     default boolean showDivinePotionTimers() { return true; }
 
-    @ConfigItem(keyName = "showCombatBoosts", name = "Combat Boosts", description = "Show a separate overlay for boosted Attack, Strength, Defence, Ranged, and Magic levels.", position = 3, section = potionSection)
+    @ConfigItem(keyName = "showCombatBoosts", name = "Combat Boost Overlay", description = "Show the separate draggable overlay for boosted Attack, Strength, Defence, Ranged, and Magic levels.", position = 3, section = potionSection)
     default boolean showCombatBoosts() { return true; }
 
-    @ConfigItem(keyName = "potionHudStyle", name = "Potion HUD Style", description = "Choose how the potion overlay is displayed.", position = 4, section = potionSection)
+    @ConfigItem(keyName = "potionHudStyle", name = "Potion Style", description = "Choose the layout used by the timed potion overlay.", position = 4, section = potionSection)
     default CompactHudStyle potionHudStyle() { return CompactHudStyle.CHIPS; }
 
-    @ConfigItem(keyName = "boostHudStyle", name = "Boost HUD Style", description = "Choose how the combat boost overlay is displayed.", position = 5, section = potionSection)
+    @ConfigItem(keyName = "boostHudStyle", name = "Boost Style", description = "Choose the layout used by the combat boost overlay.", position = 5, section = potionSection)
     default CompactHudStyle boostHudStyle() { return CompactHudStyle.CHIPS; }
 
-    @ConfigItem(keyName = "showAttackBoost", name = "Attack Boost", description = "Show and alert for boosted Attack levels.", position = 6, section = potionSection)
+    @ConfigItem(keyName = "showAttackBoost", name = "Attack", description = "Show Attack boosts and allow low-boost alerts for Attack.", position = 6, section = potionSection)
     default boolean showAttackBoost() { return true; }
 
-    @ConfigItem(keyName = "showStrengthBoost", name = "Strength Boost", description = "Show and alert for boosted Strength levels.", position = 7, section = potionSection)
+    @ConfigItem(keyName = "showStrengthBoost", name = "Strength", description = "Show Strength boosts and allow low-boost alerts for Strength.", position = 7, section = potionSection)
     default boolean showStrengthBoost() { return true; }
 
-    @ConfigItem(keyName = "showDefenceBoost", name = "Defence Boost", description = "Show and alert for boosted Defence levels.", position = 8, section = potionSection)
+    @ConfigItem(keyName = "showDefenceBoost", name = "Defence", description = "Show Defence boosts and allow low-boost alerts for Defence.", position = 8, section = potionSection)
     default boolean showDefenceBoost() { return true; }
 
-    @ConfigItem(keyName = "showRangedBoost", name = "Ranged Boost", description = "Show and alert for boosted Ranged levels.", position = 9, section = potionSection)
+    @ConfigItem(keyName = "showRangedBoost", name = "Ranged", description = "Show Ranged boosts and allow low-boost alerts for Ranged.", position = 9, section = potionSection)
     default boolean showRangedBoost() { return true; }
 
-    @ConfigItem(keyName = "showMagicBoost", name = "Magic Boost", description = "Show and alert for boosted Magic levels.", position = 10, section = potionSection)
+    @ConfigItem(keyName = "showMagicBoost", name = "Magic", description = "Show Magic boosts and allow low-boost alerts for Magic.", position = 10, section = potionSection)
     default boolean showMagicBoost() { return true; }
 
     @Range(min = 1, max = 100)
-    @ConfigItem(keyName = "combatBoostThresholdPercent", name = "Boost Threshold Percent", description = "Alert when a combat boost falls to this percentage of its highest observed boost amount.", position = 0, section = potionAlertSection)
+    @ConfigItem(keyName = "combatBoostThresholdPercent", name = "Low Boost Percent", description = "Use warning colors and alerts when a boost falls to this percent of its highest observed boost.", position = 0, section = thresholdSection)
     default int combatBoostThresholdPercent() { return 30; }
 
     @Range(min = 0, max = 120)
-    @ConfigItem(keyName = "potionExpiringSoonSeconds", name = "Potion Warning Time", description = "Seconds before a timed potion expires to use warning colors and overhead alerts.", position = 1, section = potionAlertSection)
+    @ConfigItem(keyName = "potionExpiringSoonSeconds", name = "Potion Warning Time", description = "Seconds before a timed potion expires to use warning colors and expiring alerts.", position = 1, section = thresholdSection)
     default int potionExpiringSoonSeconds() { return 15; }
 
-    @ConfigItem(keyName = "overheadCombatBoostAlertEnabled", name = "Boost Drop Alert", description = "Show a local overhead message when a tracked combat boost falls below the boost percentage threshold.", position = 2, section = potionAlertSection)
+    @ConfigItem(keyName = "overheadCombatBoostAlertEnabled", name = "Low Boost Alert", description = "Show a local overhead message when an enabled combat boost falls below the low-boost threshold.", position = 0, section = potionAlertSection)
     default boolean overheadCombatBoostAlertEnabled() { return true; }
 
-    @ConfigItem(keyName = "combatBoostOverheadMessage", name = "Boost Alert Message", description = "Overhead message shown when a combat boost falls below threshold. Supports {skill}, {level}, {base}, {boost}, {peak}, {percent}, and {threshold}.", position = 3, section = potionAlertSection)
+    @ConfigItem(keyName = "combatBoostOverheadMessage", name = "Low Boost Message", description = "Overhead message shown when a boost falls below threshold. Supports {skill}, {level}, {base}, {boost}, {peak}, {percent}, and {threshold}.", position = 1, section = potionAlertSection)
     default String combatBoostOverheadMessage() { return "{skill} boost low!"; }
 
-    @ConfigItem(keyName = "overheadTimedPotionAlertEnabled", name = "Timed Potion Alert", description = "Show a local overhead message when overloads, salts, or divine potions are about to expire, and when they expire.", position = 4, section = potionAlertSection)
+    @ConfigItem(keyName = "overheadTimedPotionAlertEnabled", name = "Potion Expiry Alert", description = "Show a local overhead message when overloads, salts, or divine potions are about to expire and when they expire.", position = 2, section = potionAlertSection)
     default boolean overheadTimedPotionAlertEnabled() { return true; }
 
     @Range(min = 0, max = 30)
-    @ConfigItem(keyName = "potionAlertCooldownSeconds", name = "Alert Cooldown", description = "Minimum seconds between potion overhead alerts. Set to 0 to disable throttling.", position = 5, section = potionAlertSection)
+    @ConfigItem(keyName = "potionAlertCooldownSeconds", name = "Alert Cooldown", description = "Minimum seconds between potion and boost overhead alerts. Set to 0 to disable throttling.", position = 3, section = potionAlertSection)
     default int potionAlertCooldownSeconds() { return 2; }
 
-    @ConfigItem(keyName = "raidPotionExpiringMessage", name = "Potion Expiring Message", description = "Overhead message shown when a timed potion is about to expire. Supports {potion}, {time}, and {ticks}.", position = 6, section = potionAlertSection)
+    @ConfigItem(keyName = "raidPotionExpiringMessage", name = "Expiring Message", description = "Overhead message shown when a timed potion is about to expire. Supports {potion}, {time}, and {ticks}.", position = 4, section = potionAlertSection)
     default String raidPotionExpiringMessage() { return "{potion} expiring!"; }
 
-    @ConfigItem(keyName = "raidPotionExpiredMessage", name = "Potion Expired Message", description = "Overhead message shown when a timed potion expires. Supports {potion}, {time}, and {ticks}.", position = 7, section = potionAlertSection)
+    @ConfigItem(keyName = "raidPotionExpiredMessage", name = "Expired Message", description = "Overhead message shown when a timed potion expires. Supports {potion}, {time}, and {ticks}.", position = 5, section = potionAlertSection)
     default String raidPotionExpiredMessage() { return "{potion} expired!"; }
 
     @ConfigItem(keyName = "potionActiveColor", name = "Potion Active", description = "Color for active potion timers and healthy combat boosts.", position = 0, section = potionColorSection)
@@ -164,33 +164,33 @@ public interface PvMHUDConfig extends Config {
     @ConfigItem(keyName = "potionFlashColor", name = "Potion Flash", description = "Flash color for expiring potion timers and low combat boosts.", position = 2, section = potionColorSection)
     default Color potionFlashColor() { return new Color(255, 232, 98); }
 
-    @ConfigItem(keyName = "showInactiveSpells", name = "Show Recently-Ready Spells", description = "Keep spell indicators visible briefly after they become ready.", position = 0, section = timingSection)
+    @ConfigItem(keyName = "showInactiveSpells", name = "Show Ready Spells", description = "Keep spell indicators visible briefly after their active or cooldown state ends.", position = 0, section = timingSection)
     default boolean showInactiveSpells() { return true; }
 
     @Range(min = 0, max = 600)
-    @ConfigItem(keyName = "inactiveSpellTimeoutSeconds", name = "Ready Visibility Time", description = "Seconds to keep a ready spell visible after its active/cooldown state ends.", position = 1, section = timingSection)
+    @ConfigItem(keyName = "inactiveSpellTimeoutSeconds", name = "Ready Visibility Time", description = "Seconds to keep a ready spell visible after it becomes inactive. Set to 0 to hide ready spells immediately.", position = 1, section = timingSection)
     default int inactiveSpellTimeoutSeconds() { return 10; }
 
     @Range(min = 0, max = 600)
-    @ConfigItem(keyName = "spellExpiringSoonSeconds", name = "Expiry Warning Time", description = "Seconds before a spell expires to switch to the expiry warning color.", position = 2, section = timingSection)
+    @ConfigItem(keyName = "spellExpiringSoonSeconds", name = "Spell Warning Time", description = "Seconds before an active spell expires to switch to the expiring color.", position = 2, section = timingSection)
     default int spellExpiringSoonSeconds() { return 5; }
 
     @Range(min = 0, max = 99)
-    @ConfigItem(keyName = "hpLowThreshold", name = "Low HP Threshold", description = "HP value at or below which low-HP colors and alerts are used.", position = 0, section = thresholdSection)
+    @ConfigItem(keyName = "hpLowThreshold", name = "Low HP", description = "Hitpoints value at or below which low-HP colors and alerts are used.", position = 2, section = thresholdSection)
     default int hpLowThreshold() { return 45; }
 
     @Range(min = 0, max = 99)
-    @ConfigItem(keyName = "prayerLowThreshold", name = "Low Prayer Threshold", description = "Prayer value at or below which low-Prayer colors and alerts are used.", position = 1, section = thresholdSection)
+    @ConfigItem(keyName = "prayerLowThreshold", name = "Low Prayer", description = "Prayer value at or below which low-Prayer colors and alerts are used.", position = 3, section = thresholdSection)
     default int prayerLowThreshold() { return 10; }
 
     @Range(min = 0, max = 100)
-    @ConfigItem(keyName = "specThreshold", name = "Spec Threshold", description = "Special Attack percentage at or above which high-spec colors and alerts are used.", position = 2, section = thresholdSection)
+    @ConfigItem(keyName = "specThreshold", name = "Spec Ready", description = "Special Attack percentage at or above which high-spec colors and alerts are used.", position = 4, section = thresholdSection)
     default int specThreshold() { return 50; }
 
-    @ConfigItem(keyName = "overheadHpAlertEnabled", name = "Low HP Alert", description = "Show a local overhead message when HP crosses below the low-HP threshold.", position = 0, section = alertSection)
+    @ConfigItem(keyName = "overheadHpAlertEnabled", name = "Low HP Alert", description = "Show a local overhead message when Hitpoints crosses below the low-HP threshold.", position = 0, section = alertSection)
     default boolean overheadHpAlertEnabled() { return true; }
 
-    @ConfigItem(keyName = "lowHpOverheadMessage", name = "Low HP Message", description = "Overhead message shown when HP crosses below the low-HP threshold.", position = 1, section = alertSection)
+    @ConfigItem(keyName = "lowHpOverheadMessage", name = "Low HP Message", description = "Overhead message shown when Hitpoints crosses below the low-HP threshold.", position = 1, section = alertSection)
     default String lowHpOverheadMessage() { return "Low HP!"; }
 
     @ConfigItem(keyName = "overheadPrayerAlertEnabled", name = "Low Prayer Alert", description = "Show a local overhead message when Prayer crosses below the low-Prayer threshold.", position = 2, section = alertSection)
@@ -199,38 +199,38 @@ public interface PvMHUDConfig extends Config {
     @ConfigItem(keyName = "lowPrayerOverheadMessage", name = "Low Prayer Message", description = "Overhead message shown when Prayer crosses below the low-Prayer threshold.", position = 3, section = alertSection)
     default String lowPrayerOverheadMessage() { return "Low Prayer!"; }
 
-    @ConfigItem(keyName = "overheadSpecAlertEnabled", name = "Spec Alert", description = "Show a local overhead message when Special Attack crosses above the spec threshold.", position = 4, section = alertSection)
+    @ConfigItem(keyName = "overheadSpecAlertEnabled", name = "Spec Ready Alert", description = "Show a local overhead message when Special Attack crosses above the spec-ready threshold.", position = 4, section = alertSection)
     default boolean overheadSpecAlertEnabled() { return false; }
 
-    @ConfigItem(keyName = "specOverheadMessage", name = "Spec Message", description = "Overhead message shown when Special Attack crosses above the spec threshold.", position = 5, section = alertSection)
+    @ConfigItem(keyName = "specOverheadMessage", name = "Spec Ready Message", description = "Overhead message shown when Special Attack crosses above the spec-ready threshold.", position = 5, section = alertSection)
     default String specOverheadMessage() { return "Spec!"; }
 
     @Range(min = 1, max = 10)
-    @ConfigItem(keyName = "overheadAlertSeconds", name = "Alert Duration", description = "How many seconds overhead alerts stay visible.", position = 6, section = alertSection)
+    @ConfigItem(keyName = "overheadAlertSeconds", name = "Alert Duration", description = "Seconds that local overhead alert messages stay visible.", position = 6, section = alertSection)
     default int overheadAlertSeconds() { return 4; }
 
-    @ConfigItem(keyName = "hpNormalColor", name = "HP", description = "Color for normal HP in all HUD styles.", position = 0, section = statColorSection)
+    @ConfigItem(keyName = "hpNormalColor", name = "Hitpoints", description = "Color for normal Hitpoints in all HUD styles.", position = 0, section = statColorSection)
     default Color hpNormalColor() { return new Color(224, 64, 64); }
 
-    @ConfigItem(keyName = "hpLowColor", name = "Low HP", description = "Color for low HP in all HUD styles.", position = 1, section = statColorSection)
+    @ConfigItem(keyName = "hpLowColor", name = "Low Hitpoints", description = "Color for Hitpoints at or below the low-HP threshold.", position = 1, section = statColorSection)
     default Color hpLowColor() { return DEFAULT_DANGER; }
 
-    @ConfigItem(keyName = "poisonedHpColor", name = "Poisoned HP", description = "Color for HP while poisoned in all HUD styles.", position = 2, section = statColorSection)
+    @ConfigItem(keyName = "poisonedHpColor", name = "Poisoned Hitpoints", description = "Color for Hitpoints while poisoned.", position = 2, section = statColorSection)
     default Color poisonedHpColor() { return new Color(86, 208, 72); }
 
-    @ConfigItem(keyName = "venomedHpColor", name = "Venomed HP", description = "Color for HP while venomed in all HUD styles.", position = 3, section = statColorSection)
+    @ConfigItem(keyName = "venomedHpColor", name = "Venomed Hitpoints", description = "Color for Hitpoints while venomed.", position = 3, section = statColorSection)
     default Color venomedHpColor() { return new Color(24, 132, 44); }
 
     @ConfigItem(keyName = "prayerNormalColor", name = "Prayer", description = "Color for normal Prayer in all HUD styles.", position = 4, section = statColorSection)
     default Color prayerNormalColor() { return new Color(84, 168, 244); }
 
-    @ConfigItem(keyName = "prayerLowColor", name = "Low Prayer", description = "Color for low Prayer in all HUD styles.", position = 5, section = statColorSection)
+    @ConfigItem(keyName = "prayerLowColor", name = "Low Prayer", description = "Color for Prayer at or below the low-Prayer threshold.", position = 5, section = statColorSection)
     default Color prayerLowColor() { return new Color(34, 72, 130); }
 
-    @ConfigItem(keyName = "specHighColor", name = "High Spec", description = "Color for Special Attack at or above the spec threshold in all HUD styles.", position = 6, section = statColorSection)
+    @ConfigItem(keyName = "specHighColor", name = "Spec Ready", description = "Color for Special Attack at or above the spec-ready threshold.", position = 6, section = statColorSection)
     default Color specHighColor() { return new Color(255, 214, 78); }
 
-    @ConfigItem(keyName = "specLowColor", name = "Low Spec", description = "Color for Special Attack below the spec threshold in all HUD styles.", position = 7, section = statColorSection)
+    @ConfigItem(keyName = "specLowColor", name = "Spec Building", description = "Color for Special Attack below the spec-ready threshold.", position = 7, section = statColorSection)
     default Color specLowColor() { return new Color(162, 126, 62); }
 
     @ConfigItem(keyName = "readySpellColor", name = "Ready", description = "Shared color for ready spells in all HUD styles.", position = 0, section = spellStateColorSection)
@@ -242,17 +242,17 @@ public interface PvMHUDConfig extends Config {
     @ConfigItem(keyName = "expiringSpellColor", name = "Expiring Soon", description = "Shared color for spells close to expiring in all HUD styles.", position = 2, section = spellStateColorSection)
     default Color expiringSpellColor() { return DEFAULT_WARNING; }
 
-    @ConfigItem(keyName = "deathChargeCooldownColor", name = "Death Charge Consumed", description = "Shared color for Death Charge after spec restore but before the effect fully ends.", position = 3, section = spellStateColorSection)
+    @ConfigItem(keyName = "deathChargeCooldownColor", name = "Death Charge Consumed", description = "Color for Death Charge after the spec restore is consumed but before the effect fully ends.", position = 3, section = spellStateColorSection)
     default Color deathChargeCooldownColor() { return new Color(132, 48, 58); }
 
-    @ConfigItem(keyName = "flashReadySpells", name = "Flash When Ready", description = "Flash spell indicators when they become ready.", position = 3, section = timingSection)
+    @ConfigItem(keyName = "flashReadySpells", name = "Flash Ready Spells", description = "Flash spell indicators when they become ready.", position = 3, section = timingSection)
     default boolean flashReadySpells() { return true; }
 
-    @ConfigItem(keyName = "readySpellFlashColor", name = "Ready Flash", description = "Flash color for newly-ready spells in all HUD styles.", position = 4, section = spellStateColorSection)
+    @ConfigItem(keyName = "readySpellFlashColor", name = "Ready Flash", description = "Flash color for newly ready spells.", position = 4, section = spellStateColorSection)
     default Color readySpellFlashColor() { return new Color(255, 232, 98); }
 
     @Range(min = 0, max = 600)
-    @ConfigItem(keyName = "readySpellFlashRecentSeconds", name = "Ready Flash Window", description = "Seconds after becoming ready that a spell can flash. Set to 0 to always flash ready spells.", position = 4, section = timingSection)
+    @ConfigItem(keyName = "readySpellFlashRecentSeconds", name = "Ready Flash Window", description = "Seconds after becoming ready that a spell can flash. Set to 0 to allow ready spells to keep flashing.", position = 4, section = timingSection)
     default int readySpellFlashRecentSeconds() { return 30; }
 
     @ConfigItem(keyName = "thrallActiveColor", name = "Thrall", description = "Active color for Thrall in all HUD styles.", position = 0, section = activeSpellColorSection)

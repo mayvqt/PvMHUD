@@ -1,5 +1,8 @@
 package com.pvmhud.tracking;
 
+import net.runelite.api.events.VarbitChanged;
+import net.runelite.client.eventbus.Subscribe;
+
 public abstract class CooldownVarbitTracker extends CachedVarbitTracker implements SpellStateTracker {
     private int cooldownTicks;
 
@@ -23,6 +26,13 @@ public abstract class CooldownVarbitTracker extends CachedVarbitTracker implemen
     @Override
     protected void sync() {
         cooldownTicks = client.getVarbitValue(cooldownVarbitId());
+    }
+
+    @Subscribe
+    public final void onVarbitChanged(VarbitChanged event) {
+        if (event.getVarbitId() == cooldownVarbitId()) {
+            cooldownTicks = Math.max(0, event.getValue());
+        }
     }
 
     @Override

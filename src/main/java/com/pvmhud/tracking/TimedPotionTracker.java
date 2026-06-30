@@ -1,5 +1,8 @@
 package com.pvmhud.tracking;
 
+import net.runelite.api.events.VarbitChanged;
+import net.runelite.client.eventbus.Subscribe;
+
 import javax.inject.Singleton;
 import java.util.function.Consumer;
 
@@ -40,6 +43,20 @@ public class TimedPotionTracker extends CachedVarbitTracker {
     protected void sync() {
         for (TimedPotionType type : TYPES) {
             remainingTicks[type.ordinal()] = client.getVarbitValue(type.getTimerVarbitId());
+        }
+    }
+
+    @Subscribe
+    public void onVarbitChanged(VarbitChanged event) {
+        updateTimer(event.getVarbitId(), event.getValue());
+    }
+
+    public void updateTimer(int varbitId, int value) {
+        for (TimedPotionType type : TYPES) {
+            if (type.getTimerVarbitId() == varbitId) {
+                remainingTicks[type.ordinal()] = Math.max(0, value);
+                return;
+            }
         }
     }
 

@@ -38,6 +38,9 @@ public class PvMHUDRuntimeController {
     private SpecTracker specTracker;
 
     @Inject
+    private TimedPotionTracker timedPotionTracker;
+
+    @Inject
     private TrackerRegistry trackerRegistry;
 
     @Inject
@@ -122,6 +125,7 @@ public class PvMHUDRuntimeController {
     public void onVarbitChanged(VarbitChanged event) {
         if (event.getVarpId() != VarPlayerID.SA_ENERGY) {
             if (TimedPotionTracker.isPotionTimerVarbit(event.getVarbitId())) {
+                timedPotionTracker.updateTimer(event.getVarbitId(), event.getValue());
                 overheadAlertManager.onTimedPotionTimersChanged();
             }
             return;
