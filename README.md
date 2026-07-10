@@ -2,7 +2,8 @@
 
 Compact, draggable overlays for the combat information you check constantly: Hitpoints, Prayer, special attack, spell states, cooldowns, potion timers, and combat boosts.
 
-Chips layout that pairs well with the default RuneLite orbs, with readable stats and spells that only appear when active.
+Chips layout that pairs well with compact orbs
+
 ![PvM HUD Chips style](images/chips.png)
 
 ---
