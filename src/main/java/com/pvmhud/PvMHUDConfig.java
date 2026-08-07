@@ -90,11 +90,11 @@ public interface PvMHUDConfig extends Config {
 
     @Range(min = -300, max = 300)
     @ConfigItem(keyName = "playerStatOffsetX", name = "Stat X Offset", description = "Move the player-bound stat group horizontally.", position = 1, section = playerHudSection)
-    default int playerStatOffsetX() { return 12; }
+    default int playerStatOffsetX() { return 30; }
 
     @Range(min = -300, max = 300)
     @ConfigItem(keyName = "playerStatOffsetY", name = "Stat Y Offset", description = "Move the player-bound stat group vertically.", position = 2, section = playerHudSection)
-    default int playerStatOffsetY() { return -55; }
+    default int playerStatOffsetY() { return -70; }
 
     @ConfigItem(keyName = "playerSpellPosition", name = "Spell Position", description = "Place spell and cooldown icons below, left, or right of the player.", position = 3, section = playerHudSection)
     default PlayerSpellPosition playerSpellPosition() { return PlayerSpellPosition.BELOW; }
@@ -105,7 +105,7 @@ public interface PvMHUDConfig extends Config {
 
     @Range(min = -300, max = 300)
     @ConfigItem(keyName = "playerSpellOffsetY", name = "Spell Y Offset", description = "Move the player-bound spell group vertically.", position = 5, section = playerHudSection)
-    default int playerSpellOffsetY() { return 8; }
+    default int playerSpellOffsetY() { return 40; }
 
     @ConfigItem(keyName = "showInactiveSpells", name = "Show Ready Spells", description = "Keep spell indicators visible briefly after their active or cooldown state ends.", position = 0, section = timingSection)
     default boolean showInactiveSpells() { return true; }

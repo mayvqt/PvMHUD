@@ -10,14 +10,15 @@ import java.util.List;
 final class PlayerBoundHudRenderer extends AbstractHudRenderer {
     private static final int PADDING = 4;
     private static final int SIDE_GAP = 8;
+    private static final int SPELL_SIDE_Y_ORIGIN = 55;
+    private static final int SPELL_BELOW_Y_ORIGIN = 110;
     // Stat offsets were originally measured from the player's feet. Keep existing
     // configurations visually close while anchoring the text to the model's head.
     private static final int LEGACY_STAT_Y_ORIGIN = 55;
 
-    void render(Graphics2D graphics, FontMetrics metrics, HudFrame frame,
-                Point playerHead, Point playerLowerBody) {
+    void render(Graphics2D graphics, FontMetrics metrics, HudFrame frame, Point playerHead) {
         drawStats(graphics, metrics, frame.stats(), playerHead);
-        drawSpells(graphics, frame.spells(), frame.hearts(), playerLowerBody);
+        drawSpells(graphics, frame.spells(), frame.hearts(), playerHead);
     }
 
     private void drawStats(Graphics2D graphics, FontMetrics metrics, List<Segment> stats, Point playerLocation) {
@@ -51,7 +52,8 @@ final class PlayerBoundHudRenderer extends AbstractHudRenderer {
         local.dispose();
     }
 
-    private void drawSpells(Graphics2D graphics, List<Segment> spells, List<Segment> hearts, Point playerLocation) {
+    private void drawSpells(Graphics2D graphics, List<Segment> spells, List<Segment> hearts,
+                            Point playerHead) {
         int count = spells.size() + hearts.size();
         if (count == 0) {
             return;
@@ -63,7 +65,7 @@ final class PlayerBoundHudRenderer extends AbstractHudRenderer {
         boolean horizontal = position == PlayerSpellPosition.BELOW;
         int width = horizontal ? count * size + (count - 1) * gap : size;
         int height = horizontal ? size : count * size + (count - 1) * gap;
-        Point location = spellLocation(playerLocation, width, height, position,
+        Point location = spellLocation(playerHead, width, height, position,
                 config.playerSpellOffsetX(), config.playerSpellOffsetY());
         int stepX = horizontal ? size + gap : 0;
         int stepY = horizontal ? 0 : size + gap;
@@ -96,14 +98,14 @@ final class PlayerBoundHudRenderer extends AbstractHudRenderer {
         switch (position) {
             case LEFT:
                 return new Point(player.x - width - SIDE_GAP + offsetX,
-                        player.y - height / 2 + offsetY);
+                        player.y + SPELL_SIDE_Y_ORIGIN - height / 2 + offsetY);
             case RIGHT:
                 return new Point(player.x + SIDE_GAP + offsetX,
-                        player.y - height / 2 + offsetY);
+                        player.y + SPELL_SIDE_Y_ORIGIN - height / 2 + offsetY);
             case BELOW:
             default:
                 return new Point(player.x - width / 2 + offsetX,
-                        player.y + offsetY);
+                        player.y + SPELL_BELOW_Y_ORIGIN + offsetY);
         }
     }
 }

@@ -82,8 +82,6 @@ abstract class AbstractHudRenderer {
         int alpha = config.backgroundAlpha();
         graphics.setColor(text.withAlpha(segment.color, Math.max(55, alpha / 2)));
         graphics.fillRoundRect(x, y, size, size, 6, 6);
-        graphics.setColor(text.withAlpha(segment.color, 220));
-        graphics.drawRoundRect(x, y, size - 1, size - 1, 6, 6);
 
         BufferedImage icon = icons.load(segment.icon, Math.max(10, size - 6));
         if (icon != null) {

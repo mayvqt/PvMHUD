@@ -55,11 +55,9 @@ public class PvMHUDPlayerOverlay extends Overlay {
         }
 
         LocalPoint localLocation = player.getLocalLocation();
-        int logicalHeight = player.getLogicalHeight();
-        int plane = client.getPlane();
-        Point playerHead = Perspective.localToCanvas(client, localLocation, plane, logicalHeight);
-        Point playerLowerBody = Perspective.localToCanvas(client, localLocation, plane, logicalHeight / 4);
-        if (playerHead == null || playerLowerBody == null) {
+        Point playerHead = Perspective.localToCanvas(
+                client, localLocation, client.getPlane(), player.getLogicalHeight());
+        if (playerHead == null) {
             return null;
         }
 
@@ -67,8 +65,7 @@ public class PvMHUDPlayerOverlay extends Overlay {
         try {
             graphics.setFont(fontResolver.resolve(oldFont));
             renderer.render(graphics, graphics.getFontMetrics(), frame,
-                    new java.awt.Point(playerHead.getX(), playerHead.getY()),
-                    new java.awt.Point(playerLowerBody.getX(), playerLowerBody.getY()));
+                    new java.awt.Point(playerHead.getX(), playerHead.getY()));
         } finally {
             graphics.setFont(oldFont);
         }
