@@ -1,15 +1,13 @@
 package com.pvmhud.overlay;
 
-public enum HudStyle {
-    TEXT("Text"),
-    GAME_ICONS("Game icons"),
-    BARS("Bars"),
-    CHIPS("Chips"),
-    PLAYER_BOUND("Player bound");
+public enum PlayerSpellPosition {
+    BELOW("Below"),
+    LEFT("Left"),
+    RIGHT("Right");
 
     private final String displayName;
 
-    HudStyle(String displayName) {
+    PlayerSpellPosition(String displayName) {
         this.displayName = displayName;
     }
 

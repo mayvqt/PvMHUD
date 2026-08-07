@@ -137,10 +137,6 @@ final class ChipHudRenderer extends AbstractHudRenderer {
             return iconSize(segment) + 10;
         }
 
-        if (segment.kind == SegmentKind.POTION) {
-            return iconSize(segment) + iconTextGap() + metrics.stringWidth(segment.label()) + 12;
-        }
-
         return iconSize(segment) + iconTextGap() + metrics.stringWidth(segment.label()) + 14;
     }
 

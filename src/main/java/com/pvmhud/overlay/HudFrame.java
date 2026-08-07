@@ -1,18 +1,18 @@
 package com.pvmhud.overlay;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 final class HudFrame {
+    static final HudFrame EMPTY = new HudFrame(List.of(), List.of(), List.of());
+
     private final List<Segment> statSegments;
     private final List<Segment> spellSegments;
     private final List<Segment> heartSegments;
 
     HudFrame(List<Segment> statSegments, List<Segment> spellSegments, List<Segment> heartSegments) {
-        this.statSegments = Collections.unmodifiableList(new ArrayList<>(statSegments));
-        this.spellSegments = Collections.unmodifiableList(new ArrayList<>(spellSegments));
-        this.heartSegments = Collections.unmodifiableList(new ArrayList<>(heartSegments));
+        this.statSegments = statSegments;
+        this.spellSegments = spellSegments;
+        this.heartSegments = heartSegments;
     }
 
     List<Segment> stats() {

@@ -1,9 +1,8 @@
 package com.pvmhud;
 
 import com.google.inject.Provides;
-import com.pvmhud.overlay.PvMHUDBoostOverlay;
-import com.pvmhud.overlay.PvMHUDPotionOverlay;
 import com.pvmhud.overlay.PvMHUDOverlay;
+import com.pvmhud.overlay.PvMHUDPlayerOverlay;
 import com.pvmhud.runtime.PvMHUDRuntimeController;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameTick;
@@ -21,8 +20,8 @@ import javax.inject.Inject;
 
 @PluginDescriptor(
         name = "PvM HUD",
-        description = "Compact PvM HUD for stats, spell states, potion timers, and combat boosts",
-        tags = {"pvm", "combat", "overlay", "hud", "thrall", "spell", "potion", "boost"}
+        description = "Compact PvM HUD for stats, spell states, and cooldowns",
+        tags = {"pvm", "combat", "overlay", "hud", "thrall", "spell", "prayer", "spec"}
 )
 public class PvMHUDPlugin extends Plugin {
     private static final String OLD_OVERHEAD_ALERT_CYCLES_KEY = "overheadAlertCycles";
@@ -39,10 +38,7 @@ public class PvMHUDPlugin extends Plugin {
     private PvMHUDOverlay hudOverlay;
 
     @Inject
-    private PvMHUDPotionOverlay potionOverlay;
-
-    @Inject
-    private PvMHUDBoostOverlay boostOverlay;
+    private PvMHUDPlayerOverlay playerOverlay;
 
     @Inject
     private PvMHUDRuntimeController runtimeController;
@@ -57,15 +53,13 @@ public class PvMHUDPlugin extends Plugin {
         migrateConfig();
         runtimeController.start();
         overlayManager.add(hudOverlay);
-        overlayManager.add(potionOverlay);
-        overlayManager.add(boostOverlay);
+        overlayManager.add(playerOverlay);
     }
 
     @Override
     protected void shutDown() {
-        overlayManager.remove(boostOverlay);
-        overlayManager.remove(potionOverlay);
         overlayManager.remove(hudOverlay);
+        overlayManager.remove(playerOverlay);
         runtimeController.stop();
     }
 
@@ -114,4 +108,5 @@ public class PvMHUDPlugin extends Plugin {
             configManager.unsetConfiguration(PvMHUDConfig.GROUP, OLD_OVERHEAD_ALERT_CYCLES_KEY);
         }
     }
+
 }

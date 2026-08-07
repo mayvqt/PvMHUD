@@ -23,7 +23,7 @@ public class SpecTracker implements ResettableTracker {
         // Spec is read directly from the client varp, so there is no cached state to reset.
     }
 
-    private static int normalizeSpec(int rawValue) {
+    static int normalizeSpec(int rawValue) {
         return Math.max(0, Math.min(100, rawValue / SPEC_DIVISOR));
     }
 }

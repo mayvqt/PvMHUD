@@ -1,7 +1,5 @@
 package com.pvmhud.overlay;
 
-import com.pvmhud.PvMHUDConfig;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.awt.Dimension;
@@ -11,9 +9,6 @@ import java.awt.Graphics2D;
 @Singleton
 class HudStyleRenderer {
     @Inject
-    private PvMHUDConfig config;
-
-    @Inject
     private TextIconHudRenderer textIconRenderer;
 
     @Inject
@@ -21,10 +16,6 @@ class HudStyleRenderer {
 
     @Inject
     private ChipHudRenderer chipRenderer;
-
-    Dimension render(Graphics2D graphics, FontMetrics metrics, HudFrame frame) {
-        return render(graphics, metrics, frame, config.hudStyle());
-    }
 
     Dimension render(Graphics2D graphics, FontMetrics metrics, HudFrame frame, HudStyle style) {
         switch (style) {
@@ -34,6 +25,8 @@ class HudStyleRenderer {
                 return barRenderer.render(graphics, metrics, frame);
             case CHIPS:
                 return chipRenderer.render(graphics, metrics, frame);
+            case PLAYER_BOUND:
+                return null;
             case TEXT:
             default:
                 return textIconRenderer.render(graphics, metrics, frame, false);

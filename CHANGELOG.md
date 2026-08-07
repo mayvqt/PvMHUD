@@ -1,19 +1,15 @@
 # Changelog
 
-## Unreleased
-
-- Polished the configuration panel with clearer section names, descriptions, threshold grouping, and collapsed advanced appearance sections
-- Clarified alert, spell timing, potion, boost, and color setting labels without renaming saved config keys
-- Updated varbit-backed timer and cooldown trackers from RuneLite varbit events to reduce stale overlay and alert state
+## v1.8
+- Added unit coverage for alert thresholds, Special Attack normalization/filtering, and time conversion
+- Added a player-bound HUD style with independently positioned stat and spell/cooldown groups
+- Added config controls for stat side, spell-icon position, and independent X/Y offsets
+- Organized settings into config sections while preserving all saved config keys
+- Displayed Player Bound HP, Prayer, and Special Attack as bare color-coded values while retaining icons for spells and cooldowns
 
 ---
 
 ## v1.7
-
-- Added a separate draggable potion timer overlay for CoX overloads, ToA salts, and divine combat potions
-- Added a separate draggable combat boost overlay for Attack, Strength, Defence, Ranged, and Magic boosts
-- Added boost percentage colouring and configurable low-boost overhead alerts
-- Added expiring and expired overhead alerts for timed potions
 - Removed Orbs and Stack HUD styles from the codebase
 
 ---

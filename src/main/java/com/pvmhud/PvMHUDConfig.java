@@ -1,8 +1,9 @@
 package com.pvmhud;
 
-import com.pvmhud.overlay.CompactHudStyle;
 import com.pvmhud.overlay.HudFont;
 import com.pvmhud.overlay.HudStyle;
+import com.pvmhud.overlay.PlayerSpellPosition;
+import com.pvmhud.overlay.PlayerStatSide;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
@@ -20,46 +21,35 @@ public interface PvMHUDConfig extends Config {
     Color DEFAULT_DANGER = new Color(132, 28, 28);
     Color DEFAULT_WARNING = new Color(245, 170, 58);
 
-    @ConfigSection(name = "Main HUD", description = "Choose the primary HUD style and layout.", position = 0)
+    @ConfigSection(name = "Main HUD", description = "Choose the HUD style and layout.", position = 0)
     String generalSection = "general";
-
-    @ConfigSection(name = "Main Indicators", description = "Choose which stats, spells, and cooldowns appear in the main HUD.", position = 1)
+    @ConfigSection(name = "Indicators", description = "Choose which stats, spells, and cooldowns are shown.", position = 1)
     String indicatorSection = "indicators";
-
-    @ConfigSection(name = "Potion & Boost Overlays", description = "Choose which timed potion and combat boost overlays are shown.", position = 2)
-    String potionSection = "potions";
-
-    @ConfigSection(name = "Alerts", description = "Configure local-only overhead alerts for HP, Prayer, and Special Attack.", position = 3)
+    @ConfigSection(name = "Player Bound", description = "Position indicators around the local player.", position = 2)
+    String playerHudSection = "playerHud";
+    @ConfigSection(name = "Alerts", description = "Configure local overhead alerts.", position = 3)
     String alertSection = "alerts";
-
-    @ConfigSection(name = "Potion & Boost Alerts", description = "Configure local-only overhead alerts for timed potions and combat boosts.", position = 4)
-    String potionAlertSection = "potionAlerts";
-
-    @ConfigSection(name = "Thresholds", description = "Set the HP, Prayer, Special Attack, potion, and boost thresholds used by colors and alerts.", position = 5)
+    @ConfigSection(name = "Thresholds", description = "Configure stat thresholds.", position = 4)
     String thresholdSection = "thresholds";
-
-    @ConfigSection(name = "Spell Timing", description = "Configure spell visibility, expiry warnings, and ready flashes.", position = 6)
+    @ConfigSection(name = "Spell Timing", description = "Configure spell visibility and ready-state timing.", position = 5)
     String timingSection = "timing";
 
-    @ConfigSection(name = "Text & Icon Layout", description = "Fine-tune text, icon, and spacing settings for Text, Game Icons, Bars, and Chips layouts.", position = 7, closedByDefault = true)
+    @ConfigSection(name = "Text & Icon Layout", description = "Fine-tune text, icon, and spacing settings.", position = 6, closedByDefault = true)
     String textIconSection = "textIcon";
 
-    @ConfigSection(name = "Bars & Chips Layout", description = "Fine-tune sizing for Bars and Chips layouts.", position = 8, closedByDefault = true)
+    @ConfigSection(name = "Bars & Chips Layout", description = "Fine-tune sizing for Bars and Chips layouts.", position = 7, closedByDefault = true)
     String barStyleSection = "barStyle";
 
-    @ConfigSection(name = "Potion & Boost Colors", description = "Set colors for active potion timers, expiring timers, and low combat boosts.", position = 9, closedByDefault = true)
-    String potionColorSection = "potionColors";
-
-    @ConfigSection(name = "Background", description = "Configure HUD background color and opacity.", position = 10, closedByDefault = true)
+    @ConfigSection(name = "Background", description = "Configure HUD background color and opacity.", position = 8, closedByDefault = true)
     String backgroundSection = "background";
 
-    @ConfigSection(name = "Stat Colors", description = "Set colors for HP, Prayer, Special Attack, poison, and venom states.", position = 11, closedByDefault = true)
+    @ConfigSection(name = "Stat Colors", description = "Set colors for HP, Prayer, Special Attack, poison, and venom states.", position = 9, closedByDefault = true)
     String statColorSection = "statColors";
 
-    @ConfigSection(name = "Spell State Colors", description = "Set shared colors for ready, cooldown, expiring, consumed, and flash states.", position = 12, closedByDefault = true)
+    @ConfigSection(name = "Spell State Colors", description = "Set shared colors for ready, cooldown, expiring, consumed, and flash states.", position = 10, closedByDefault = true)
     String spellStateColorSection = "spellStateColors";
 
-    @ConfigSection(name = "Active Spell Colors", description = "Set active colors for each tracked spell and cooldown.", position = 13, closedByDefault = true)
+    @ConfigSection(name = "Active Spell Colors", description = "Set active colors for each tracked spell and cooldown.", position = 11, closedByDefault = true)
     String activeSpellColorSection = "activeSpellColors";
 
     @ConfigItem(keyName = "hudStyle", name = "Style", description = "Choose the layout used by the main PvM HUD.", position = 0, section = generalSection)
@@ -95,74 +85,27 @@ public interface PvMHUDConfig extends Config {
     @ConfigItem(keyName = "showSpec", name = "Special Attack", description = "Show current Special Attack energy.", position = 2, section = indicatorSection)
     default boolean showSpec() { return true; }
 
-    @ConfigItem(keyName = "showPotionOverlay", name = "Timed Potion Overlay", description = "Show the separate draggable overlay for raid and divine potion timers.", position = 0, section = potionSection)
-    default boolean showPotionOverlay() { return true; }
+    @ConfigItem(keyName = "playerStatSide", name = "Stat Side", description = "Place HP, Prayer, and Special Attack to the left or right of the player.", position = 0, section = playerHudSection)
+    default PlayerStatSide playerStatSide() { return PlayerStatSide.RIGHT; }
 
-    @ConfigItem(keyName = "showRaidPotionTimers", name = "Raid Timers", description = "Show Chambers overload and Tombs salt timers when active.", position = 1, section = potionSection)
-    default boolean showRaidPotionTimers() { return true; }
+    @Range(min = -300, max = 300)
+    @ConfigItem(keyName = "playerStatOffsetX", name = "Stat X Offset", description = "Move the player-bound stat group horizontally.", position = 1, section = playerHudSection)
+    default int playerStatOffsetX() { return 12; }
 
-    @ConfigItem(keyName = "showDivinePotionTimers", name = "Divine Timers", description = "Show active divine combat potion timers separately from boosted skill levels.", position = 2, section = potionSection)
-    default boolean showDivinePotionTimers() { return true; }
+    @Range(min = -300, max = 300)
+    @ConfigItem(keyName = "playerStatOffsetY", name = "Stat Y Offset", description = "Move the player-bound stat group vertically.", position = 2, section = playerHudSection)
+    default int playerStatOffsetY() { return -55; }
 
-    @ConfigItem(keyName = "showCombatBoosts", name = "Combat Boost Overlay", description = "Show the separate draggable overlay for boosted Attack, Strength, Defence, Ranged, and Magic levels.", position = 3, section = potionSection)
-    default boolean showCombatBoosts() { return true; }
+    @ConfigItem(keyName = "playerSpellPosition", name = "Spell Position", description = "Place spell and cooldown icons below, left, or right of the player.", position = 3, section = playerHudSection)
+    default PlayerSpellPosition playerSpellPosition() { return PlayerSpellPosition.BELOW; }
 
-    @ConfigItem(keyName = "potionHudStyle", name = "Potion Style", description = "Choose the layout used by the timed potion overlay.", position = 4, section = potionSection)
-    default CompactHudStyle potionHudStyle() { return CompactHudStyle.CHIPS; }
+    @Range(min = -300, max = 300)
+    @ConfigItem(keyName = "playerSpellOffsetX", name = "Spell X Offset", description = "Move the player-bound spell group horizontally.", position = 4, section = playerHudSection)
+    default int playerSpellOffsetX() { return 0; }
 
-    @ConfigItem(keyName = "boostHudStyle", name = "Boost Style", description = "Choose the layout used by the combat boost overlay.", position = 5, section = potionSection)
-    default CompactHudStyle boostHudStyle() { return CompactHudStyle.CHIPS; }
-
-    @ConfigItem(keyName = "showAttackBoost", name = "Attack", description = "Show Attack boosts and allow low-boost alerts for Attack.", position = 6, section = potionSection)
-    default boolean showAttackBoost() { return true; }
-
-    @ConfigItem(keyName = "showStrengthBoost", name = "Strength", description = "Show Strength boosts and allow low-boost alerts for Strength.", position = 7, section = potionSection)
-    default boolean showStrengthBoost() { return true; }
-
-    @ConfigItem(keyName = "showDefenceBoost", name = "Defence", description = "Show Defence boosts and allow low-boost alerts for Defence.", position = 8, section = potionSection)
-    default boolean showDefenceBoost() { return true; }
-
-    @ConfigItem(keyName = "showRangedBoost", name = "Ranged", description = "Show Ranged boosts and allow low-boost alerts for Ranged.", position = 9, section = potionSection)
-    default boolean showRangedBoost() { return true; }
-
-    @ConfigItem(keyName = "showMagicBoost", name = "Magic", description = "Show Magic boosts and allow low-boost alerts for Magic.", position = 10, section = potionSection)
-    default boolean showMagicBoost() { return true; }
-
-    @Range(min = 1, max = 100)
-    @ConfigItem(keyName = "combatBoostThresholdPercent", name = "Low Boost Percent", description = "Use warning colors and alerts when a boost falls to this percent of its highest observed boost.", position = 0, section = thresholdSection)
-    default int combatBoostThresholdPercent() { return 30; }
-
-    @Range(min = 0, max = 120)
-    @ConfigItem(keyName = "potionExpiringSoonSeconds", name = "Potion Warning Time", description = "Seconds before a timed potion expires to use warning colors and expiring alerts.", position = 1, section = thresholdSection)
-    default int potionExpiringSoonSeconds() { return 15; }
-
-    @ConfigItem(keyName = "overheadCombatBoostAlertEnabled", name = "Low Boost Alert", description = "Show a local overhead message when an enabled combat boost falls below the low-boost threshold.", position = 0, section = potionAlertSection)
-    default boolean overheadCombatBoostAlertEnabled() { return true; }
-
-    @ConfigItem(keyName = "combatBoostOverheadMessage", name = "Low Boost Message", description = "Overhead message shown when a boost falls below threshold. Supports {skill}, {level}, {base}, {boost}, {peak}, {percent}, and {threshold}.", position = 1, section = potionAlertSection)
-    default String combatBoostOverheadMessage() { return "{skill} boost low!"; }
-
-    @ConfigItem(keyName = "overheadTimedPotionAlertEnabled", name = "Potion Expiry Alert", description = "Show a local overhead message when overloads, salts, or divine potions are about to expire and when they expire.", position = 2, section = potionAlertSection)
-    default boolean overheadTimedPotionAlertEnabled() { return true; }
-
-    @Range(min = 0, max = 30)
-    @ConfigItem(keyName = "potionAlertCooldownSeconds", name = "Alert Cooldown", description = "Minimum seconds between potion and boost overhead alerts. Set to 0 to disable throttling.", position = 3, section = potionAlertSection)
-    default int potionAlertCooldownSeconds() { return 2; }
-
-    @ConfigItem(keyName = "raidPotionExpiringMessage", name = "Expiring Message", description = "Overhead message shown when a timed potion is about to expire. Supports {potion}, {time}, and {ticks}.", position = 4, section = potionAlertSection)
-    default String raidPotionExpiringMessage() { return "{potion} expiring!"; }
-
-    @ConfigItem(keyName = "raidPotionExpiredMessage", name = "Expired Message", description = "Overhead message shown when a timed potion expires. Supports {potion}, {time}, and {ticks}.", position = 5, section = potionAlertSection)
-    default String raidPotionExpiredMessage() { return "{potion} expired!"; }
-
-    @ConfigItem(keyName = "potionActiveColor", name = "Potion Active", description = "Color for active potion timers and healthy combat boosts.", position = 0, section = potionColorSection)
-    default Color potionActiveColor() { return new Color(104, 220, 132); }
-
-    @ConfigItem(keyName = "potionWarningColor", name = "Potion Warning", description = "Color for expiring potion timers and low combat boosts.", position = 1, section = potionColorSection)
-    default Color potionWarningColor() { return DEFAULT_WARNING; }
-
-    @ConfigItem(keyName = "potionFlashColor", name = "Potion Flash", description = "Flash color for expiring potion timers and low combat boosts.", position = 2, section = potionColorSection)
-    default Color potionFlashColor() { return new Color(255, 232, 98); }
+    @Range(min = -300, max = 300)
+    @ConfigItem(keyName = "playerSpellOffsetY", name = "Spell Y Offset", description = "Move the player-bound spell group vertically.", position = 5, section = playerHudSection)
+    default int playerSpellOffsetY() { return 8; }
 
     @ConfigItem(keyName = "showInactiveSpells", name = "Show Ready Spells", description = "Keep spell indicators visible briefly after their active or cooldown state ends.", position = 0, section = timingSection)
     default boolean showInactiveSpells() { return true; }
@@ -276,11 +219,11 @@ public interface PvMHUDConfig extends Config {
     @ConfigItem(keyName = "deathChargeActiveColor", name = "Death Charge", description = "Active color for Death Charge in all HUD styles.", position = 6, section = activeSpellColorSection)
     default Color deathChargeActiveColor() { return new Color(214, 40, 56); }
 
-    @ConfigItem(keyName = "fontType", name = "Font", description = "Font used by Text, Game Icons, Bars, and Chips layouts.", position = 0, section = textIconSection)
+    @ConfigItem(keyName = "fontType", name = "Font", description = "Font used by every HUD style with text.", position = 0, section = textIconSection)
     default HudFont fontType() { return HudFont.SYSTEM; }
 
     @Range(min = 8, max = 32)
-    @ConfigItem(keyName = "fontSize", name = "Font Size", description = "Text size used by Text, Game Icons, Bars, and Chips layouts.", position = 1, section = textIconSection)
+    @ConfigItem(keyName = "fontSize", name = "Font Size", description = "Text size used by every HUD style with text.", position = 1, section = textIconSection)
     default int fontSize() { return 16; }
 
     @ConfigItem(keyName = "boldFont", name = "Bold Font", description = "Use bold text when using the system font (all HUD styles with text).", position = 2, section = textIconSection)
@@ -290,7 +233,7 @@ public interface PvMHUDConfig extends Config {
     default boolean verticalLayout() { return true; }
 
     @Range(min = 10, max = 32)
-    @ConfigItem(keyName = "spellIconSize", name = "Spell Icon Size", description = "Size of spell and cooldown icons in Game Icons and Chips layouts.", position = 3, section = textIconSection)
+    @ConfigItem(keyName = "spellIconSize", name = "Spell Icon Size", description = "Size of spell and cooldown icons in Game Icons, Chips, and Player Bound layouts.", position = 3, section = textIconSection)
     default int spellIconSize() { return 20; }
 
     @Range(min = 10, max = 32)

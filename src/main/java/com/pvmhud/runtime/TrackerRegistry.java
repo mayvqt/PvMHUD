@@ -6,10 +6,8 @@ import com.pvmhud.tracking.HeartTracker;
 import com.pvmhud.tracking.HpTracker;
 import com.pvmhud.tracking.MarkOfDarknessTracker;
 import com.pvmhud.tracking.PrayerTracker;
-import com.pvmhud.tracking.PotionBoostTracker;
 import com.pvmhud.tracking.ResettableTracker;
 import com.pvmhud.tracking.SpecTracker;
-import com.pvmhud.tracking.TimedPotionTracker;
 import com.pvmhud.tracking.ThrallTracker;
 import com.pvmhud.tracking.VengeanceTracker;
 import com.pvmhud.tracking.WardOfArceuusTracker;
@@ -33,9 +31,7 @@ class TrackerRegistry {
             DeathChargeTracker deathChargeTracker,
             VengeanceTracker vengeanceTracker,
             CorruptionTracker corruptionTracker,
-            HeartTracker heartTracker,
-            PotionBoostTracker potionBoostTracker,
-            TimedPotionTracker timedPotionTracker
+            HeartTracker heartTracker
     ) {
         this.trackers = List.of(
                 hpTracker,
@@ -47,9 +43,7 @@ class TrackerRegistry {
                 deathChargeTracker,
                 vengeanceTracker,
                 corruptionTracker,
-                heartTracker,
-                potionBoostTracker,
-                timedPotionTracker
+                heartTracker
         );
     }
 

@@ -14,9 +14,6 @@ public class PvMHUDOverlay extends AbstractPvMHUDFrameOverlay {
     private HudVisualStateManager visualStateManager;
 
     @Inject
-    private HudStyleRenderer styleRenderer;
-
-    @Inject
     private HudIconCache iconCache;
 
     public PvMHUDOverlay() {
@@ -33,7 +30,7 @@ public class PvMHUDOverlay extends AbstractPvMHUDFrameOverlay {
 
     @Override
     protected HudFrame buildFrame(long now) {
-        return segmentBuilder.build(now);
+        return config.hudStyle() == HudStyle.PLAYER_BOUND ? HudFrame.EMPTY : segmentBuilder.build(now);
     }
 
     @Override

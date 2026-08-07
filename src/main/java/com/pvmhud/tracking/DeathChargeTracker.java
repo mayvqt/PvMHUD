@@ -12,17 +12,14 @@ public class DeathChargeTracker extends BaseTimedSpellTracker {
 
     @Subscribe
     public void onVarbitChanged(VarbitChanged event) {
-        if (event.getVarbitId() != VarbitID.ARCEUUS_DEATH_CHARGE_COOLDOWN) {
-            return;
-        }
-
-        int cooldown = event.getValue();
-        setCooldownActive(cooldown > 0);
-
-        if (cooldown == 1 && !isActive()) {
-            markActive(DEATH_CHARGE_DURATION_NANOS);
-        } else if (cooldown == 0 && isActive()) {
-            clearActive();
+        if (event.getVarbitId() == VarbitID.ARCEUUS_DEATH_CHARGE_COOLDOWN) {
+            setCooldownActive(event.getValue() > 0);
+        } else if (event.getVarbitId() == VarbitID.ARCEUUS_DEATH_CHARGE_ACTIVE) {
+            if (event.getValue() > 0) {
+                markActive(DEATH_CHARGE_DURATION_NANOS);
+            } else {
+                clearActive();
+            }
         }
     }
 
@@ -30,5 +27,11 @@ public class DeathChargeTracker extends BaseTimedSpellTracker {
     protected void sync() {
         int cooldown = client.getVarbitValue(VarbitID.ARCEUUS_DEATH_CHARGE_COOLDOWN);
         setCooldownActive(cooldown > 0);
+        boolean active = client.getVarbitValue(VarbitID.ARCEUUS_DEATH_CHARGE_ACTIVE) > 0;
+        if (active && !isActive()) {
+            markActive(DEATH_CHARGE_DURATION_NANOS);
+        } else if (!active) {
+            clearActive();
+        }
     }
 }
