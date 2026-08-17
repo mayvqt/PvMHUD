@@ -20,6 +20,9 @@ abstract class AbstractHudRenderer {
     protected HudTextRenderer text;
 
     protected int iconSize(Segment segment) {
+        if (!config.showIcons()) {
+            return 0;
+        }
         return segment.kind == SegmentKind.STAT ? config.statIconSize() : config.spellIconSize();
     }
 
@@ -84,15 +87,18 @@ abstract class AbstractHudRenderer {
         graphics.setColor(text.withAlpha(segment.color, Math.max(55, alpha / 2)));
         graphics.fillRoundRect(x, y, width, height, 6, 6);
 
-        int iconAreaWidth = segment.label().isEmpty() ? width : height;
-        BufferedImage icon = icons.load(segment.icon, Math.max(10, height - 6));
+        boolean showIcons = config.showIcons();
+        String label = showIcons ? segment.label() : segment.text;
+        int iconAreaWidth = showIcons ? (label.isEmpty() ? width : height) : 0;
+        BufferedImage icon = showIcons
+                ? icons.load(segment.icon, Math.max(10, height - 6))
+                : null;
         if (icon != null) {
             int iconX = x + (iconAreaWidth - icon.getWidth()) / 2;
             int iconY = y + (height - icon.getHeight()) / 2;
             graphics.drawImage(icon, iconX, iconY, null);
         }
 
-        String label = segment.label();
         if (!label.isEmpty()) {
             FontMetrics metrics = graphics.getFontMetrics();
             int labelAreaWidth = width - iconAreaWidth;

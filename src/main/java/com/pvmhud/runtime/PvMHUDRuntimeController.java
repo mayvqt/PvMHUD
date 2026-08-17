@@ -90,6 +90,7 @@ public class PvMHUDRuntimeController {
 
     public void onGameTick(GameTick event) {
         updateRecentCombatTicks();
+        hudOverlay.setInCombat(hasRecentCombatContext());
     }
 
     public void onClientTick(ClientTick event) {
@@ -120,6 +121,7 @@ public class PvMHUDRuntimeController {
     public void onHitsplatApplied(HitsplatApplied event) {
         if (event.getActor() == client.getLocalPlayer()) {
             recentCombatTicks = RECENT_COMBAT_TICKS;
+            hudOverlay.setInCombat(true);
         }
     }
 

@@ -51,6 +51,12 @@ public interface PvMHUDConfig extends Config {
     @ConfigItem(keyName = "hudStyle", name = "Style", description = "Choose the layout used by the main PvM HUD.", position = 0, section = generalSection)
     default HudStyle hudStyle() { return HudStyle.CHIPS; }
 
+    @ConfigItem(keyName = "showIcons", name = "Show Icons", description = "Show icons in all HUD layouts. Disable to use text-only indicators.", position = 2, section = generalSection)
+    default boolean showIcons() { return true; }
+
+    @ConfigItem(keyName = "hideOutOfCombat", name = "Hide Out of Combat", description = "Hide the HUD when not in combat, retaining it briefly after combat ends.", position = 3, section = generalSection)
+    default boolean hideOutOfCombat() { return false; }
+
     @ConfigItem(keyName = "showThrall", name = "Thrall", description = "Show Resurrect Thrall active time, cooldown, and ready state.", position = 3, section = indicatorSection)
     default boolean showThrall() { return true; }
 

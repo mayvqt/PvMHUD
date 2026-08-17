@@ -10,6 +10,7 @@ import java.util.List;
 @Singleton
 final class TextIconHudRenderer extends AbstractHudRenderer {
     Dimension render(Graphics2D graphics, FontMetrics metrics, HudFrame frame, boolean gameIconsMode) {
+        gameIconsMode = gameIconsMode && config.showIcons();
         List<Segment> spells = frame.spells();
         List<Segment> stats = frame.stats();
         List<Segment> hearts = frame.hearts();

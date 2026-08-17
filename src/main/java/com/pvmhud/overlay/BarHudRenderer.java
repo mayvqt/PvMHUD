@@ -17,7 +17,7 @@ final class BarHudRenderer extends AbstractHudRenderer {
         int gap = barGap();
         int tile = barSpellTileSize();
         int spellTileWidth = spellTileWidth(metrics, spells, hearts, tile);
-        int statIconSize = config.statIconSize();
+        int statIconSize = config.showIcons() ? config.statIconSize() : 0;
         int barHeight = config.barHeight();
         int barWidth = config.barWidth();
         int spellWidth = spellCount == 0 ? 0 : spellCount * spellTileWidth + (spellCount - 1) * gap;
@@ -26,7 +26,9 @@ final class BarHudRenderer extends AbstractHudRenderer {
             return renderVertical(graphics, metrics, frame, spells, hearts, gap, tile, spellTileWidth);
         }
 
-        int statWidth = frame.stats().isEmpty() ? 0 : statIconSize + iconTextGap() + barWidth;
+        int statWidth = frame.stats().isEmpty()
+                ? 0
+                : statIconSize + (statIconSize > 0 ? iconTextGap() : 0) + barWidth;
         int width = Math.max(spellWidth, statWidth) + HudConstants.PADDING_X * 2;
         int rowHeight = Math.max(statIconSize, barHeight);
         int height = HudConstants.PADDING_Y * 2
@@ -60,7 +62,7 @@ final class BarHudRenderer extends AbstractHudRenderer {
     }
 
     private Dimension renderVertical(Graphics2D graphics, FontMetrics metrics, HudFrame frame, List<Segment> spells, List<Segment> hearts, int gap, int tile, int spellTileWidth) {
-        int statIconSize = config.statIconSize();
+        int statIconSize = config.showIcons() ? config.statIconSize() : 0;
         int verticalBarWidth = Math.max(1, config.verticalBarWidth());
         int verticalBarHeight = config.verticalBarHeight();
         int barWidth = verticalBarWidth;
@@ -69,7 +71,9 @@ final class BarHudRenderer extends AbstractHudRenderer {
                 : frame.stats().size() * Math.max(statIconSize, barWidth) + Math.max(0, frame.stats().size() - 1) * gap;
         int spellCount = spells.size() + hearts.size();
         int spellHeight = spellCount == 0 ? 0 : spellCount * tile + Math.max(0, spellCount - 1) * gap;
-        int statHeight = frame.stats().isEmpty() ? 0 : statIconSize + iconTextGap() + verticalBarHeight;
+        int statHeight = frame.stats().isEmpty()
+                ? 0
+                : statIconSize + (statIconSize > 0 ? iconTextGap() : 0) + verticalBarHeight;
         int columnGap = spellCount > 0 && !frame.stats().isEmpty() ? gap + 2 : 0;
 
         int width = (spellCount == 0 ? 0 : spellTileWidth) + columnGap + statColumnWidth + HudConstants.PADDING_X * 2;
@@ -98,13 +102,13 @@ final class BarHudRenderer extends AbstractHudRenderer {
     }
 
     private void drawHorizontalStatBar(Graphics2D graphics, FontMetrics metrics, Segment segment, int x, int y, int height) {
-        int iconSize = config.statIconSize();
+        int iconSize = config.showIcons() ? config.statIconSize() : 0;
         BufferedImage icon = icons.load(segment.icon, iconSize);
         if (icon != null) {
             graphics.drawImage(icon, x, y + (height - iconSize) / 2, null);
         }
 
-        int barX = x + iconSize + iconTextGap();
+        int barX = x + iconSize + (iconSize > 0 ? iconTextGap() : 0);
         int barY = y + Math.max(0, (height - config.barHeight()) / 2);
         int barWidth = config.barWidth();
         int barHeight = config.barHeight();
@@ -118,13 +122,13 @@ final class BarHudRenderer extends AbstractHudRenderer {
     }
 
     private void drawVerticalStatBar(Graphics2D graphics, FontMetrics metrics, Segment segment, int x, int y, int width, int height) {
-        int iconSize = config.statIconSize();
+        int iconSize = config.showIcons() ? config.statIconSize() : 0;
         BufferedImage icon = icons.load(segment.icon, iconSize);
         if (icon != null) {
             graphics.drawImage(icon, x + (width - iconSize) / 2, y, null);
         }
 
-        int barY = y + iconSize + iconTextGap();
+        int barY = y + iconSize + (iconSize > 0 ? iconTextGap() : 0);
         int barHeight = config.verticalBarHeight();
         int barWidth = Math.max(1, config.verticalBarWidth());
         int barX = x + (width - barWidth) / 2;
@@ -156,8 +160,9 @@ final class BarHudRenderer extends AbstractHudRenderer {
     }
 
     private int tileWidth(FontMetrics metrics, Segment segment, int tile) {
-        return segment.label().isEmpty()
+        String label = config.showIcons() ? segment.label() : segment.text;
+        return label.isEmpty()
                 ? tile
-                : tile + iconTextGap() + metrics.stringWidth(segment.label()) + 4;
+                : (config.showIcons() ? tile + iconTextGap() : 0) + metrics.stringWidth(label) + 4;
     }
 }

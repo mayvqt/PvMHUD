@@ -36,6 +36,8 @@ public class PvMHUDOverlay extends Overlay {
     @Inject
     private HudStyleRenderer styleRenderer;
 
+    private boolean inCombat;
+
     public PvMHUDOverlay() {
         setPosition(OverlayPosition.TOP_LEFT);
         setLayer(OverlayLayer.ABOVE_SCENE);
@@ -43,8 +45,13 @@ public class PvMHUDOverlay extends Overlay {
     }
 
     public void reset() {
+        inCombat = false;
         visualStateManager.reset();
         segmentBuilder.reset();
+    }
+
+    public void setInCombat(boolean inCombat) {
+        this.inCombat = inCombat;
     }
 
     public void updateFrame(long now) {
@@ -57,7 +64,7 @@ public class PvMHUDOverlay extends Overlay {
 
     @Override
     public Dimension render(Graphics2D graphics) {
-        if (client.getLocalPlayer() == null) {
+        if (client.getLocalPlayer() == null || (config.hideOutOfCombat() && !inCombat)) {
             return null;
         }
 

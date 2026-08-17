@@ -108,7 +108,10 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         int size = iconSize(segment);
         int iconY = y + (height - size) / 2;
 
-        String label = segment.kind == SegmentKind.SPELL ? "" : segment.label();
+        boolean showIcons = config.showIcons();
+        String label = !showIcons
+                ? segment.text
+                : segment.kind == SegmentKind.SPELL ? "" : segment.label();
         boolean hasLabel = !label.isEmpty();
         boolean iconOnly = !hasLabel;
 
@@ -119,10 +122,11 @@ final class ChipHudRenderer extends AbstractHudRenderer {
             iconX = x + (width - size) / 2;
         } else {
             int labelWidth = metrics.stringWidth(label);
-            int contentWidth = size + iconTextGap() + labelWidth;
+            int gap = size > 0 ? iconTextGap() : 0;
+            int contentWidth = size + gap + labelWidth;
 
             iconX = x + Math.max(0, (width - contentWidth) / 2);
-            textX = iconX + size + iconTextGap();
+            textX = iconX + size + gap;
         }
 
         BufferedImage icon = icons.load(segment.icon, size);
@@ -134,7 +138,7 @@ final class ChipHudRenderer extends AbstractHudRenderer {
             text.drawText(graphics, label, textX, y + text.baseline(metrics, height), segment.color);
         }
 
-        if (segment.kind == SegmentKind.SPELL && !segment.badgeText.isEmpty()) {
+        if (showIcons && segment.kind == SegmentKind.SPELL && !segment.badgeText.isEmpty()) {
             Graphics2D counterGraphics = (Graphics2D) graphics.create();
             try {
                 counterGraphics.setFont(counterFont(graphics.getFont()));
@@ -174,7 +178,9 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         }
 
         if (segment.kind == SegmentKind.SPELL || segment.kind == SegmentKind.HEART) {
-            return iconSize(segment) + 10;
+            return config.showIcons()
+                    ? iconSize(segment) + 10
+                    : metrics.stringWidth(segment.text) + 14;
         }
 
         return iconSize(segment) + iconTextGap() + metrics.stringWidth(segment.label()) + 14;
@@ -223,7 +229,10 @@ final class ChipHudRenderer extends AbstractHudRenderer {
     }
 
     private int chipHeight(FontMetrics metrics) {
-        return Math.max(metrics.getHeight(), Math.max(config.statIconSize(), config.spellIconSize())) + 6;
+        int maxIconSize = config.showIcons()
+                ? Math.max(config.statIconSize(), config.spellIconSize())
+                : 0;
+        return Math.max(metrics.getHeight(), maxIconSize) + 6;
     }
 
     private Font counterFont(Font sourceFont) {
