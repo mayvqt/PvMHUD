@@ -136,6 +136,54 @@ public interface PvMHUDConfig extends Config {
     @ConfigItem(keyName = "overheadAlertSeconds", name = "Alert Duration", description = "Seconds that local overhead alert messages stay visible.", position = 6, section = alertSection)
     default int overheadAlertSeconds() { return 4; }
 
+    @ConfigItem(keyName = "overheadSpellExpiryAlerts", name = "Spell Expiry Alerts", description = "Show a local overhead message when tracked buffs end or tracked cooldowns become ready.", position = 7, section = alertSection)
+    default boolean overheadSpellExpiryAlerts() { return false; }
+
+    @ConfigItem(keyName = "overheadThrallExpiryAlert", name = "Thrall Expiry", description = "Show an overhead message when a Thrall ends.", position = 8, section = alertSection)
+    default boolean overheadThrallExpiryAlert() { return true; }
+
+    @ConfigItem(keyName = "thrallExpiryOverheadMessage", name = "Thrall Message", description = "Overhead message shown when a Thrall ends.", position = 9, section = alertSection)
+    default String thrallExpiryOverheadMessage() { return "Thrall ended!"; }
+
+    @ConfigItem(keyName = "overheadDeathChargeExpiryAlert", name = "Death Charge Expiry", description = "Show an overhead message when Death Charge ends.", position = 10, section = alertSection)
+    default boolean overheadDeathChargeExpiryAlert() { return true; }
+
+    @ConfigItem(keyName = "deathChargeExpiryOverheadMessage", name = "Death Charge Message", description = "Overhead message shown when Death Charge ends.", position = 11, section = alertSection)
+    default String deathChargeExpiryOverheadMessage() { return "Death Charge ended!"; }
+
+    @ConfigItem(keyName = "overheadMarkOfDarknessExpiryAlert", name = "Mark of Darkness Expiry", description = "Show an overhead message when Mark of Darkness ends.", position = 12, section = alertSection)
+    default boolean overheadMarkOfDarknessExpiryAlert() { return true; }
+
+    @ConfigItem(keyName = "markOfDarknessExpiryOverheadMessage", name = "Mark of Darkness Message", description = "Overhead message shown when Mark of Darkness ends.", position = 13, section = alertSection)
+    default String markOfDarknessExpiryOverheadMessage() { return "Mark of Darkness ended!"; }
+
+    @ConfigItem(keyName = "overheadVengeanceExpiryAlert", name = "Vengeance Expiry", description = "Show an overhead message when Vengeance ends or is consumed.", position = 14, section = alertSection)
+    default boolean overheadVengeanceExpiryAlert() { return true; }
+
+    @ConfigItem(keyName = "vengeanceExpiryOverheadMessage", name = "Vengeance Message", description = "Overhead message shown when Vengeance ends or is consumed.", position = 15, section = alertSection)
+    default String vengeanceExpiryOverheadMessage() { return "Vengeance ended!"; }
+
+    @ConfigItem(keyName = "overheadWardExpiryAlert", name = "Ward of Arceuus Expiry", description = "Show an overhead message when Ward of Arceuus ends.", position = 16, section = alertSection)
+    default boolean overheadWardExpiryAlert() { return true; }
+
+    @ConfigItem(keyName = "wardExpiryOverheadMessage", name = "Ward of Arceuus Message", description = "Overhead message shown when Ward of Arceuus ends.", position = 17, section = alertSection)
+    default String wardExpiryOverheadMessage() { return "Ward of Arceuus ended!"; }
+
+    @ConfigItem(keyName = "overheadCorruptionReadyAlert", name = "Corruption Ready", description = "Show an overhead message when Corruption becomes ready.", position = 18, section = alertSection)
+    default boolean overheadCorruptionReadyAlert() { return true; }
+
+    @ConfigItem(keyName = "corruptionReadyOverheadMessage", name = "Corruption Message", description = "Overhead message shown when Corruption becomes ready.", position = 19, section = alertSection)
+    default String corruptionReadyOverheadMessage() { return "Corruption ready!"; }
+
+    @ConfigItem(keyName = "overheadHeartReadyAlert", name = "Heart Ready", description = "Show an overhead message when the Heart becomes ready.", position = 20, section = alertSection)
+    default boolean overheadHeartReadyAlert() { return true; }
+
+    @ConfigItem(keyName = "heartReadyOverheadMessage", name = "Heart Message", description = "Overhead message shown when the Heart becomes ready.", position = 21, section = alertSection)
+    default String heartReadyOverheadMessage() { return "Heart ready!"; }
+
+    @ConfigItem(keyName = "spellExpiryOverheadColor", name = "Spell Expiry Color", description = "Color used for spell expiry and cooldown-ready overhead messages.", position = 22, section = alertSection)
+    default Color spellExpiryOverheadColor() { return DEFAULT_WARNING; }
+
     @ConfigItem(keyName = "hpNormalColor", name = "Hitpoints", description = "Color for normal Hitpoints in all HUD styles.", position = 0, section = statColorSection)
     default Color hpNormalColor() { return new Color(224, 64, 64); }
 

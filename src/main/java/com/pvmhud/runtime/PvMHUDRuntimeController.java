@@ -3,6 +3,7 @@ package com.pvmhud.runtime;
 import com.pvmhud.PvMHUDConfig;
 import com.pvmhud.alerts.OverheadAlertManager;
 import com.pvmhud.alerts.OverheadAlertState;
+import com.pvmhud.alerts.SpellExpiryAlertManager;
 import com.pvmhud.overlay.PvMHUDOverlay;
 import com.pvmhud.tracking.ResettableTracker;
 import com.pvmhud.tracking.SpecTracker;
@@ -48,6 +49,9 @@ public class PvMHUDRuntimeController {
 
     @Inject
     private OverheadAlertManager overheadAlertManager;
+
+    @Inject
+    private SpellExpiryAlertManager spellExpiryAlertManager;
 
     private List<ResettableTracker> resettableTrackers = List.of();
     private boolean pendingAlertBaseline;
@@ -99,6 +103,7 @@ public class PvMHUDRuntimeController {
     public void onClientTick(ClientTick event) {
         if (client.getGameState() == GameState.LOGGED_IN && client.getLocalPlayer() != null) {
             hudOverlay.updateFrame(System.nanoTime());
+            spellExpiryAlertManager.update();
         }
 
         if (pendingAlertBaseline) {
@@ -143,6 +148,7 @@ public class PvMHUDRuntimeController {
             tracker.reset();
         }
         overheadAlertState.reset();
+        spellExpiryAlertManager.reset();
         pendingAlertBaseline = false;
         pendingSpecAlertEvaluation = false;
         recentCombatTicks = 0;

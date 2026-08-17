@@ -61,6 +61,11 @@ public abstract class BaseTimedSpellTracker extends CachedVarbitTracker implemen
     }
 
     @Override
+    public boolean hasActiveEffect() {
+        return getRemainingNanos() > 0L;
+    }
+
+    @Override
     public boolean isOnCooldown() {
         syncIfNeeded();
         return cooldownActive;

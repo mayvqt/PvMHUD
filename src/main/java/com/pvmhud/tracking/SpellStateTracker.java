@@ -24,4 +24,8 @@ public interface SpellStateTracker {
     default double getProgress() {
         return -1d;
     }
+
+    default boolean hasActiveEffect() {
+        return isActive();
+    }
 }
