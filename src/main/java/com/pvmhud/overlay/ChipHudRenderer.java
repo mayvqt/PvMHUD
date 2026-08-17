@@ -10,6 +10,7 @@ import java.util.List;
 @Singleton
 final class ChipHudRenderer extends AbstractHudRenderer {
     private static final int PROGRESS_HEIGHT = 2;
+    private static final String TIMER_WIDTH_SAMPLE = "000";
 
     Dimension render(Graphics2D graphics, FontMetrics metrics, HudFrame frame) {
         List<Segment> spells = frame.spells();
@@ -105,7 +106,8 @@ final class ChipHudRenderer extends AbstractHudRenderer {
 
         String label = segment.label();
         boolean hasLabel = !label.isEmpty();
-        boolean iconOnly = !hasLabel;
+        boolean reservesTimerSpace = segment.kind == SegmentKind.SPELL && segment.progress >= 0d;
+        boolean iconOnly = !hasLabel && !reservesTimerSpace;
 
         int iconX;
         int textX = 0;
@@ -113,11 +115,16 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         if (iconOnly) {
             iconX = x + (width - size) / 2;
         } else {
-            int labelWidth = metrics.stringWidth(label);
+            int labelWidth = reservesTimerSpace
+                    ? metrics.stringWidth(TIMER_WIDTH_SAMPLE)
+                    : metrics.stringWidth(label);
             int contentWidth = size + iconTextGap() + labelWidth;
 
             iconX = x + Math.max(0, (width - contentWidth) / 2);
-            textX = iconX + size + iconTextGap();
+            int labelX = iconX + size + iconTextGap();
+            textX = reservesTimerSpace
+                    ? labelX + labelWidth - metrics.stringWidth(label)
+                    : labelX;
         }
 
         BufferedImage icon = icons.load(segment.icon, size);
@@ -156,9 +163,12 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         }
 
         if (segment.kind == SegmentKind.SPELL || segment.kind == SegmentKind.HEART) {
-            int labelWidth = segment.label().isEmpty()
-                    ? 0
-                    : iconTextGap() + metrics.stringWidth(segment.label());
+            boolean reservesTimerSpace = segment.kind == SegmentKind.SPELL && segment.progress >= 0d;
+            int labelWidth = reservesTimerSpace
+                    ? iconTextGap() + metrics.stringWidth(TIMER_WIDTH_SAMPLE)
+                    : segment.label().isEmpty()
+                            ? 0
+                            : iconTextGap() + metrics.stringWidth(segment.label());
             return iconSize(segment) + labelWidth + 10;
         }
 
