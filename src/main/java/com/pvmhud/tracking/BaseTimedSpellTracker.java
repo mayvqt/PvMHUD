@@ -43,7 +43,7 @@ public abstract class BaseTimedSpellTracker extends CachedVarbitTracker implemen
     }
 
     @Override
-    public String getChipText() {
+    public String getDisplayText() {
         long remainingNanos = getRemainingNanos();
         if (remainingNanos <= 0L) {
             return "";

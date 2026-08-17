@@ -17,6 +17,10 @@ public interface SpellStateTracker {
         return "";
     }
 
+    default String getDisplayText() {
+        return "";
+    }
+
     default double getProgress() {
         return -1d;
     }

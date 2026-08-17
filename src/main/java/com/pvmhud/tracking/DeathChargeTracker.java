@@ -36,6 +36,11 @@ public class DeathChargeTracker extends BaseTimedSpellTracker {
     }
 
     @Override
+    public String getDisplayText() {
+        return getChipText();
+    }
+
+    @Override
     protected void sync() {
         int cooldown = client.getVarbitValue(VarbitID.ARCEUUS_DEATH_CHARGE_COOLDOWN);
         setCooldownActive(cooldown > 0);

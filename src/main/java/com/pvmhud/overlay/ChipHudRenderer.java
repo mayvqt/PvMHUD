@@ -1,16 +1,17 @@
 package com.pvmhud.overlay;
 
 import javax.inject.Singleton;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
 @Singleton
 final class ChipHudRenderer extends AbstractHudRenderer {
     private static final int PROGRESS_HEIGHT = 2;
-    private static final String TIMER_WIDTH_SAMPLE = "000";
 
     Dimension render(Graphics2D graphics, FontMetrics metrics, HudFrame frame) {
         List<Segment> spells = frame.spells();
@@ -104,10 +105,9 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         int size = iconSize(segment);
         int iconY = y + (height - size) / 2;
 
-        String label = segment.label();
+        String label = segment.kind == SegmentKind.SPELL ? "" : segment.label();
         boolean hasLabel = !label.isEmpty();
-        boolean reservesTimerSpace = segment.kind == SegmentKind.SPELL && segment.progress >= 0d;
-        boolean iconOnly = !hasLabel && !reservesTimerSpace;
+        boolean iconOnly = !hasLabel;
 
         int iconX;
         int textX = 0;
@@ -115,16 +115,11 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         if (iconOnly) {
             iconX = x + (width - size) / 2;
         } else {
-            int labelWidth = reservesTimerSpace
-                    ? metrics.stringWidth(TIMER_WIDTH_SAMPLE)
-                    : metrics.stringWidth(label);
+            int labelWidth = metrics.stringWidth(label);
             int contentWidth = size + iconTextGap() + labelWidth;
 
             iconX = x + Math.max(0, (width - contentWidth) / 2);
-            int labelX = iconX + size + iconTextGap();
-            textX = reservesTimerSpace
-                    ? labelX + labelWidth - metrics.stringWidth(label)
-                    : labelX;
+            textX = iconX + size + iconTextGap();
         }
 
         BufferedImage icon = icons.load(segment.icon, size);
@@ -134,6 +129,21 @@ final class ChipHudRenderer extends AbstractHudRenderer {
 
         if (!iconOnly) {
             text.drawText(graphics, label, textX, y + text.baseline(metrics, height), segment.color);
+        }
+
+        if (segment.kind == SegmentKind.SPELL && !segment.chipText.isEmpty()) {
+            Graphics2D counterGraphics = (Graphics2D) graphics.create();
+            try {
+                Font font = graphics.getFont();
+                float counterSize = Math.max(9f, Math.min(12f, font.getSize2D() * 0.7f));
+                counterGraphics.setFont(font.deriveFont(Font.BOLD, counterSize));
+                FontMetrics counterMetrics = counterGraphics.getFontMetrics();
+                int countX = x + width - counterMetrics.stringWidth(segment.chipText) - 3;
+                int countBaseline = y + height - PROGRESS_HEIGHT - 3;
+                text.drawText(counterGraphics, segment.chipText, countX, countBaseline, Color.WHITE);
+            } finally {
+                counterGraphics.dispose();
+            }
         }
 
         drawProgress(graphics, segment, x, y, width, height);
@@ -163,13 +173,7 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         }
 
         if (segment.kind == SegmentKind.SPELL || segment.kind == SegmentKind.HEART) {
-            boolean reservesTimerSpace = segment.kind == SegmentKind.SPELL && segment.progress >= 0d;
-            int labelWidth = reservesTimerSpace
-                    ? iconTextGap() + metrics.stringWidth(TIMER_WIDTH_SAMPLE)
-                    : segment.label().isEmpty()
-                            ? 0
-                            : iconTextGap() + metrics.stringWidth(segment.label());
-            return iconSize(segment) + labelWidth + 10;
+            return iconSize(segment) + 10;
         }
 
         return iconSize(segment) + iconTextGap() + metrics.stringWidth(segment.label()) + 14;
