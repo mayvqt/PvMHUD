@@ -4,6 +4,7 @@ import com.pvmhud.PvMHUDConfig;
 
 import javax.inject.Inject;
 import java.awt.Graphics2D;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.FontMetrics;
 import java.util.List;
@@ -78,16 +79,26 @@ abstract class AbstractHudRenderer {
         }
     }
 
-    protected void drawSpellTile(Graphics2D graphics, Segment segment, int x, int y, int size) {
+    protected void drawSpellTile(Graphics2D graphics, Segment segment, int x, int y, int width, int height) {
         int alpha = config.backgroundAlpha();
         graphics.setColor(text.withAlpha(segment.color, Math.max(55, alpha / 2)));
-        graphics.fillRoundRect(x, y, size, size, 6, 6);
+        graphics.fillRoundRect(x, y, width, height, 6, 6);
 
-        BufferedImage icon = icons.load(segment.icon, Math.max(10, size - 6));
+        int iconAreaWidth = segment.label().isEmpty() ? width : height;
+        BufferedImage icon = icons.load(segment.icon, Math.max(10, height - 6));
         if (icon != null) {
-            int iconX = x + (size - icon.getWidth()) / 2;
-            int iconY = y + (size - icon.getHeight()) / 2;
+            int iconX = x + (iconAreaWidth - icon.getWidth()) / 2;
+            int iconY = y + (height - icon.getHeight()) / 2;
             graphics.drawImage(icon, iconX, iconY, null);
+        }
+
+        String label = segment.label();
+        if (!label.isEmpty()) {
+            FontMetrics metrics = graphics.getFontMetrics();
+            int labelAreaWidth = width - iconAreaWidth;
+            int textX = x + iconAreaWidth + (labelAreaWidth - metrics.stringWidth(label)) / 2;
+            int baseline = y + text.baseline(metrics, height);
+            text.drawText(graphics, label, textX, baseline, Color.WHITE);
         }
     }
 }

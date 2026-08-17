@@ -2,7 +2,6 @@ package com.pvmhud;
 
 import com.google.inject.Provides;
 import com.pvmhud.overlay.PvMHUDOverlay;
-import com.pvmhud.overlay.PvMHUDPlayerOverlay;
 import com.pvmhud.runtime.PvMHUDRuntimeController;
 import net.runelite.api.Constants;
 import net.runelite.api.events.ClientTick;
@@ -39,9 +38,6 @@ public class PvMHUDPlugin extends Plugin {
     private PvMHUDOverlay hudOverlay;
 
     @Inject
-    private PvMHUDPlayerOverlay playerOverlay;
-
-    @Inject
     private PvMHUDRuntimeController runtimeController;
 
     @Provides
@@ -54,13 +50,11 @@ public class PvMHUDPlugin extends Plugin {
         migrateConfig();
         runtimeController.start();
         overlayManager.add(hudOverlay);
-        overlayManager.add(playerOverlay);
     }
 
     @Override
     protected void shutDown() {
         overlayManager.remove(hudOverlay);
-        overlayManager.remove(playerOverlay);
         runtimeController.stop();
     }
 

@@ -25,8 +25,6 @@ class HudStyleRenderer {
                 return barRenderer.render(graphics, metrics, frame);
             case CHIPS:
                 return chipRenderer.render(graphics, metrics, frame);
-            case PLAYER_BOUND:
-                return null;
             case TEXT:
             default:
                 return textIconRenderer.render(graphics, metrics, frame, false);

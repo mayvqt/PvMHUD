@@ -102,12 +102,13 @@ final class TextIconHudRenderer extends AbstractHudRenderer {
             return;
         }
 
-        if (segment.kind == SegmentKind.SPELL || segment.kind == SegmentKind.HEART) {
+        if ((segment.kind == SegmentKind.SPELL || segment.kind == SegmentKind.HEART)
+                && segment.label().isEmpty()) {
             drawIconOnly(graphics, segment, x, y, rowHeight);
             return;
         }
 
-        if (segment.kind == SegmentKind.STAT) {
+        if (segment.kind == SegmentKind.STAT || segment.kind == SegmentKind.SPELL) {
             drawIconWithValue(graphics, metrics, segment, x, y, rowHeight);
             return;
         }
@@ -155,7 +156,9 @@ final class TextIconHudRenderer extends AbstractHudRenderer {
         }
 
         if ((segment.kind == SegmentKind.SPELL || segment.kind == SegmentKind.HEART) && segment.icon != null) {
-            return iconSize(segment);
+            return iconSize(segment) + (segment.label().isEmpty()
+                    ? 0
+                    : iconTextGap() + metrics.stringWidth(segment.label()));
         }
 
         if (segment.kind == SegmentKind.STAT && segment.icon != null) {

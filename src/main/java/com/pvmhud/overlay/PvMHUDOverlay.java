@@ -35,7 +35,7 @@ public class PvMHUDOverlay extends AbstractPvMHUDFrameOverlay {
 
     @Override
     protected HudFrame buildFrame(long now) {
-        return config.hudStyle() == HudStyle.PLAYER_BOUND ? HudFrame.EMPTY : segmentBuilder.currentFrame();
+        return segmentBuilder.currentFrame();
     }
 
     @Override

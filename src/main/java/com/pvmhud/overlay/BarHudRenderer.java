@@ -16,13 +16,14 @@ final class BarHudRenderer extends AbstractHudRenderer {
         int spellCount = spells.size() + hearts.size();
         int gap = barGap();
         int tile = barSpellTileSize();
+        int spellTileWidth = spellTileWidth(metrics, spells, hearts, tile);
         int statIconSize = config.statIconSize();
         int barHeight = config.barHeight();
         int barWidth = config.barWidth();
-        int spellWidth = spellCount == 0 ? 0 : spellCount * tile + (spellCount - 1) * gap;
+        int spellWidth = spellCount == 0 ? 0 : spellCount * spellTileWidth + (spellCount - 1) * gap;
 
         if (config.verticalLayout()) {
-            return renderVertical(graphics, metrics, frame, spells, hearts, gap, tile);
+            return renderVertical(graphics, metrics, frame, spells, hearts, gap, tile, spellTileWidth);
         }
 
         int statWidth = frame.stats().isEmpty() ? 0 : statIconSize + iconTextGap() + barWidth;
@@ -39,12 +40,12 @@ final class BarHudRenderer extends AbstractHudRenderer {
         if (spellCount > 0) {
             int x = centeredStartX(width, spellWidth);
             for (Segment segment : spells) {
-                drawSpellTile(graphics, segment, x, y, tile);
-                x += tile + gap;
+                drawSpellTile(graphics, segment, x, y, spellTileWidth, tile);
+                x += spellTileWidth + gap;
             }
             for (Segment segment : hearts) {
-                drawSpellTile(graphics, segment, x, y, tile);
-                x += tile + gap;
+                drawSpellTile(graphics, segment, x, y, spellTileWidth, tile);
+                x += spellTileWidth + gap;
             }
             y += tile + gap + 1;
         }
@@ -58,7 +59,7 @@ final class BarHudRenderer extends AbstractHudRenderer {
         return new Dimension(width, height);
     }
 
-    private Dimension renderVertical(Graphics2D graphics, FontMetrics metrics, HudFrame frame, List<Segment> spells, List<Segment> hearts, int gap, int tile) {
+    private Dimension renderVertical(Graphics2D graphics, FontMetrics metrics, HudFrame frame, List<Segment> spells, List<Segment> hearts, int gap, int tile, int spellTileWidth) {
         int statIconSize = config.statIconSize();
         int verticalBarWidth = Math.max(1, config.verticalBarWidth());
         int verticalBarHeight = config.verticalBarHeight();
@@ -71,21 +72,21 @@ final class BarHudRenderer extends AbstractHudRenderer {
         int statHeight = frame.stats().isEmpty() ? 0 : statIconSize + iconTextGap() + verticalBarHeight;
         int columnGap = spellCount > 0 && !frame.stats().isEmpty() ? gap + 2 : 0;
 
-        int width = (spellCount == 0 ? 0 : tile) + columnGap + statColumnWidth + HudConstants.PADDING_X * 2;
+        int width = (spellCount == 0 ? 0 : spellTileWidth) + columnGap + statColumnWidth + HudConstants.PADDING_X * 2;
         int height = Math.max(spellHeight, statHeight) + HudConstants.PADDING_Y * 2;
         text.drawBackground(graphics, width, height);
 
         int spellY = HudConstants.PADDING_Y + Math.max(0, (height - HudConstants.PADDING_Y * 2 - spellHeight) / 2);
         for (Segment segment : spells) {
-            drawSpellTile(graphics, segment, HudConstants.PADDING_X, spellY, tile);
+            drawSpellTile(graphics, segment, HudConstants.PADDING_X, spellY, spellTileWidth, tile);
             spellY += tile + gap;
         }
         for (Segment segment : hearts) {
-            drawSpellTile(graphics, segment, HudConstants.PADDING_X, spellY, tile);
+            drawSpellTile(graphics, segment, HudConstants.PADDING_X, spellY, spellTileWidth, tile);
             spellY += tile + gap;
         }
 
-        int x = HudConstants.PADDING_X + (spellCount == 0 ? 0 : tile + columnGap);
+        int x = HudConstants.PADDING_X + (spellCount == 0 ? 0 : spellTileWidth + columnGap);
         int y = HudConstants.PADDING_Y + Math.max(0, (height - HudConstants.PADDING_Y * 2 - statHeight) / 2);
         for (Segment segment : frame.stats()) {
             int columnWidth = Math.max(statIconSize, barWidth);
@@ -141,5 +142,22 @@ final class BarHudRenderer extends AbstractHudRenderer {
 
     private int barSpellTileSize() {
         return Math.max(14, config.barSpellTileSize());
+    }
+
+    private int spellTileWidth(FontMetrics metrics, List<Segment> spells, List<Segment> hearts, int tile) {
+        int width = tile;
+        for (Segment segment : spells) {
+            width = Math.max(width, tileWidth(metrics, segment, tile));
+        }
+        for (Segment segment : hearts) {
+            width = Math.max(width, tileWidth(metrics, segment, tile));
+        }
+        return width;
+    }
+
+    private int tileWidth(FontMetrics metrics, Segment segment, int tile) {
+        return segment.label().isEmpty()
+                ? tile
+                : tile + iconTextGap() + metrics.stringWidth(segment.label()) + 4;
     }
 }

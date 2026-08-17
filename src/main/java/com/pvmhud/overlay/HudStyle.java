@@ -4,8 +4,7 @@ public enum HudStyle {
     TEXT("Text"),
     GAME_ICONS("Game icons"),
     BARS("Bars"),
-    CHIPS("Chips"),
-    PLAYER_BOUND("Player bound");
+    CHIPS("Chips");
 
     private final String displayName;
 

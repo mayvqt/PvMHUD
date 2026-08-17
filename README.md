@@ -12,7 +12,7 @@ Chips layout that pairs well with compact orbs
 
 - Tracks boosted **Hitpoints, Prayer, Special Attack, poison, and venom**
 - Tracks **Thrall, Vengeance, Death Charge, Mark of Darkness, Corruption, Ward of Arceuus, and Heart**
-- Main HUD styles: **Text, Game Icons, Bars, Chips, Player Bound**
+- Main HUD styles: **Text, Game Icons, Bars, Chips**
 - Supports **horizontal and vertical layouts**
 - Optional **local-only overhead alerts** for low HP/Prayer and the Spec threshold
 - Highly configurable: **thresholds, colours, spacing, fonts, opacity, flashing**
@@ -25,7 +25,6 @@ Chips layout that pairs well with compact orbs
 - **Game Icons** — spell icons + stat icons with values  
 - **Bars** — HP/Prayer/Spec bars with spell tiles  
 - **Chips** — compact stat blocks with icons  
-- **Player Bound** — color-coded HP/Prayer/Spec values beside the local player with spell and cooldown icons below, left, or right
 
 ## Tracked States
 

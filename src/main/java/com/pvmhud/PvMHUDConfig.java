@@ -2,8 +2,6 @@ package com.pvmhud;
 
 import com.pvmhud.overlay.HudFont;
 import com.pvmhud.overlay.HudStyle;
-import com.pvmhud.overlay.PlayerSpellPosition;
-import com.pvmhud.overlay.PlayerStatSide;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
@@ -25,8 +23,6 @@ public interface PvMHUDConfig extends Config {
     String generalSection = "general";
     @ConfigSection(name = "Indicators", description = "Choose which stats, spells, and cooldowns are shown.", position = 1)
     String indicatorSection = "indicators";
-    @ConfigSection(name = "Player Bound", description = "Position indicators around the local player.", position = 2)
-    String playerHudSection = "playerHud";
     @ConfigSection(name = "Alerts", description = "Configure local overhead alerts.", position = 3)
     String alertSection = "alerts";
     @ConfigSection(name = "Thresholds", description = "Configure stat thresholds.", position = 4)
@@ -84,28 +80,6 @@ public interface PvMHUDConfig extends Config {
 
     @ConfigItem(keyName = "showSpec", name = "Special Attack", description = "Show current Special Attack energy.", position = 2, section = indicatorSection)
     default boolean showSpec() { return true; }
-
-    @ConfigItem(keyName = "playerStatSide", name = "Stat Side", description = "Place HP, Prayer, and Special Attack to the left or right of the player.", position = 0, section = playerHudSection)
-    default PlayerStatSide playerStatSide() { return PlayerStatSide.RIGHT; }
-
-    @Range(min = -300, max = 300)
-    @ConfigItem(keyName = "playerStatOffsetX", name = "Stat X Offset", description = "Move the player-bound stat group horizontally.", position = 1, section = playerHudSection)
-    default int playerStatOffsetX() { return 30; }
-
-    @Range(min = -300, max = 300)
-    @ConfigItem(keyName = "playerStatOffsetY", name = "Stat Y Offset", description = "Move the player-bound stat group vertically.", position = 2, section = playerHudSection)
-    default int playerStatOffsetY() { return -70; }
-
-    @ConfigItem(keyName = "playerSpellPosition", name = "Spell Position", description = "Place spell and cooldown icons below, left, or right of the player.", position = 3, section = playerHudSection)
-    default PlayerSpellPosition playerSpellPosition() { return PlayerSpellPosition.BELOW; }
-
-    @Range(min = -300, max = 300)
-    @ConfigItem(keyName = "playerSpellOffsetX", name = "Spell X Offset", description = "Move the player-bound spell group horizontally.", position = 4, section = playerHudSection)
-    default int playerSpellOffsetX() { return 0; }
-
-    @Range(min = -300, max = 300)
-    @ConfigItem(keyName = "playerSpellOffsetY", name = "Spell Y Offset", description = "Move the player-bound spell group vertically.", position = 5, section = playerHudSection)
-    default int playerSpellOffsetY() { return 40; }
 
     @ConfigItem(keyName = "showInactiveSpells", name = "Show Ready Spells", description = "Keep spell indicators visible briefly after their active or cooldown state ends.", position = 0, section = timingSection)
     default boolean showInactiveSpells() { return true; }
