@@ -12,4 +12,12 @@ public interface SpellStateTracker {
     default boolean isReady() {
         return !isActive() && !isOnCooldown();
     }
+
+    default String getChipText() {
+        return "";
+    }
+
+    default double getProgress() {
+        return -1d;
+    }
 }

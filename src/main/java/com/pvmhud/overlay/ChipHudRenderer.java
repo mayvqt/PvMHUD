@@ -9,6 +9,8 @@ import java.util.List;
 
 @Singleton
 final class ChipHudRenderer extends AbstractHudRenderer {
+    private static final int PROGRESS_HEIGHT = 2;
+
     Dimension render(Graphics2D graphics, FontMetrics metrics, HudFrame frame) {
         List<Segment> spells = frame.spells();
         List<Segment> hearts = frame.hearts();
@@ -103,7 +105,7 @@ final class ChipHudRenderer extends AbstractHudRenderer {
 
         String label = segment.label();
         boolean hasLabel = !label.isEmpty();
-        boolean iconOnly = segment.kind == SegmentKind.SPELL || segment.kind == SegmentKind.HEART || !hasLabel;
+        boolean iconOnly = !hasLabel;
 
         int iconX;
         int textX = 0;
@@ -126,6 +128,26 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         if (!iconOnly) {
             text.drawText(graphics, label, textX, y + text.baseline(metrics, height), segment.color);
         }
+
+        drawProgress(graphics, segment, x, y, width, height);
+    }
+
+    private void drawProgress(Graphics2D graphics, Segment segment, int x, int y, int width, int height) {
+        if (segment.progress < 0d) {
+            return;
+        }
+
+        int barX = x + 3;
+        int barY = y + height - PROGRESS_HEIGHT - 1;
+        int barWidth = Math.max(0, width - 6);
+        int fillWidth = (int) Math.round(barWidth * Math.max(0d, Math.min(1d, segment.progress)));
+
+        graphics.setColor(text.withAlpha(config.backgroundColor(), 180));
+        graphics.fillRect(barX, barY, barWidth, PROGRESS_HEIGHT);
+        if (fillWidth > 0) {
+            graphics.setColor(text.withAlpha(segment.color, 230));
+            graphics.fillRect(barX, barY, fillWidth, PROGRESS_HEIGHT);
+        }
     }
 
     private int chipWidth(FontMetrics metrics, Segment segment) {
@@ -134,7 +156,10 @@ final class ChipHudRenderer extends AbstractHudRenderer {
         }
 
         if (segment.kind == SegmentKind.SPELL || segment.kind == SegmentKind.HEART) {
-            return iconSize(segment) + 10;
+            int labelWidth = segment.label().isEmpty()
+                    ? 0
+                    : iconTextGap() + metrics.stringWidth(segment.label());
+            return iconSize(segment) + labelWidth + 10;
         }
 
         return iconSize(segment) + iconTextGap() + metrics.stringWidth(segment.label()) + 14;

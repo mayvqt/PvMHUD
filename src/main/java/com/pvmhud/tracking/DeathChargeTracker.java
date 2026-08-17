@@ -9,29 +9,46 @@ import javax.inject.Singleton;
 @Singleton
 public class DeathChargeTracker extends BaseTimedSpellTracker {
     private static final long DEATH_CHARGE_DURATION_NANOS = TimeConstants.secondsToNanos(60);
+    private int activeState;
 
     @Subscribe
     public void onVarbitChanged(VarbitChanged event) {
         if (event.getVarbitId() == VarbitID.ARCEUUS_DEATH_CHARGE_COOLDOWN) {
             setCooldownActive(event.getValue() > 0);
         } else if (event.getVarbitId() == VarbitID.ARCEUUS_DEATH_CHARGE_ACTIVE) {
-            if (event.getValue() > 0) {
+            int previousState = activeState;
+            activeState = event.getValue();
+
+            if (activeState > previousState) {
                 markActive(DEATH_CHARGE_DURATION_NANOS);
-            } else {
-                clearActive();
             }
         }
+    }
+
+    @Override
+    public boolean isActive() {
+        return activeState > 0 && super.isActive();
+    }
+
+    @Override
+    public String getChipText() {
+        return getRemainingNanos() > 0L && activeState > 0 ? Integer.toString(activeState) : "";
     }
 
     @Override
     protected void sync() {
         int cooldown = client.getVarbitValue(VarbitID.ARCEUUS_DEATH_CHARGE_COOLDOWN);
         setCooldownActive(cooldown > 0);
-        boolean active = client.getVarbitValue(VarbitID.ARCEUUS_DEATH_CHARGE_ACTIVE) > 0;
-        if (active && !isActive()) {
+        int syncedActiveState = client.getVarbitValue(VarbitID.ARCEUUS_DEATH_CHARGE_ACTIVE);
+        if (syncedActiveState > 0 && activeState == 0 && getRemainingNanos() == 0L) {
             markActive(DEATH_CHARGE_DURATION_NANOS);
-        } else if (!active) {
-            clearActive();
         }
+        activeState = syncedActiveState;
+    }
+
+    @Override
+    public void reset() {
+        activeState = 0;
+        super.reset();
     }
 }

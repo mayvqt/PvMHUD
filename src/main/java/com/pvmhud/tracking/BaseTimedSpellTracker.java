@@ -34,6 +34,23 @@ public abstract class BaseTimedSpellTracker extends CachedVarbitTracker implemen
         return activeDurationNanos;
     }
 
+    protected final long getRemainingNanos() {
+        if (activeStartedAtNanos <= 0L || activeDurationNanos <= 0L) {
+            return 0L;
+        }
+
+        return Math.max(0L, activeDurationNanos - (System.nanoTime() - activeStartedAtNanos));
+    }
+
+    @Override
+    public double getProgress() {
+        if (activeDurationNanos <= 0L) {
+            return -1d;
+        }
+
+        return Math.min(1d, getRemainingNanos() / (double) activeDurationNanos);
+    }
+
     @Override
     public boolean isActive() {
         return activeStartedAtNanos > 0L
@@ -57,8 +74,7 @@ public abstract class BaseTimedSpellTracker extends CachedVarbitTracker implemen
             return true;
         }
 
-        long elapsedNanos = System.nanoTime() - activeStartedAtNanos;
-        long remainingNanos = activeDurationNanos - elapsedNanos;
+        long remainingNanos = getRemainingNanos();
         return remainingNanos > 0L
                 && remainingNanos <= TimeConstants.secondsToNanos(soonWindowSeconds);
     }

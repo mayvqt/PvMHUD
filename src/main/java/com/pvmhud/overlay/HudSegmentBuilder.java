@@ -97,7 +97,9 @@ final class HudSegmentBuilder {
 
             VisualState state = stateManager.spellState(i);
             if (stateManager.shouldRender(state, now, config.showInactiveSpells())) {
-                segments.add(new Segment(SegmentKind.SPELL, display.text, "", stateManager.colorFor(display.tracker, state, now), display.icon));
+                segments.add(new Segment(SegmentKind.SPELL, display.text, display.tracker.getChipText(),
+                        stateManager.colorFor(display.tracker, state, now), display.icon,
+                        display.tracker.getProgress()));
             }
         }
 
