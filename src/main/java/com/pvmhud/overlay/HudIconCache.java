@@ -5,8 +5,8 @@ import net.runelite.api.Skill;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.SkillIconManager;
 import net.runelite.client.game.SpriteManager;
-import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.AsyncBufferedImage;
+import net.runelite.client.util.ImageUtil;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -29,6 +29,7 @@ final class HudIconCache {
     private SpriteManager spriteManager;
 
     private final Map<Long, BufferedImage> iconCache = new HashMap<>();
+    private long generation;
 
     BufferedImage load(IconRef iconRef, int size) {
         if (iconRef == null || size <= 0) {
@@ -47,8 +48,12 @@ final class HudIconCache {
         }
 
         if (image instanceof AsyncBufferedImage) {
-            ((AsyncBufferedImage) image).onLoaded(() ->
-                    iconCache.put(key, ImageUtil.resizeImage(image, size, size)));
+            long loadGeneration = generation;
+            ((AsyncBufferedImage) image).onLoaded(() -> {
+                if (generation == loadGeneration) {
+                    iconCache.put(key, ImageUtil.resizeImage(image, size, size));
+                }
+            });
         }
 
         BufferedImage scaled = ImageUtil.resizeImage(image, size, size);
@@ -57,6 +62,7 @@ final class HudIconCache {
     }
 
     void clear() {
+        generation++;
         iconCache.clear();
     }
 

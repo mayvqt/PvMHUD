@@ -101,7 +101,7 @@ final class HudSegmentBuilder {
                 String text = value.isEmpty() ? display.text : display.text + " " + value;
                 segments.add(new Segment(SegmentKind.SPELL, text, value,
                         stateManager.colorFor(display.tracker, state, now), display.icon,
-                        display.tracker.getProgress(), display.tracker.getChipText()));
+                        display.tracker.getProgress(), display.tracker.getBadgeText()));
             }
         }
 

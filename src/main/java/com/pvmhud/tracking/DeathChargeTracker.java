@@ -27,17 +27,15 @@ public class DeathChargeTracker extends BaseTimedSpellTracker {
 
     @Override
     public boolean isActive() {
+        if (activeState == 0 && getRemainingNanos() == 0L) {
+            syncIfNeeded();
+        }
         return activeState > 0 && super.isActive();
     }
 
     @Override
-    public String getChipText() {
+    public String getBadgeText() {
         return getRemainingNanos() > 0L && activeState > 0 ? Integer.toString(activeState) : "";
-    }
-
-    @Override
-    public String getDisplayText() {
-        return getChipText();
     }
 
     @Override

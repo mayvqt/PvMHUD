@@ -13,6 +13,13 @@ public class ThrallTracker extends BaseTimedSpellTracker {
 
     @Subscribe
     public void onVarbitChanged(VarbitChanged event) {
+        if (event.getVarbitId() == VarbitID.ARCEUUS_RESURRECTION_ACTIVE) {
+            if (event.getValue() == 0) {
+                clearActive();
+            }
+            return;
+        }
+
         if (event.getVarbitId() != VarbitID.ARCEUUS_RESURRECTION_COOLDOWN) {
             return;
         }

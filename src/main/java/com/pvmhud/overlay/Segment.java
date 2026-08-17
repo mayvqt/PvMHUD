@@ -9,7 +9,7 @@ final class Segment {
     final Color color;
     final IconRef icon;
     final double progress;
-    final String chipText;
+    final String badgeText;
 
     Segment(SegmentKind kind, String text, String iconText, Color color, IconRef icon) {
         this(kind, text, iconText, color, icon, -1d);
@@ -20,14 +20,14 @@ final class Segment {
     }
 
     Segment(SegmentKind kind, String text, String iconText, Color color, IconRef icon,
-            double progress, String chipText) {
+            double progress, String badgeText) {
         this.kind = kind;
         this.text = text == null ? "" : text;
         this.iconText = iconText == null ? "" : iconText;
         this.color = color == null ? Color.WHITE : color;
         this.icon = icon;
         this.progress = progress;
-        this.chipText = chipText == null ? "" : chipText;
+        this.badgeText = badgeText == null ? "" : badgeText;
     }
 
     String label() {

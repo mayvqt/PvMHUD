@@ -26,8 +26,9 @@ class HudStyleRenderer {
             case CHIPS:
                 return chipRenderer.render(graphics, metrics, frame);
             case TEXT:
-            default:
                 return textIconRenderer.render(graphics, metrics, frame, false);
+            default:
+                throw new IllegalArgumentException("Unsupported HUD style: " + style);
         }
     }
 }

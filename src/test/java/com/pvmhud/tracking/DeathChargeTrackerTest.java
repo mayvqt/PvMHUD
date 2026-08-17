@@ -14,14 +14,14 @@ public class DeathChargeTrackerTest {
 
         tracker.onVarbitChanged(activeStateChanged(2));
         assertTrue(tracker.isActive());
-        assertEquals("2", tracker.getChipText());
+        assertEquals("2", tracker.getBadgeText());
 
         tracker.onVarbitChanged(activeStateChanged(1));
         assertTrue(tracker.isActive());
-        assertEquals("1", tracker.getChipText());
+        assertEquals("1", tracker.getBadgeText());
 
         tracker.onVarbitChanged(activeStateChanged(0));
-        assertEquals("", tracker.getChipText());
+        assertEquals("", tracker.getBadgeText());
         assertTrue(tracker.getProgress() > 0d);
     }
 

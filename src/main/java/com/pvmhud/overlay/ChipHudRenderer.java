@@ -3,15 +3,18 @@ package com.pvmhud.overlay;
 import javax.inject.Singleton;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
 @Singleton
 final class ChipHudRenderer extends AbstractHudRenderer {
     private static final int PROGRESS_HEIGHT = 2;
+
+    private Font counterSourceFont;
+    private Font counterFont;
 
     Dimension render(Graphics2D graphics, FontMetrics metrics, HudFrame frame) {
         List<Segment> spells = frame.spells();
@@ -131,16 +134,14 @@ final class ChipHudRenderer extends AbstractHudRenderer {
             text.drawText(graphics, label, textX, y + text.baseline(metrics, height), segment.color);
         }
 
-        if (segment.kind == SegmentKind.SPELL && !segment.chipText.isEmpty()) {
+        if (segment.kind == SegmentKind.SPELL && !segment.badgeText.isEmpty()) {
             Graphics2D counterGraphics = (Graphics2D) graphics.create();
             try {
-                Font font = graphics.getFont();
-                float counterSize = Math.max(9f, Math.min(12f, font.getSize2D() * 0.7f));
-                counterGraphics.setFont(font.deriveFont(Font.BOLD, counterSize));
+                counterGraphics.setFont(counterFont(graphics.getFont()));
                 FontMetrics counterMetrics = counterGraphics.getFontMetrics();
-                int countX = x + width - counterMetrics.stringWidth(segment.chipText) - 3;
+                int countX = x + width - counterMetrics.stringWidth(segment.badgeText) - 3;
                 int countBaseline = y + height - PROGRESS_HEIGHT - 3;
-                text.drawText(counterGraphics, segment.chipText, countX, countBaseline, Color.WHITE);
+                text.drawText(counterGraphics, segment.badgeText, countX, countBaseline, Color.WHITE);
             } finally {
                 counterGraphics.dispose();
             }
@@ -223,5 +224,14 @@ final class ChipHudRenderer extends AbstractHudRenderer {
 
     private int chipHeight(FontMetrics metrics) {
         return Math.max(metrics.getHeight(), Math.max(config.statIconSize(), config.spellIconSize())) + 6;
+    }
+
+    private Font counterFont(Font sourceFont) {
+        if (!sourceFont.equals(counterSourceFont)) {
+            float size = Math.max(9f, Math.min(12f, sourceFont.getSize2D() * 0.7f));
+            counterSourceFont = sourceFont;
+            counterFont = sourceFont.deriveFont(Font.BOLD, size);
+        }
+        return counterFont;
     }
 }

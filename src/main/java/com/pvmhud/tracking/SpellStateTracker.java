@@ -13,12 +13,12 @@ public interface SpellStateTracker {
         return !isActive() && !isOnCooldown();
     }
 
-    default String getChipText() {
+    default String getBadgeText() {
         return "";
     }
 
     default String getDisplayText() {
-        return "";
+        return getBadgeText();
     }
 
     default double getProgress() {
