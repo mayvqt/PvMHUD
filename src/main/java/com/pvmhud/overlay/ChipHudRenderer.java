@@ -228,7 +228,7 @@ final class ChipHudRenderer extends AbstractHudRenderer {
 
     private Font counterFont(Font sourceFont) {
         if (!sourceFont.equals(counterSourceFont)) {
-            float size = Math.max(9f, Math.min(12f, sourceFont.getSize2D() * 0.7f));
+            float size = Math.max(11f, Math.min(14f, sourceFont.getSize2D() * 0.85f));
             counterSourceFont = sourceFont;
             counterFont = sourceFont.deriveFont(Font.BOLD, size);
         }

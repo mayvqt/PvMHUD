@@ -44,9 +44,9 @@ final class TextIconHudRenderer extends AbstractHudRenderer {
             text.drawBackground(graphics, width, height);
 
             int y = paddingY;
-            y = drawVerticalGroup(graphics, metrics, stats, paddingX, y, maxHeight, gameIconsMode, localRowGap);
-            y = drawVerticalGroup(graphics, metrics, spells, paddingX, y, maxHeight, gameIconsMode, localRowGap);
-            drawVerticalGroup(graphics, metrics, hearts, paddingX, y, maxHeight, gameIconsMode, localRowGap);
+            y = drawVerticalGroup(graphics, metrics, stats, width, y, maxHeight, gameIconsMode, localRowGap);
+            y = drawVerticalGroup(graphics, metrics, spells, width, y, maxHeight, gameIconsMode, localRowGap);
+            drawVerticalGroup(graphics, metrics, hearts, width, y, maxHeight, gameIconsMode, localRowGap);
 
             return new Dimension(width, height);
         }
@@ -172,13 +172,16 @@ final class TextIconHudRenderer extends AbstractHudRenderer {
             Graphics2D graphics,
             FontMetrics metrics,
             List<Segment> segments,
-            int x,
+            int totalWidth,
             int y,
             int rowHeight,
             boolean gameIconsMode,
             int gap
     ) {
         for (Segment segment : segments) {
+            int x = gameIconsMode
+                    ? centeredStartX(totalWidth, segmentWidth(metrics, segment, true))
+                    : HudConstants.PADDING_X;
             drawSegment(graphics, metrics, segment, x, y, rowHeight, gameIconsMode);
             y += rowHeight + gap;
         }
