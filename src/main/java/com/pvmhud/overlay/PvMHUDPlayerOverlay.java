@@ -49,14 +49,14 @@ public class PvMHUDPlayerOverlay extends Overlay {
             return null;
         }
 
-        HudFrame frame = segmentBuilder.build(System.nanoTime());
+        HudFrame frame = segmentBuilder.currentFrame();
         if (frame.isEmpty()) {
             return null;
         }
 
         LocalPoint localLocation = player.getLocalLocation();
         Point playerHead = Perspective.localToCanvas(
-                client, localLocation, client.getPlane(), player.getLogicalHeight());
+                client, localLocation, player.getLogicalHeight());
         if (playerHead == null) {
             return null;
         }

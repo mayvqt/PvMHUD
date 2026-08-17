@@ -22,6 +22,11 @@ public class PvMHUDOverlay extends AbstractPvMHUDFrameOverlay {
 
     public void reset() {
         visualStateManager.reset();
+        segmentBuilder.reset();
+    }
+
+    public void updateFrame(long now) {
+        segmentBuilder.update(now);
     }
 
     public void clearCachedResources() {
@@ -30,7 +35,7 @@ public class PvMHUDOverlay extends AbstractPvMHUDFrameOverlay {
 
     @Override
     protected HudFrame buildFrame(long now) {
-        return config.hudStyle() == HudStyle.PLAYER_BOUND ? HudFrame.EMPTY : segmentBuilder.build(now);
+        return config.hudStyle() == HudStyle.PLAYER_BOUND ? HudFrame.EMPTY : segmentBuilder.currentFrame();
     }
 
     @Override

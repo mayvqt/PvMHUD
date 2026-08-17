@@ -1,7 +1,9 @@
 package com.pvmhud.alerts;
 
 import com.pvmhud.PvMHUDConfig;
+import com.pvmhud.tracking.TimeConstants;
 import net.runelite.api.Client;
+import net.runelite.api.Constants;
 import net.runelite.api.Player;
 
 import javax.inject.Inject;
@@ -10,7 +12,8 @@ import java.awt.Color;
 
 @Singleton
 class OverheadMessageRenderer {
-    private static final int CLIENT_CYCLES_PER_SECOND = 50;
+    private static final int CLIENT_CYCLES_PER_SECOND =
+            (int) (TimeConstants.MS_PER_SECOND / Constants.CLIENT_TICK_LENGTH);
 
     @Inject
     private Client client;

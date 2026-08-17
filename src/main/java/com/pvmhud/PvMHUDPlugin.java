@@ -4,6 +4,7 @@ import com.google.inject.Provides;
 import com.pvmhud.overlay.PvMHUDOverlay;
 import com.pvmhud.overlay.PvMHUDPlayerOverlay;
 import com.pvmhud.runtime.PvMHUDRuntimeController;
+import net.runelite.api.Constants;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GameStateChanged;
@@ -26,7 +27,7 @@ import javax.inject.Inject;
 public class PvMHUDPlugin extends Plugin {
     private static final String OLD_OVERHEAD_ALERT_CYCLES_KEY = "overheadAlertCycles";
     private static final String OVERHEAD_ALERT_SECONDS_KEY = "overheadAlertSeconds";
-    private static final int CLIENT_CYCLES_PER_SECOND = 50;
+    private static final int CLIENT_CYCLES_PER_SECOND = 1_000 / Constants.CLIENT_TICK_LENGTH;
 
     @Inject
     private OverlayManager overlayManager;

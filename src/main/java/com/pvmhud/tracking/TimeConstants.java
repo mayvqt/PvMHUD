@@ -1,7 +1,9 @@
 package com.pvmhud.tracking;
 
+import net.runelite.api.Constants;
+
 public final class TimeConstants {
-    public static final long GAME_TICK_MILLIS = 600L;
+    public static final long GAME_TICK_MILLIS = Constants.GAME_TICK_LENGTH;
     public static final long CACHE_SYNC_INTERVAL_MS = 200L;
 
     public static final long MS_PER_SECOND = 1_000L;

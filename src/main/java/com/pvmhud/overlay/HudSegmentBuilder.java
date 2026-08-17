@@ -41,14 +41,24 @@ final class HudSegmentBuilder {
     @Inject
     private HudVisualStateManager stateManager;
 
-    HudFrame build(long now) {
+    private volatile HudFrame currentFrame = HudFrame.EMPTY;
+
+    void update(long now) {
         stateManager.update(now);
 
         List<Segment> stats = buildStatSegments();
         List<Segment> spells = buildSpellSegments(now);
         List<Segment> hearts = buildHeartSegments(now);
 
-        return new HudFrame(stats, spells, hearts);
+        currentFrame = new HudFrame(stats, spells, hearts);
+    }
+
+    HudFrame currentFrame() {
+        return currentFrame;
+    }
+
+    void reset() {
+        currentFrame = HudFrame.EMPTY;
     }
 
     private List<Segment> buildStatSegments() {

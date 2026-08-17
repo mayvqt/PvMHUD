@@ -93,6 +93,10 @@ public class PvMHUDRuntimeController {
     }
 
     public void onClientTick(ClientTick event) {
+        if (client.getGameState() == GameState.LOGGED_IN && client.getLocalPlayer() != null) {
+            hudOverlay.updateFrame(System.nanoTime());
+        }
+
         if (pendingAlertBaseline) {
             capturePendingAlertBaseline();
             return;

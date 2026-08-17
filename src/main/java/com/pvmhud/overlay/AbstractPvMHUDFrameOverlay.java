@@ -43,13 +43,13 @@ abstract class AbstractPvMHUDFrameOverlay extends Overlay {
         }
 
         Font oldFont = graphics.getFont();
-        graphics.setFont(fontResolver.resolve(oldFont));
-
-        FontMetrics metrics = graphics.getFontMetrics();
-        Dimension dimension = styleRenderer.render(graphics, metrics, frame, hudStyle());
-
-        graphics.setFont(oldFont);
-        return dimension;
+        try {
+            graphics.setFont(fontResolver.resolve(oldFont));
+            FontMetrics metrics = graphics.getFontMetrics();
+            return styleRenderer.render(graphics, metrics, frame, hudStyle());
+        } finally {
+            graphics.setFont(oldFont);
+        }
     }
 
     protected abstract HudFrame buildFrame(long now);
