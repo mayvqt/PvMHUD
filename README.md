@@ -39,7 +39,3 @@ Chips layout that pairs well with compact orbs
 - **Heart** — shared Imbued/Saturated cooldown  
 
 ---
-
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for release history.
