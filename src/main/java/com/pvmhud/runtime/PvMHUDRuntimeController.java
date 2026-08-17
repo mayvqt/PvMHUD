@@ -1,11 +1,13 @@
 package com.pvmhud.runtime;
 
+import com.pvmhud.PvMHUDConfig;
 import com.pvmhud.alerts.OverheadAlertManager;
 import com.pvmhud.alerts.OverheadAlertState;
 import com.pvmhud.overlay.PvMHUDOverlay;
 import com.pvmhud.tracking.ResettableTracker;
 import com.pvmhud.tracking.SpecTracker;
 import net.runelite.api.Client;
+import net.runelite.api.Constants;
 import net.runelite.api.GameState;
 import net.runelite.api.Player;
 import net.runelite.api.events.ClientTick;
@@ -23,13 +25,14 @@ import java.util.List;
 
 @Singleton
 public class PvMHUDRuntimeController {
-    private static final int RECENT_COMBAT_TICKS = 8;
-
     @Inject
     private EventBus eventBus;
 
     @Inject
     private Client client;
+
+    @Inject
+    private PvMHUDConfig config;
 
     @Inject
     private PvMHUDOverlay hudOverlay;
@@ -120,7 +123,7 @@ public class PvMHUDRuntimeController {
 
     public void onHitsplatApplied(HitsplatApplied event) {
         if (event.getActor() == client.getLocalPlayer()) {
-            recentCombatTicks = RECENT_COMBAT_TICKS;
+            recentCombatTicks = combatRetentionTicks();
             hudOverlay.setInCombat(true);
         }
     }
@@ -148,7 +151,7 @@ public class PvMHUDRuntimeController {
     private void updateRecentCombatTicks() {
         Player localPlayer = client.getLocalPlayer();
         if (localPlayer != null && localPlayer.getInteracting() != null) {
-            recentCombatTicks = RECENT_COMBAT_TICKS;
+            recentCombatTicks = combatRetentionTicks();
             return;
         }
 
@@ -158,6 +161,11 @@ public class PvMHUDRuntimeController {
     private boolean hasRecentCombatContext() {
         Player localPlayer = client.getLocalPlayer();
         return recentCombatTicks > 0 || (localPlayer != null && localPlayer.getInteracting() != null);
+    }
+
+    private int combatRetentionTicks() {
+        int millis = config.combatHideDelaySeconds() * 1_000;
+        return (millis + Constants.GAME_TICK_LENGTH - 1) / Constants.GAME_TICK_LENGTH;
     }
 
     private void evaluatePendingSpecAlert() {

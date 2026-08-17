@@ -57,6 +57,10 @@ public interface PvMHUDConfig extends Config {
     @ConfigItem(keyName = "hideOutOfCombat", name = "Hide Out of Combat", description = "Hide the HUD when not in combat, retaining it briefly after combat ends.", position = 3, section = generalSection)
     default boolean hideOutOfCombat() { return false; }
 
+    @Range(min = 0, max = 60)
+    @ConfigItem(keyName = "combatHideDelaySeconds", name = "Combat Hide Delay", description = "Seconds to keep the HUD visible after combat ends.", position = 4, section = generalSection)
+    default int combatHideDelaySeconds() { return 15; }
+
     @ConfigItem(keyName = "showThrall", name = "Thrall", description = "Show Resurrect Thrall active time, cooldown, and ready state.", position = 3, section = indicatorSection)
     default boolean showThrall() { return true; }
 
