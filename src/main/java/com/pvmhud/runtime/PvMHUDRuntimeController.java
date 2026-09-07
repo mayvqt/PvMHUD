@@ -3,20 +3,24 @@ package com.pvmhud.runtime;
 import com.pvmhud.PvMHUDConfig;
 import com.pvmhud.alerts.OverheadAlertManager;
 import com.pvmhud.alerts.OverheadAlertState;
+import com.pvmhud.alerts.OverheadMessageRenderer;
 import com.pvmhud.alerts.SpellExpiryAlertManager;
 import com.pvmhud.overlay.PvMHUDOverlay;
 import com.pvmhud.tracking.ResettableTracker;
 import com.pvmhud.tracking.SpecTracker;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.Constants;
 import net.runelite.api.GameState;
 import net.runelite.api.Player;
+import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.StatChanged;
 import net.runelite.api.events.VarbitChanged;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.api.gameval.VarPlayerID;
 import net.runelite.client.eventbus.EventBus;
 
@@ -49,6 +53,9 @@ public class PvMHUDRuntimeController {
 
     @Inject
     private OverheadAlertManager overheadAlertManager;
+
+    @Inject
+    private OverheadMessageRenderer overheadMessageRenderer;
 
     @Inject
     private SpellExpiryAlertManager spellExpiryAlertManager;
@@ -98,12 +105,13 @@ public class PvMHUDRuntimeController {
     public void onGameTick(GameTick event) {
         updateRecentCombatTicks();
         hudOverlay.setInCombat(hasRecentCombatContext());
+
+        evaluateSpellExpiryAlerts();
     }
 
     public void onClientTick(ClientTick event) {
         if (client.getGameState() == GameState.LOGGED_IN && client.getLocalPlayer() != null) {
             hudOverlay.updateFrame(System.nanoTime());
-            spellExpiryAlertManager.update();
         }
 
         if (pendingAlertBaseline) {
@@ -134,11 +142,19 @@ public class PvMHUDRuntimeController {
     }
 
     public void onVarbitChanged(VarbitChanged event) {
-        if (event.getVarpId() != VarPlayerID.SA_ENERGY) {
-            return;
+        if (event.getVarpId() == VarPlayerID.SA_ENERGY) {
+            pendingSpecAlertEvaluation = true;
         }
 
-        pendingSpecAlertEvaluation = true;
+        if (isTrackedSpellAlertVarbit(event.getVarbitId())) {
+            evaluateSpellExpiryAlerts();
+        }
+    }
+
+    public void onChatMessage(ChatMessage event) {
+        if (event.getType() == ChatMessageType.GAMEMESSAGE) {
+            evaluateSpellExpiryAlerts();
+        }
     }
 
     private void resetSessionState() {
@@ -148,6 +164,7 @@ public class PvMHUDRuntimeController {
             tracker.reset();
         }
         overheadAlertState.reset();
+        overheadMessageRenderer.clear();
         spellExpiryAlertManager.reset();
         pendingAlertBaseline = false;
         pendingSpecAlertEvaluation = false;
@@ -183,6 +200,22 @@ public class PvMHUDRuntimeController {
         if (client.getGameState() == GameState.LOGGED_IN && client.getLocalPlayer() != null) {
             overheadAlertManager.onSpecPercentChanged(specTracker.getSpecPercent(), hasRecentCombatContext());
         }
+    }
+
+    private void evaluateSpellExpiryAlerts() {
+        if (client.getGameState() == GameState.LOGGED_IN && client.getLocalPlayer() != null) {
+            spellExpiryAlertManager.update();
+        }
+    }
+
+    static boolean isTrackedSpellAlertVarbit(int varbitId) {
+        return varbitId == VarbitID.ARCEUUS_RESURRECTION_ACTIVE
+                || varbitId == VarbitID.ARCEUUS_RESURRECTION_COOLDOWN
+                || varbitId == VarbitID.ARCEUUS_DEATH_CHARGE_ACTIVE
+                || varbitId == VarbitID.VENGEANCE_REBOUND
+                || varbitId == VarbitID.ARCEUUS_WARD_COOLDOWN
+                || varbitId == VarbitID.ARCEUUS_CORRUPTION_COOLDOWN
+                || varbitId == VarbitID.IMBUED_HEART_TIMER;
     }
 
 }

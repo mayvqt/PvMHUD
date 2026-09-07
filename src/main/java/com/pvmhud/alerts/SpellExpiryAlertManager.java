@@ -91,20 +91,20 @@ public class SpellExpiryAlertManager {
         return new TrackedState(enabled, tracker::isOnCooldown, message);
     }
 
-    private static final class TrackedState {
+    static final class TrackedState {
         private final BooleanSupplier enabled;
         private final BooleanSupplier state;
         private final Supplier<String> message;
         private boolean initialized;
         private boolean previous;
 
-        private TrackedState(BooleanSupplier enabled, BooleanSupplier state, Supplier<String> message) {
+        TrackedState(BooleanSupplier enabled, BooleanSupplier state, Supplier<String> message) {
             this.enabled = enabled;
             this.state = state;
             this.message = message;
         }
 
-        private boolean update() {
+        boolean update() {
             if (!enabled.getAsBoolean()) {
                 reset();
                 return false;
@@ -122,7 +122,7 @@ public class SpellExpiryAlertManager {
             return ended;
         }
 
-        private void reset() {
+        void reset() {
             initialized = false;
             previous = false;
         }

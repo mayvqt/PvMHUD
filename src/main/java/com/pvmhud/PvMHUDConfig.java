@@ -51,7 +51,7 @@ public interface PvMHUDConfig extends Config {
     @ConfigItem(keyName = "hudStyle", name = "Style", description = "Choose the layout used by the main PvM HUD.", position = 0, section = generalSection)
     default HudStyle hudStyle() { return HudStyle.CHIPS; }
 
-    @ConfigItem(keyName = "showIcons", name = "Show Icons", description = "Show icons in all HUD layouts. Disable to use text-only indicators.", position = 2, section = generalSection)
+    @ConfigItem(keyName = "showIcons", name = "Show Icons", description = "Show icons in Game Icons, Bars, and Chips layouts. Text layout is always text-only.", position = 2, section = generalSection)
     default boolean showIcons() { return true; }
 
     @ConfigItem(keyName = "hideOutOfCombat", name = "Hide Out of Combat", description = "Hide the HUD when not in combat, retaining it briefly after combat ends.", position = 3, section = generalSection)
@@ -239,13 +239,13 @@ public interface PvMHUDConfig extends Config {
     @ConfigItem(keyName = "vengeanceActiveColor", name = "Vengeance", description = "Active color for Vengeance in all HUD styles.", position = 2, section = activeSpellColorSection)
     default Color vengeanceActiveColor() { return new Color(98, 184, 255); }
 
-    @ConfigItem(keyName = "corruptionActiveColor", name = "Corruption", description = "Active color for Corruption in all HUD styles.", position = 3, section = activeSpellColorSection)
+    @ConfigItem(keyName = "corruptionActiveColor", name = "Corruption", description = "Cooldown color for Corruption in all HUD styles.", position = 3, section = activeSpellColorSection)
     default Color corruptionActiveColor() { return new Color(182, 78, 234); }
 
     @ConfigItem(keyName = "wardOfArceuusActiveColor", name = "Ward of Arceuus", description = "Active color for Ward of Arceuus in all HUD styles.", position = 4, section = activeSpellColorSection)
     default Color wardOfArceuusActiveColor() { return new Color(76, 210, 224); }
 
-    @ConfigItem(keyName = "imbuedHeartActiveColor", name = "Heart", description = "Active color for Imbued/Saturated Heart in all HUD styles.", position = 5, section = activeSpellColorSection)
+    @ConfigItem(keyName = "imbuedHeartActiveColor", name = "Heart", description = "Cooldown color for Imbued/Saturated Heart in all HUD styles.", position = 5, section = activeSpellColorSection)
     default Color heartActiveColor() { return new Color(222, 74, 166); }
 
     @ConfigItem(keyName = "deathChargeActiveColor", name = "Death Charge", description = "Active color for Death Charge in all HUD styles.", position = 6, section = activeSpellColorSection)
@@ -265,7 +265,7 @@ public interface PvMHUDConfig extends Config {
     default boolean verticalLayout() { return true; }
 
     @Range(min = 10, max = 32)
-    @ConfigItem(keyName = "spellIconSize", name = "Spell Icon Size", description = "Size of spell and cooldown icons in Game Icons, Chips, and Player Bound layouts.", position = 3, section = textIconSection)
+    @ConfigItem(keyName = "spellIconSize", name = "Spell Icon Size", description = "Size of spell and cooldown icons in Game Icons, Bars, and Chips layouts.", position = 3, section = textIconSection)
     default int spellIconSize() { return 20; }
 
     @Range(min = 10, max = 32)

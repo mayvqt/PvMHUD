@@ -14,9 +14,7 @@ public class ThrallTracker extends BaseTimedSpellTracker {
     @Subscribe
     public void onVarbitChanged(VarbitChanged event) {
         if (event.getVarbitId() == VarbitID.ARCEUUS_RESURRECTION_ACTIVE) {
-            if (event.getValue() == 0) {
-                clearActive();
-            }
+            updateActiveState(event.getValue());
             return;
         }
 
@@ -36,6 +34,24 @@ public class ThrallTracker extends BaseTimedSpellTracker {
     protected void sync() {
         int cooldownTicks = client.getVarbitValue(VarbitID.ARCEUUS_RESURRECTION_COOLDOWN);
         setCooldownActive(cooldownTicks > 0);
+
+        updateActiveState(client.getVarbitValue(VarbitID.ARCEUUS_RESURRECTION_ACTIVE));
+    }
+
+    private void updateActiveState(int active) {
+        if (active > 0 && !hasTrackedActiveEffect()) {
+            markActiveWithoutKnownDuration();
+        } else if (active == 0 && hasUnknownActiveDuration()) {
+            clearActive();
+        }
+    }
+
+    @Override
+    public boolean isActive() {
+        if (!hasTrackedActiveEffect()) {
+            syncIfNeeded();
+        }
+        return super.isActive();
     }
 
     private void startThrallTimer() {

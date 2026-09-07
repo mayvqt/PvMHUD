@@ -20,33 +20,39 @@ import java.util.List;
 
 @Singleton
 final class HudVisualStateManager {
-    @Inject
-    private PvMHUDConfig config;
-
-    @Inject
-    private ThrallTracker thrallTracker;
-
-    @Inject
-    private VengeanceTracker vengeanceTracker;
-
-    @Inject
-    private DeathChargeTracker deathChargeTracker;
-
-    @Inject
-    private MarkOfDarknessTracker markOfDarknessTracker;
-
-    @Inject
-    private CorruptionTracker corruptionTracker;
-
-    @Inject
-    private WardOfArceuusTracker wardOfArceuusTracker;
-
-    @Inject
-    private HeartTracker heartTracker;
+    private final PvMHUDConfig config;
+    private final ThrallTracker thrallTracker;
+    private final VengeanceTracker vengeanceTracker;
+    private final DeathChargeTracker deathChargeTracker;
+    private final MarkOfDarknessTracker markOfDarknessTracker;
+    private final CorruptionTracker corruptionTracker;
+    private final WardOfArceuusTracker wardOfArceuusTracker;
+    private final HeartTracker heartTracker;
 
     private final List<TrackerDisplay> trackerDisplays = new ArrayList<>();
     private final List<VisualState> spellVisualStates = new ArrayList<>();
     private final VisualState heartVisualState = new VisualState();
+
+    @Inject
+    HudVisualStateManager(
+            PvMHUDConfig config,
+            ThrallTracker thrallTracker,
+            VengeanceTracker vengeanceTracker,
+            DeathChargeTracker deathChargeTracker,
+            MarkOfDarknessTracker markOfDarknessTracker,
+            CorruptionTracker corruptionTracker,
+            WardOfArceuusTracker wardOfArceuusTracker,
+            HeartTracker heartTracker
+    ) {
+        this.config = config;
+        this.thrallTracker = thrallTracker;
+        this.vengeanceTracker = vengeanceTracker;
+        this.deathChargeTracker = deathChargeTracker;
+        this.markOfDarknessTracker = markOfDarknessTracker;
+        this.corruptionTracker = corruptionTracker;
+        this.wardOfArceuusTracker = wardOfArceuusTracker;
+        this.heartTracker = heartTracker;
+    }
 
     List<TrackerDisplay> displays() {
         initialiseDisplays();
@@ -103,7 +109,13 @@ final class HudVisualStateManager {
         }
 
         if (state.cooldown) {
-            return tracker == deathChargeTracker ? config.deathChargeCooldownColor() : config.cooldownSpellColor();
+            if (tracker == deathChargeTracker) {
+                return config.deathChargeCooldownColor();
+            }
+            if (tracker == corruptionTracker || tracker == heartTracker) {
+                return activeColor(tracker);
+            }
+            return config.cooldownSpellColor();
         }
 
         if (shouldFlashReady(state, now)) {

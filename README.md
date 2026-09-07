@@ -14,7 +14,7 @@ Chips layout that pairs well with compact orbs
 - Tracks **Thrall, Vengeance, Death Charge, Mark of Darkness, Corruption, Ward of Arceuus, and Heart**
 - Main HUD styles: **Text, Game Icons, Bars, Chips**
 - Supports **horizontal and vertical layouts**
-- Optional **local-only overhead alerts** for low HP/Prayer and the Spec threshold
+- Optional **local-only, color-configurable overhead alerts** for low HP/Prayer, the Spec threshold, buff expiry, and cooldown readiness
 - Highly configurable: **thresholds, colours, spacing, fonts, opacity, flashing**
 
 ---

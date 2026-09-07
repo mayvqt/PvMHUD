@@ -12,19 +12,43 @@ final class HudFontResolver {
     @Inject
     private PvMHUDConfig config;
 
-    Font resolve(Font baseFont) {
-        HudFont font = config.fontType();
+    private Font cachedBaseFont;
+    private HudFont cachedType;
+    private int cachedSize;
+    private boolean cachedBold;
+    private Font cachedFont;
 
-        switch (font) {
+    Font resolve(Font baseFont) {
+        HudFont type = config.fontType();
+        int size = config.fontSize();
+        boolean bold = config.boldFont();
+        if (cachedFont != null && cachedBaseFont.equals(baseFont) && cachedType == type
+                && cachedSize == size && cachedBold == bold) {
+            return cachedFont;
+        }
+
+        Font resolved;
+        switch (type) {
             case RUNESCAPE:
-                return FontManager.getRunescapeFont().deriveFont((float) config.fontSize());
+                resolved = FontManager.getRunescapeFont().deriveFont((float) size);
+                break;
             case RUNESCAPE_BOLD:
-                return FontManager.getRunescapeBoldFont().deriveFont((float) config.fontSize());
+                resolved = FontManager.getRunescapeBoldFont().deriveFont((float) size);
+                break;
             case RUNESCAPE_SMALL:
-                return FontManager.getRunescapeSmallFont().deriveFont((float) config.fontSize());
+                resolved = FontManager.getRunescapeSmallFont().deriveFont((float) size);
+                break;
             case SYSTEM:
             default:
-                return baseFont.deriveFont(config.boldFont() ? Font.BOLD : Font.PLAIN, (float) config.fontSize());
+                resolved = baseFont.deriveFont(bold ? Font.BOLD : Font.PLAIN, (float) size);
+                break;
         }
+
+        cachedBaseFont = baseFont;
+        cachedType = type;
+        cachedSize = size;
+        cachedBold = bold;
+        cachedFont = resolved;
+        return resolved;
     }
 }

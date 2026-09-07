@@ -116,7 +116,10 @@ final class BarHudRenderer extends AbstractHudRenderer {
         graphics.setColor(text.withAlpha(config.backgroundColor(), Math.max(40, config.backgroundAlpha())));
         graphics.fillRoundRect(barX, barY, barWidth, barHeight, 5, 5);
         graphics.setColor(text.withAlpha(segment.color, 180));
-        graphics.fillRoundRect(barX, barY, barWidth, barHeight, 5, 5);
+        int fillWidth = filledLength(barWidth, segment.progress);
+        if (fillWidth > 0) {
+            graphics.fillRoundRect(barX, barY, fillWidth, barHeight, 5, 5);
+        }
         graphics.setColor(Color.WHITE);
         text.drawCenteredText(graphics, metrics, segment.label(), barX, barY, barWidth, barHeight);
     }
@@ -136,7 +139,10 @@ final class BarHudRenderer extends AbstractHudRenderer {
         graphics.setColor(text.withAlpha(config.backgroundColor(), Math.max(40, config.backgroundAlpha())));
         graphics.fillRoundRect(barX, barY, barWidth, barHeight, 5, 5);
         graphics.setColor(text.withAlpha(segment.color, 180));
-        graphics.fillRoundRect(barX, barY, barWidth, barHeight, 5, 5);
+        int fillHeight = filledLength(barHeight, segment.progress);
+        if (fillHeight > 0) {
+            graphics.fillRoundRect(barX, barY + barHeight - fillHeight, barWidth, fillHeight, 5, 5);
+        }
 
         if (config.verticalBarText()) {
             graphics.setColor(Color.WHITE);
@@ -146,6 +152,11 @@ final class BarHudRenderer extends AbstractHudRenderer {
 
     private int barSpellTileSize() {
         return Math.max(14, config.barSpellTileSize());
+    }
+
+    static int filledLength(int length, double progress) {
+        double safeProgress = Math.max(0d, Math.min(1d, progress));
+        return (int) Math.round(Math.max(0, length) * safeProgress);
     }
 
     private int spellTileWidth(FontMetrics metrics, List<Segment> spells, List<Segment> hearts, int tile) {

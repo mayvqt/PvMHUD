@@ -3,19 +3,37 @@ package com.pvmhud.tracking;
 public abstract class BaseTimedSpellTracker extends CachedVarbitTracker implements SpellStateTracker {
     private long activeStartedAtNanos;
     private long activeDurationNanos;
+    private boolean activeWithoutKnownDuration;
     private boolean cooldownActive;
     private boolean expiringSoon;
 
     protected final void markActive(long durationNanos) {
         activeStartedAtNanos = System.nanoTime();
         activeDurationNanos = Math.max(0L, durationNanos);
+        activeWithoutKnownDuration = false;
+        expiringSoon = false;
+    }
+
+    protected final void markActiveWithoutKnownDuration() {
+        activeStartedAtNanos = 0L;
+        activeDurationNanos = 0L;
+        activeWithoutKnownDuration = true;
         expiringSoon = false;
     }
 
     protected final void clearActive() {
         activeStartedAtNanos = 0L;
         activeDurationNanos = 0L;
+        activeWithoutKnownDuration = false;
         expiringSoon = false;
+    }
+
+    protected final boolean hasUnknownActiveDuration() {
+        return activeWithoutKnownDuration;
+    }
+
+    protected final boolean hasTrackedActiveEffect() {
+        return activeWithoutKnownDuration || getRemainingNanos() > 0L;
     }
 
     protected final void setCooldownActive(boolean cooldownActive) {
@@ -48,7 +66,7 @@ public abstract class BaseTimedSpellTracker extends CachedVarbitTracker implemen
 
     @Override
     public double getProgress() {
-        if (activeDurationNanos <= 0L) {
+        if (activeWithoutKnownDuration || activeDurationNanos <= 0L) {
             return -1d;
         }
 
@@ -57,12 +75,12 @@ public abstract class BaseTimedSpellTracker extends CachedVarbitTracker implemen
 
     @Override
     public boolean isActive() {
-        return getRemainingNanos() > 0L;
+        return hasTrackedActiveEffect();
     }
 
     @Override
     public boolean hasActiveEffect() {
-        return getRemainingNanos() > 0L;
+        return hasTrackedActiveEffect();
     }
 
     @Override
@@ -89,6 +107,7 @@ public abstract class BaseTimedSpellTracker extends CachedVarbitTracker implemen
     public void reset() {
         activeStartedAtNanos = 0L;
         activeDurationNanos = 0L;
+        activeWithoutKnownDuration = false;
         cooldownActive = false;
         expiringSoon = false;
         invalidateCache();

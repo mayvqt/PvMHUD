@@ -55,7 +55,7 @@ public class PvMHUDOverlay extends Overlay {
     }
 
     public void updateFrame(long now) {
-        segmentBuilder.update(now);
+        segmentBuilder.update(now, !config.hideOutOfCombat() || inCombat);
     }
 
     public void clearCachedResources() {

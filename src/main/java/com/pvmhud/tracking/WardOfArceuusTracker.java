@@ -49,7 +49,11 @@ public class WardOfArceuusTracker extends BaseTimedSpellTracker {
     }
 
     private long estimateDurationNanos() {
-        double seconds = client.getBoostedSkillLevel(Skill.MAGIC) * 0.6d;
+        return estimateDurationNanos(client.getRealSkillLevel(Skill.MAGIC));
+    }
+
+    static long estimateDurationNanos(int realMagicLevel) {
+        double seconds = Math.max(0, realMagicLevel) * 0.6d;
         return TimeConstants.secondsToNanos(seconds);
     }
 }

@@ -21,13 +21,15 @@ public class DeathChargeTracker extends BaseTimedSpellTracker {
 
             if (activeState > previousState) {
                 markActive(DEATH_CHARGE_DURATION_NANOS);
+            } else if (activeState == 0 && hasUnknownActiveDuration()) {
+                clearActive();
             }
         }
     }
 
     @Override
     public boolean isActive() {
-        if (activeState == 0 && getRemainingNanos() == 0L) {
+        if (!hasTrackedActiveEffect()) {
             syncIfNeeded();
         }
         return activeState > 0 && super.isActive();
@@ -35,16 +37,22 @@ public class DeathChargeTracker extends BaseTimedSpellTracker {
 
     @Override
     public String getBadgeText() {
-        return getRemainingNanos() > 0L && activeState > 0 ? Integer.toString(activeState) : "";
+        return hasTrackedActiveEffect() && activeState > 0 ? Integer.toString(activeState) : "";
     }
 
     @Override
     protected void sync() {
         int cooldown = client.getVarbitValue(VarbitID.ARCEUUS_DEATH_CHARGE_COOLDOWN);
-        setCooldownActive(cooldown > 0);
         int syncedActiveState = client.getVarbitValue(VarbitID.ARCEUUS_DEATH_CHARGE_ACTIVE);
-        if (syncedActiveState > 0 && activeState == 0 && getRemainingNanos() == 0L) {
-            markActive(DEATH_CHARGE_DURATION_NANOS);
+        restoreFromClientState(cooldown, syncedActiveState);
+    }
+
+    void restoreFromClientState(int cooldown, int syncedActiveState) {
+        setCooldownActive(cooldown > 0);
+        if (syncedActiveState > 0 && !hasTrackedActiveEffect()) {
+            markActiveWithoutKnownDuration();
+        } else if (syncedActiveState == 0 && hasUnknownActiveDuration()) {
+            clearActive();
         }
         activeState = syncedActiveState;
     }

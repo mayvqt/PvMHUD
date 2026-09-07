@@ -1,9 +1,11 @@
 package com.pvmhud;
 
 import com.google.inject.Provides;
+import com.pvmhud.alerts.OverheadMessageRenderer;
 import com.pvmhud.overlay.PvMHUDOverlay;
 import com.pvmhud.runtime.PvMHUDRuntimeController;
 import net.runelite.api.Constants;
+import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GameStateChanged;
@@ -27,6 +29,7 @@ public class PvMHUDPlugin extends Plugin {
     private static final String OLD_OVERHEAD_ALERT_CYCLES_KEY = "overheadAlertCycles";
     private static final String OVERHEAD_ALERT_SECONDS_KEY = "overheadAlertSeconds";
     private static final int CLIENT_CYCLES_PER_SECOND = 1_000 / Constants.CLIENT_TICK_LENGTH;
+    private static final float AFTER_TRACKERS_PRIORITY = -1.0f;
 
     @Inject
     private OverlayManager overlayManager;
@@ -36,6 +39,9 @@ public class PvMHUDPlugin extends Plugin {
 
     @Inject
     private PvMHUDOverlay hudOverlay;
+
+    @Inject
+    private OverheadMessageRenderer overheadMessageRenderer;
 
     @Inject
     private PvMHUDRuntimeController runtimeController;
@@ -50,11 +56,14 @@ public class PvMHUDPlugin extends Plugin {
         migrateConfig();
         runtimeController.start();
         overlayManager.add(hudOverlay);
+        overlayManager.add(overheadMessageRenderer);
     }
 
     @Override
     protected void shutDown() {
+        overlayManager.remove(overheadMessageRenderer);
         overlayManager.remove(hudOverlay);
+        overheadMessageRenderer.clear();
         runtimeController.stop();
     }
 
@@ -83,9 +92,14 @@ public class PvMHUDPlugin extends Plugin {
         runtimeController.onHitsplatApplied(event);
     }
 
-    @Subscribe
+    @Subscribe(priority = AFTER_TRACKERS_PRIORITY)
     public void onVarbitChanged(VarbitChanged event) {
         runtimeController.onVarbitChanged(event);
+    }
+
+    @Subscribe(priority = AFTER_TRACKERS_PRIORITY)
+    public void onChatMessage(ChatMessage event) {
+        runtimeController.onChatMessage(event);
     }
 
     private void migrateConfig() {

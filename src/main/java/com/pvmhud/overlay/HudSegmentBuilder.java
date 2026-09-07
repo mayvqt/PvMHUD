@@ -43,8 +43,13 @@ final class HudSegmentBuilder {
 
     private volatile HudFrame currentFrame = HudFrame.EMPTY;
 
-    void update(long now) {
+    void update(long now, boolean rebuildFrame) {
         stateManager.update(now);
+
+        if (!rebuildFrame) {
+            currentFrame = HudFrame.EMPTY;
+            return;
+        }
 
         List<Segment> stats = buildStatSegments();
         List<Segment> spells = buildSpellSegments(now);
@@ -67,19 +72,22 @@ final class HudSegmentBuilder {
         if (config.showHp()) {
             int hp = hpTracker.getCurrentHp();
             int poison = client.getVarpValue(VarPlayerID.POISON);
-            segments.add(new Segment(SegmentKind.STAT, "H " + hp, Integer.toString(hp), hpColor(hp, poison), HITPOINTS_ICON));
+            segments.add(new Segment(SegmentKind.STAT, "H " + hp, Integer.toString(hp), hpColor(hp, poison),
+                    HITPOINTS_ICON, statProgress(hp, client.getRealSkillLevel(Skill.HITPOINTS))));
         }
 
         if (config.showPrayer()) {
             int prayer = prayerTracker.getCurrentPrayer();
             Color color = prayer <= config.prayerLowThreshold() ? config.prayerLowColor() : config.prayerNormalColor();
-            segments.add(new Segment(SegmentKind.STAT, "P " + prayer, Integer.toString(prayer), color, PRAYER_ICON));
+            segments.add(new Segment(SegmentKind.STAT, "P " + prayer, Integer.toString(prayer), color,
+                    PRAYER_ICON, statProgress(prayer, client.getRealSkillLevel(Skill.PRAYER))));
         }
 
         if (config.showSpec()) {
             int spec = specTracker.getSpecPercent();
             Color color = spec >= config.specThreshold() ? config.specHighColor() : config.specLowColor();
-            segments.add(new Segment(SegmentKind.STAT, "S " + spec, Integer.toString(spec), color, SPEC_ICON));
+            segments.add(new Segment(SegmentKind.STAT, "S " + spec, Integer.toString(spec), color,
+                    SPEC_ICON, statProgress(spec, 100)));
         }
 
         return segments;
@@ -135,5 +143,12 @@ final class HudSegmentBuilder {
         }
 
         return hp <= config.hpLowThreshold() ? config.hpLowColor() : config.hpNormalColor();
+    }
+
+    private double statProgress(int current, int maximum) {
+        if (maximum <= 0) {
+            return 0d;
+        }
+        return Math.max(0d, Math.min(1d, current / (double) maximum));
     }
 }

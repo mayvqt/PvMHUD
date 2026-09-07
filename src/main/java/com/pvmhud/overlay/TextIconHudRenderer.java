@@ -74,10 +74,14 @@ final class TextIconHudRenderer extends AbstractHudRenderer {
 
         int y = paddingY;
         int rowIndex = 0;
-        rowIndex = drawRow(graphics, metrics, spells, gameIconsMode, width, rowWidths, rowHeights, rowIndex, y);
-        y += rowIndex > 0 ? rowHeights[rowIndex - 1] + localRowGap : 0;
-        rowIndex = drawRow(graphics, metrics, stats, gameIconsMode, width, rowWidths, rowHeights, rowIndex, y);
-        y += rowIndex > 0 ? rowHeights[rowIndex - 1] + localRowGap : 0;
+        if (!spells.isEmpty()) {
+            rowIndex = drawRow(graphics, metrics, spells, gameIconsMode, width, rowWidths, rowHeights, rowIndex, y);
+            y += rowHeights[rowIndex - 1] + localRowGap;
+        }
+        if (!stats.isEmpty()) {
+            rowIndex = drawRow(graphics, metrics, stats, gameIconsMode, width, rowWidths, rowHeights, rowIndex, y);
+            y += rowHeights[rowIndex - 1] + localRowGap;
+        }
         drawRow(graphics, metrics, hearts, gameIconsMode, width, rowWidths, rowHeights, rowIndex, y);
 
         return new Dimension(width, height);

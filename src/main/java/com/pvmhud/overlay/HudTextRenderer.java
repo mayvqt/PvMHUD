@@ -7,11 +7,19 @@ import javax.inject.Singleton;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 final class HudTextRenderer {
+    private static final int MAX_CACHED_COLORS = 128;
+    private final PvMHUDConfig config;
+    private final Map<Integer, Color> alphaColors = new HashMap<>();
+
     @Inject
-    private PvMHUDConfig config;
+    HudTextRenderer(PvMHUDConfig config) {
+        this.config = config;
+    }
 
     void drawText(Graphics2D graphics, String text, int x, int y, Color color) {
         if (text == null || text.isEmpty()) {
@@ -41,7 +49,7 @@ final class HudTextRenderer {
         int textWidth = metrics.stringWidth(text);
         int textX = x + (width - textWidth) / 2;
         int textY = y + baseline(metrics, height);
-        graphics.drawString(text, textX, textY);
+        drawText(graphics, text, textX, textY, graphics.getColor());
     }
 
     void drawBackground(Graphics2D graphics, int width, int height) {
@@ -61,6 +69,21 @@ final class HudTextRenderer {
     Color withAlpha(Color color, int alpha) {
         Color safeColor = color == null ? Color.BLACK : color;
         int safeAlpha = Math.max(0, Math.min(255, alpha));
-        return new Color(safeColor.getRed(), safeColor.getGreen(), safeColor.getBlue(), safeAlpha);
+        if (safeColor.getAlpha() == safeAlpha) {
+            return safeColor;
+        }
+
+        int argb = (safeAlpha << 24) | (safeColor.getRGB() & 0xFFFFFF);
+        Color cached = alphaColors.get(argb);
+        if (cached != null) {
+            return cached;
+        }
+
+        if (alphaColors.size() >= MAX_CACHED_COLORS) {
+            alphaColors.clear();
+        }
+        Color result = new Color(argb, true);
+        alphaColors.put(argb, result);
+        return result;
     }
 }
