@@ -30,11 +30,11 @@ public class MarkOfDarknessTracker extends BaseTimedSpellTracker {
 
         String message = Text.standardize(event.getMessage());
 
-        if (MARK_PLACED_MESSAGE.equals(message)) {
+        if (message.endsWith(MARK_PLACED_MESSAGE)) {
             markActive(TimeConstants.ticksToNanos(getDurationTicks()));
-        } else if (MARK_EXPIRING_MESSAGE.equals(message)) {
+        } else if (message.endsWith(MARK_EXPIRING_MESSAGE)) {
             setExpiringSoon(true);
-        } else if (MARK_FADED_MESSAGE.equals(message)) {
+        } else if (message.endsWith(MARK_FADED_MESSAGE)) {
             clearActive();
         }
     }
@@ -44,10 +44,14 @@ public class MarkOfDarknessTracker extends BaseTimedSpellTracker {
         setCooldownActive(false);
     }
 
-    private int getDurationTicks() {
-        int ticks = client.getRealSkillLevel(Skill.MAGIC) * 3;
+    int getDurationTicks() {
+        return estimateDurationTicks(client.getRealSkillLevel(Skill.MAGIC), isPurgingStaffEquipped());
+    }
 
-        if (isPurgingStaffEquipped()) {
+    static int estimateDurationTicks(int realMagicLevel, boolean purgingStaffEquipped) {
+        int ticks = realMagicLevel * 3;
+
+        if (purgingStaffEquipped) {
             ticks *= 5;
         }
 

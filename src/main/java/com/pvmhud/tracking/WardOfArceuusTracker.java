@@ -37,7 +37,7 @@ public class WardOfArceuusTracker extends BaseTimedSpellTracker {
 
         String message = Text.standardize(event.getMessage());
 
-        if (WARD_EXPIRED_MESSAGE.equals(message)) {
+        if (message.endsWith(WARD_EXPIRED_MESSAGE)) {
             clearActive();
         }
     }
