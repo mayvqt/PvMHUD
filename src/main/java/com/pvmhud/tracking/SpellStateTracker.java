@@ -9,10 +9,6 @@ public interface SpellStateTracker {
         return false;
     }
 
-    default boolean isReady() {
-        return !isActive() && !isOnCooldown();
-    }
-
     default String getBadgeText() {
         return "";
     }

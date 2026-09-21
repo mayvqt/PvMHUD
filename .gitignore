@@ -1,5 +1,9 @@
 .gradle
 build
+bin/
+out/
+.tmp/
+*.class
 .idea/
 .project
 .settings/

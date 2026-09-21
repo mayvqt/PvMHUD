@@ -1,17 +1,17 @@
 package com.pvmhud;
 
 import com.google.inject.Provides;
-import com.pvmhud.alerts.OverheadMessageRenderer;
 import com.pvmhud.overlay.PvMHUDOverlay;
 import com.pvmhud.runtime.PvMHUDRuntimeController;
 import net.runelite.api.Constants;
 import net.runelite.api.events.ChatMessage;
-import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.HitsplatApplied;
+import net.runelite.api.events.PostClientTick;
 import net.runelite.api.events.StatChanged;
 import net.runelite.api.events.VarbitChanged;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -41,10 +41,10 @@ public class PvMHUDPlugin extends Plugin {
     private PvMHUDOverlay hudOverlay;
 
     @Inject
-    private OverheadMessageRenderer overheadMessageRenderer;
+    private PvMHUDRuntimeController runtimeController;
 
     @Inject
-    private PvMHUDRuntimeController runtimeController;
+    private ClientThread clientThread;
 
     @Provides
     PvMHUDConfig provideConfig(ConfigManager manager) {
@@ -54,17 +54,14 @@ public class PvMHUDPlugin extends Plugin {
     @Override
     protected void startUp() {
         migrateConfig();
-        runtimeController.start();
+        clientThread.invoke(runtimeController::start);
         overlayManager.add(hudOverlay);
-        overlayManager.add(overheadMessageRenderer);
     }
 
     @Override
     protected void shutDown() {
-        overlayManager.remove(overheadMessageRenderer);
         overlayManager.remove(hudOverlay);
-        overheadMessageRenderer.clear();
-        runtimeController.stop();
+        clientThread.invoke(runtimeController::stop);
     }
 
     @Subscribe
@@ -78,8 +75,8 @@ public class PvMHUDPlugin extends Plugin {
     }
 
     @Subscribe
-    public void onClientTick(ClientTick event) {
-        runtimeController.onClientTick(event);
+    public void onPostClientTick(PostClientTick event) {
+        runtimeController.onPostClientTick(event);
     }
 
     @Subscribe

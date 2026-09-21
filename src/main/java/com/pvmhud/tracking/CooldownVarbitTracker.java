@@ -18,12 +18,6 @@ public abstract class CooldownVarbitTracker extends CachedVarbitTracker implemen
     }
 
     @Override
-    public boolean isReady() {
-        syncIfNeeded();
-        return cooldownTicks <= 0;
-    }
-
-    @Override
     protected void sync() {
         cooldownTicks = client.getVarbitValue(cooldownVarbitId());
     }

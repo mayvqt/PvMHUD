@@ -2,8 +2,6 @@
 
 Compact, draggable HUD for the combat information you check constantly: Hitpoints, Prayer, special attack, spell states, and cooldowns.
 
-Chips layout that pairs well with compact orbs
-
 ![PvM HUD Chips style](images/chips.png)
 
 ---
@@ -30,7 +28,7 @@ Chips layout that pairs well with compact orbs
 
 - **Stats** — boosted values, poison/venom, threshold alerts  
 - **Thrall** — duration, cooldown, expiry warning, reliable recast tracking  
-- **Vengeance** — active + cooldown  
+- **Vengeance** — red skull while active; white Vengeance Other skull after consumption, through cooldown and the configured ready visibility time
 - **Death Charge** — active, consumed, cooldown, expiry warning  
 - **Mark of Darkness** — active, expiring, faded  
 - **Corruption** — cooldown  

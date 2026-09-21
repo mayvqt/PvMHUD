@@ -25,17 +25,17 @@ final class TextIconHudRenderer extends AbstractHudRenderer {
 
             for (Segment segment : stats) {
                 maxWidth = Math.max(maxWidth, segmentWidth(metrics, segment, gameIconsMode));
-                maxHeight = Math.max(maxHeight, iconSize(segment));
+                maxHeight = Math.max(maxHeight, gameIconsMode ? iconSize(segment) : 0);
                 total++;
             }
             for (Segment segment : spells) {
                 maxWidth = Math.max(maxWidth, segmentWidth(metrics, segment, gameIconsMode));
-                maxHeight = Math.max(maxHeight, iconSize(segment));
+                maxHeight = Math.max(maxHeight, gameIconsMode ? iconSize(segment) : 0);
                 total++;
             }
             for (Segment segment : hearts) {
                 maxWidth = Math.max(maxWidth, segmentWidth(metrics, segment, gameIconsMode));
-                maxHeight = Math.max(maxHeight, iconSize(segment));
+                maxHeight = Math.max(maxHeight, gameIconsMode ? iconSize(segment) : 0);
                 total++;
             }
 
@@ -154,8 +154,7 @@ final class TextIconHudRenderer extends AbstractHudRenderer {
         );
     }
 
-    @Override
-    protected int segmentWidth(FontMetrics metrics, Segment segment, boolean gameIconsMode) {
+    private int segmentWidth(FontMetrics metrics, Segment segment, boolean gameIconsMode) {
         if (!gameIconsMode) {
             return metrics.stringWidth(segment.text);
         }
@@ -204,8 +203,15 @@ final class TextIconHudRenderer extends AbstractHudRenderer {
         if (row.isEmpty()) {
             return index;
         }
-        rowWidths[index] = rowWidth(metrics, row, gameIconsMode);
-        rowHeights[index] = rowHeight(metrics, row);
+        int width = 0;
+        int height = metrics.getHeight();
+        int gap = groupGap();
+        for (Segment segment : row) {
+            width += segmentWidth(metrics, segment, gameIconsMode) + gap;
+            height = Math.max(height, gameIconsMode ? iconSize(segment) : 0);
+        }
+        rowWidths[index] = width - gap;
+        rowHeights[index] = height;
         return index + 1;
     }
 

@@ -1,94 +1,62 @@
 package com.pvmhud.alerts;
 
 import com.pvmhud.PvMHUDConfig;
-import com.pvmhud.tracking.TimeConstants;
 import net.runelite.api.Client;
-import net.runelite.api.Point;
+import net.runelite.api.Constants;
 import net.runelite.api.Player;
-import net.runelite.client.ui.overlay.Overlay;
-import net.runelite.client.ui.overlay.OverlayLayer;
-import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.OverlayUtil;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
 
 @Singleton
-public final class OverheadMessageRenderer extends Overlay {
-    private static final int HEIGHT_OFFSET = 40;
+public final class OverheadMessageRenderer {
+    private static final int CLIENT_CYCLES_PER_SECOND = 1_000 / Constants.CLIENT_TICK_LENGTH;
 
     private final Client client;
     private final PvMHUDConfig config;
-    private volatile Message message;
+    private final OverheadAlertBatch pendingMessages = new OverheadAlertBatch();
+    private Player messagePlayer;
+    private String messageText;
 
     @Inject
     private OverheadMessageRenderer(Client client, PvMHUDConfig config) {
         this.client = client;
         this.config = config;
-        setPosition(OverlayPosition.DYNAMIC);
-        setLayer(OverlayLayer.ABOVE_SCENE);
     }
 
     void showLocalMessage(String message, Color color) {
-        String trimmed = message == null ? "" : message.trim();
-        if (trimmed.isEmpty()) {
+        if (client.getLocalPlayer() != null) {
+            pendingMessages.add(message, color);
+        }
+    }
+
+    public void flush() {
+        if (pendingMessages.isEmpty()) {
             return;
         }
 
-        if (client.getLocalPlayer() == null) {
+        String text = pendingMessages.drain();
+        Player localPlayer = client.getLocalPlayer();
+        if (localPlayer == null) {
             return;
         }
 
-        long expiresAt = System.nanoTime() + TimeConstants.secondsToNanos(config.overheadAlertSeconds());
-        this.message = new Message(trimmed, color == null ? Color.WHITE : color, expiresAt);
+        localPlayer.setOverheadText(text);
+        localPlayer.setOverheadCycle(Math.max(1, config.overheadAlertSeconds() * CLIENT_CYCLES_PER_SECOND));
+        messagePlayer = localPlayer;
+        // Core plugins such as Emojis can replace the text synchronously.
+        messageText = localPlayer.getOverheadText();
     }
 
     public void clear() {
-        message = null;
-    }
-
-    @Override
-    public Dimension render(Graphics2D graphics) {
-        Message current = message;
-        if (current == null || current.hasExpired(System.nanoTime())) {
-            if (current != null) {
-                message = null;
-            }
-            return null;
+        pendingMessages.clear();
+        if (messagePlayer != null && messagePlayer == client.getLocalPlayer()
+                && messageText != null && messageText.equals(messagePlayer.getOverheadText())) {
+            messagePlayer.setOverheadText("");
+            messagePlayer.setOverheadCycle(0);
         }
-
-        Player localPlayer = client.getLocalPlayer();
-        if (localPlayer == null) {
-            return null;
-        }
-
-        Point location = localPlayer.getCanvasTextLocation(
-                graphics,
-                current.text,
-                localPlayer.getLogicalHeight() + HEIGHT_OFFSET
-        );
-        if (location != null) {
-            OverlayUtil.renderTextLocation(graphics, location, current.text, current.color);
-        }
-        return null;
-    }
-
-    private static final class Message {
-        private final String text;
-        private final Color color;
-        private final long expiresAt;
-
-        private Message(String text, Color color, long expiresAt) {
-            this.text = text;
-            this.color = color;
-            this.expiresAt = expiresAt;
-        }
-
-        private boolean hasExpired(long now) {
-            return now - expiresAt >= 0;
-        }
+        messagePlayer = null;
+        messageText = null;
     }
 }

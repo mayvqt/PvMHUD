@@ -15,11 +15,12 @@ import net.runelite.api.gameval.SpriteID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
 final class HudVisualStateManager {
+    private static final IconRef INACTIVE_VENGEANCE_ICON = IconRef.spell(SpriteID.LunarMagicOn.VENGEANCE_OTHER);
+
     private final PvMHUDConfig config;
     private final ThrallTracker thrallTracker;
     private final VengeanceTracker vengeanceTracker;
@@ -29,8 +30,7 @@ final class HudVisualStateManager {
     private final WardOfArceuusTracker wardOfArceuusTracker;
     private final HeartTracker heartTracker;
 
-    private final List<TrackerDisplay> trackerDisplays = new ArrayList<>();
-    private final List<VisualState> spellVisualStates = new ArrayList<>();
+    private final List<TrackerDisplay> trackerDisplays;
     private final VisualState heartVisualState = new VisualState();
 
     @Inject
@@ -52,15 +52,19 @@ final class HudVisualStateManager {
         this.corruptionTracker = corruptionTracker;
         this.wardOfArceuusTracker = wardOfArceuusTracker;
         this.heartTracker = heartTracker;
+
+        trackerDisplays = List.of(
+                new TrackerDisplay(thrallTracker, "T", IconRef.spell(SpriteID.MagicNecroOn.RESURRECT_SUPERIOR_SKELETON), config::showThrall),
+                new TrackerDisplay(deathChargeTracker, "D", IconRef.spell(SpriteID.MagicNecroOn.DEATH_CHARGE), config::showDeathCharge),
+                new TrackerDisplay(markOfDarknessTracker, "M", IconRef.spell(SpriteID.MagicNecroOn.MARK_OF_DARKNESS), config::showMarkOfDarkness),
+                new TrackerDisplay(vengeanceTracker, "V", IconRef.spell(SpriteID.LunarMagicOn.VENGEANCE), config::showVengeance),
+                new TrackerDisplay(corruptionTracker, "C", IconRef.spell(SpriteID.MagicNecroOn.GREATER_CORRUPTION), config::showCorruption),
+                new TrackerDisplay(wardOfArceuusTracker, "W", IconRef.spell(SpriteID.MagicNecroOn.WARD_OF_ARCEUUS), config::showWardOfArceuus)
+        );
     }
 
     List<TrackerDisplay> displays() {
-        initialiseDisplays();
         return trackerDisplays;
-    }
-
-    VisualState spellState(int index) {
-        return spellVisualStates.get(index);
     }
 
     VisualState heartState() {
@@ -72,18 +76,16 @@ final class HudVisualStateManager {
     }
 
     void update(long now) {
-        initialiseDisplays();
-
-        for (int i = 0; i < trackerDisplays.size(); i++) {
-            updateVisualState(trackerDisplays.get(i).tracker, spellVisualStates.get(i), now);
+        for (TrackerDisplay display : trackerDisplays) {
+            updateVisualState(display.tracker, display.state, now);
         }
 
         updateVisualState(heartTracker, heartVisualState, now);
     }
 
     void reset() {
-        for (VisualState state : spellVisualStates) {
-            state.reset();
+        for (TrackerDisplay display : trackerDisplays) {
+            display.state.reset();
         }
         heartVisualState.reset();
     }
@@ -125,21 +127,11 @@ final class HudVisualStateManager {
         return config.readySpellColor();
     }
 
-    private void initialiseDisplays() {
-        if (!trackerDisplays.isEmpty()) {
-            return;
+    IconRef iconFor(TrackerDisplay display) {
+        if (display.tracker == vengeanceTracker && !display.state.active) {
+            return INACTIVE_VENGEANCE_ICON;
         }
-
-        trackerDisplays.add(new TrackerDisplay(thrallTracker, "T", IconRef.spell(SpriteID.MagicNecroOn.RESURRECT_SUPERIOR_SKELETON), config::showThrall));
-        trackerDisplays.add(new TrackerDisplay(deathChargeTracker, "D", IconRef.spell(SpriteID.MagicNecroOn.DEATH_CHARGE), config::showDeathCharge));
-        trackerDisplays.add(new TrackerDisplay(markOfDarknessTracker, "M", IconRef.spell(SpriteID.MagicNecroOn.MARK_OF_DARKNESS), config::showMarkOfDarkness));
-        trackerDisplays.add(new TrackerDisplay(vengeanceTracker, "V", IconRef.spell(SpriteID.LunarMagicOn.VENGEANCE), config::showVengeance));
-        trackerDisplays.add(new TrackerDisplay(corruptionTracker, "C", IconRef.spell(SpriteID.MagicNecroOn.GREATER_CORRUPTION), config::showCorruption));
-        trackerDisplays.add(new TrackerDisplay(wardOfArceuusTracker, "W", IconRef.spell(SpriteID.MagicNecroOn.WARD_OF_ARCEUUS), config::showWardOfArceuus));
-
-        for (int i = 0; i < trackerDisplays.size(); i++) {
-            spellVisualStates.add(new VisualState());
-        }
+        return display.icon;
     }
 
     private void updateVisualState(SpellStateTracker tracker, VisualState state, long now) {
@@ -148,15 +140,10 @@ final class HudVisualStateManager {
         boolean ready = !active && !cooldown;
         boolean expiringSoon = tracker.isExpiringSoon(config.spellExpiringSoonSeconds());
 
-        if (state.initialised) {
-            if (state.ready && !ready) {
-                state.lastTransitionNanos = now;
-            } else if (!state.ready && ready) {
-                state.lastTransitionNanos = now;
-            }
-        } else {
-            state.initialised = true;
+        if (state.initialised && state.ready != ready) {
+            state.lastTransitionNanos = now;
         }
+        state.initialised = true;
 
         if (!ready) {
             state.lastVisibleNanos = now;

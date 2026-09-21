@@ -63,9 +63,8 @@ final class BarHudRenderer extends AbstractHudRenderer {
 
     private Dimension renderVertical(Graphics2D graphics, FontMetrics metrics, HudFrame frame, List<Segment> spells, List<Segment> hearts, int gap, int tile, int spellTileWidth) {
         int statIconSize = config.showIcons() ? config.statIconSize() : 0;
-        int verticalBarWidth = Math.max(1, config.verticalBarWidth());
+        int barWidth = Math.max(1, config.verticalBarWidth());
         int verticalBarHeight = config.verticalBarHeight();
-        int barWidth = verticalBarWidth;
         int statColumnWidth = frame.stats().isEmpty()
                 ? 0
                 : frame.stats().size() * Math.max(statIconSize, barWidth) + Math.max(0, frame.stats().size() - 1) * gap;
@@ -94,7 +93,7 @@ final class BarHudRenderer extends AbstractHudRenderer {
         int y = HudConstants.PADDING_Y + Math.max(0, (height - HudConstants.PADDING_Y * 2 - statHeight) / 2);
         for (Segment segment : frame.stats()) {
             int columnWidth = Math.max(statIconSize, barWidth);
-            drawVerticalStatBar(graphics, metrics, segment, x, y, columnWidth, statHeight);
+            drawVerticalStatBar(graphics, metrics, segment, x, y, columnWidth);
             x += columnWidth + gap;
         }
 
@@ -124,7 +123,7 @@ final class BarHudRenderer extends AbstractHudRenderer {
         text.drawCenteredText(graphics, metrics, segment.label(), barX, barY, barWidth, barHeight);
     }
 
-    private void drawVerticalStatBar(Graphics2D graphics, FontMetrics metrics, Segment segment, int x, int y, int width, int height) {
+    private void drawVerticalStatBar(Graphics2D graphics, FontMetrics metrics, Segment segment, int x, int y, int width) {
         int iconSize = config.showIcons() ? config.statIconSize() : 0;
         BufferedImage icon = icons.load(segment.icon, iconSize);
         if (icon != null) {

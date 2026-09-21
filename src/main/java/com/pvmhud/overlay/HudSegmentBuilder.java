@@ -95,20 +95,17 @@ final class HudSegmentBuilder {
 
     private List<Segment> buildSpellSegments(long now) {
         List<Segment> segments = new ArrayList<>(8);
-        List<TrackerDisplay> displays = stateManager.displays();
-
-        for (int i = 0; i < displays.size(); i++) {
-            TrackerDisplay display = displays.get(i);
-            if (!display.enabled.get()) {
+        for (TrackerDisplay display : stateManager.displays()) {
+            if (!display.enabled.getAsBoolean()) {
                 continue;
             }
 
-            VisualState state = stateManager.spellState(i);
+            VisualState state = display.state;
             if (stateManager.shouldRender(state, now, config.showInactiveSpells())) {
                 String value = display.tracker.getDisplayText();
                 String text = value.isEmpty() ? display.text : display.text + " " + value;
                 segments.add(new Segment(SegmentKind.SPELL, text, value,
-                        stateManager.colorFor(display.tracker, state, now), display.icon,
+                        stateManager.colorFor(display.tracker, state, now), stateManager.iconFor(display),
                         display.tracker.getProgress(), display.tracker.getBadgeText()));
             }
         }

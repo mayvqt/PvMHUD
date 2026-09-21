@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.FontMetrics;
-import java.util.List;
 
 abstract class AbstractHudRenderer {
     @Inject
@@ -40,33 +39,6 @@ abstract class AbstractHudRenderer {
 
     protected int iconTextGap() {
         return Math.max(0, config.iconTextGap());
-    }
-
-    protected int rowHeight(FontMetrics metrics, List<Segment> segments) {
-        int height = metrics.getHeight();
-        for (Segment segment : segments) {
-            height = Math.max(height, iconSize(segment));
-        }
-        return height;
-    }
-
-    protected int segmentWidth(FontMetrics metrics, Segment segment, boolean iconsOnly) {
-        if (iconsOnly && segment.icon != null) {
-            return iconSize(segment);
-        }
-        return metrics.stringWidth(segment.text);
-    }
-
-    protected int rowWidth(FontMetrics metrics, List<Segment> segments, boolean iconsOnly) {
-        if (segments.isEmpty()) {
-            return 0;
-        }
-
-        int width = 0;
-        for (Segment segment : segments) {
-            width += segmentWidth(metrics, segment, iconsOnly) + groupGap();
-        }
-        return width - groupGap();
     }
 
     protected int centeredStartX(int contentWidth, int rowWidth) {

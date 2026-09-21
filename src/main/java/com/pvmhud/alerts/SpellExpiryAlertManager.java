@@ -13,7 +13,6 @@ import com.pvmhud.tracking.WardOfArceuusTracker;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -54,18 +53,10 @@ public class SpellExpiryAlertManager {
             return;
         }
 
-        StringJoiner messages = new StringJoiner(" ");
         for (TrackedState trackedState : trackedStates) {
             if (trackedState.update()) {
-                String message = trackedState.message.get();
-                if (message != null && !message.trim().isEmpty()) {
-                    messages.add(message.trim());
-                }
+                renderer.showLocalMessage(trackedState.message.get(), config.spellExpiryOverheadColor());
             }
-        }
-
-        if (messages.length() > 0) {
-            renderer.showLocalMessage(messages.toString(), config.spellExpiryOverheadColor());
         }
     }
 

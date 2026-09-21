@@ -7,7 +7,6 @@ import com.pvmhud.tracking.HpTracker;
 import com.pvmhud.tracking.MarkOfDarknessTracker;
 import com.pvmhud.tracking.PrayerTracker;
 import com.pvmhud.tracking.ResettableTracker;
-import com.pvmhud.tracking.SpecTracker;
 import com.pvmhud.tracking.ThrallTracker;
 import com.pvmhud.tracking.VengeanceTracker;
 import com.pvmhud.tracking.WardOfArceuusTracker;
@@ -24,7 +23,6 @@ class TrackerRegistry {
     TrackerRegistry(
             HpTracker hpTracker,
             PrayerTracker prayerTracker,
-            SpecTracker specTracker,
             ThrallTracker thrallTracker,
             MarkOfDarknessTracker markOfDarknessTracker,
             WardOfArceuusTracker wardOfArceuusTracker,
@@ -36,7 +34,6 @@ class TrackerRegistry {
         this.trackers = List.of(
                 hpTracker,
                 prayerTracker,
-                specTracker,
                 thrallTracker,
                 markOfDarknessTracker,
                 wardOfArceuusTracker,

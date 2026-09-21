@@ -6,7 +6,6 @@ public final class TimeConstants {
     public static final long GAME_TICK_MILLIS = Constants.GAME_TICK_LENGTH;
     public static final long CACHE_SYNC_INTERVAL_MS = 200L;
 
-    public static final long MS_PER_SECOND = 1_000L;
     public static final long NS_PER_MS = 1_000_000L;
     public static final long NS_PER_SECOND = 1_000_000_000L;
 

@@ -10,9 +10,56 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class TextIconHudRendererTest {
+    @Test
+    public void textStyleIgnoresIconSizesInBothLayouts() {
+        HudFrame frame = new HudFrame(
+                List.of(new Segment(SegmentKind.STAT, "H 99", "99", Color.RED, null)),
+                List.of(new Segment(SegmentKind.SPELL, "V", "", Color.BLUE, null)),
+                List.of(new Segment(SegmentKind.HEART, "Heart", "", Color.GREEN, null))
+        );
+
+        for (boolean vertical : new boolean[]{false, true}) {
+            PvMHUDConfig config = new PvMHUDConfig() {
+                @Override
+                public boolean verticalLayout() {
+                    return vertical;
+                }
+
+                @Override
+                public boolean showIcons() {
+                    return true;
+                }
+
+                @Override
+                public int statIconSize() {
+                    return 32;
+                }
+
+                @Override
+                public int spellIconSize() {
+                    return 32;
+                }
+            };
+            TextIconHudRenderer renderer = new TextIconHudRenderer();
+            renderer.config = config;
+            renderer.text = new HudTextRenderer(config);
+
+            Graphics2D graphics = new BufferedImage(300, 200, BufferedImage.TYPE_INT_ARGB).createGraphics();
+            try {
+                FontMetrics metrics = graphics.getFontMetrics();
+                Dimension bounds = renderer.render(graphics, metrics, frame, false);
+                int expectedHeight = 3 * metrics.getHeight() + 2 * config.rowGap() + 2 * HudConstants.PADDING_Y;
+                assertEquals("Text style must not reserve space for invisible icons", expectedHeight, bounds.height);
+            } finally {
+                graphics.dispose();
+            }
+        }
+    }
+
     @Test
     public void horizontalHeartRemainsInsideBoundsWhenStatsAreHidden() {
         PvMHUDConfig config = new PvMHUDConfig() {

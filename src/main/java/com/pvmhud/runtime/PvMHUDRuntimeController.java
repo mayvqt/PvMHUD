@@ -14,10 +14,10 @@ import net.runelite.api.Constants;
 import net.runelite.api.GameState;
 import net.runelite.api.Player;
 import net.runelite.api.events.ChatMessage;
-import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.HitsplatApplied;
+import net.runelite.api.events.PostClientTick;
 import net.runelite.api.events.StatChanged;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.gameval.VarbitID;
@@ -109,17 +109,20 @@ public class PvMHUDRuntimeController {
         evaluateSpellExpiryAlerts();
     }
 
-    public void onClientTick(ClientTick event) {
+    public void onPostClientTick(PostClientTick event) {
         if (client.getGameState() == GameState.LOGGED_IN && client.getLocalPlayer() != null) {
             hudOverlay.updateFrame(System.nanoTime());
         }
 
         if (pendingAlertBaseline) {
             capturePendingAlertBaseline();
-            return;
+        } else {
+            evaluatePendingSpecAlert();
         }
 
-        evaluatePendingSpecAlert();
+        if (client.getGameState() == GameState.LOGGED_IN) {
+            overheadMessageRenderer.flush();
+        }
     }
 
     private void capturePendingAlertBaseline() {
