@@ -36,7 +36,3 @@ Compact, draggable HUD for the combat information you check constantly: Hitpoint
 - **Heart** — shared Imbued/Saturated cooldown  
 
 ---
-
-## Development
-
-See [development guidelines](CONTRIBUTING.md) for RuneLite plugin rules.
