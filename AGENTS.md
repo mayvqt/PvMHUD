@@ -1,4 +1,4 @@
-# Development guidelines
+# RuneLite Plugin Development — Agent Guidelines
 
 ## Logging
 
